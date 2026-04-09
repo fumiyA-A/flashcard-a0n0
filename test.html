@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Flashcard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
+        <h2 class="text-gray-500 text-sm mb-2" id="progress">1 / 3</h2>
+        
+        <div id="card" class="bg-blue-50 cursor-pointer p-10 rounded-lg min-h-[200px] flex flex-col items-center justify-center transition-all duration-300" onclick="flipCard()">
+            <h1 id="word" class="text-3xl font-bold text-gray-800">Word</h1>
+            <p id="meaning" class="text-xl text-blue-600 mt-4 hidden">意味</p>
+            <p id="phrase" class="text-sm text-gray-600 mt-4 hidden">フレーズ</p>
+        </div>
+
+        <div id="buttons" class="mt-8 flex justify-between gap-4 hidden">
+            <button onclick="recordAnswer(false)" class="bg-red-500 text-white flex-1 py-3 rounded-lg font-bold">間違えた</button>
+            <button onclick="recordAnswer(true)" class="bg-green-500 text-white flex-1 py-3 rounded-lg font-bold">覚えた！</button>
+        </div>
+        
+        <div class="mt-4">
+            <button onclick="resetData()" class="text-sm text-gray-400 underline">データをリセット</button>
+        </div>
+    </div>
+
+    <script>
+        // ① サンプルデータ（ここにCSVのデータをJSON形式で追加します）
+        const vocabData = [
+            { id: 481, en: "track", jp: "追跡する、たどる", phrase: "track an order" },
+            { id: 482, en: "status", jp: "状況、地位", phrase: "shipment status" },
+            { id: 483, en: "crop", jp: "作物、収穫量", phrase: "locally grown crops" }
+        ];
+
+        let currentIndex = 0;
+        let isFlipped = false;
+
+        // ② localStorageから学習履歴を読み込む
+        let userProgress = JSON.parse(localStorage.getItem('flashcard_progress')) || {};
+
+        // まだ覚えていない単語だけをフィルター
+        let activeVocab = vocabData.filter(v => userProgress[v.id] !== 'memorized');
+
+        function loadCard() {
+            if (activeVocab.length === 0) {
+                document.getElementById('card').innerHTML = '<h1 class="text-2xl font-bold">すべて覚えました！🎉</h1>';
+                document.getElementById('buttons').classList.add('hidden');
+                document.getElementById('progress').innerText = "-";
+                return;
+            }
+
+            const currentVocab = activeVocab[currentIndex];
+            document.getElementById('word').innerText = currentVocab.en;
+            document.getElementById('meaning').innerText = currentVocab.jp;
+            document.getElementById('phrase').innerText = currentVocab.phrase;
+            
+            document.getElementById('progress').innerText = `${currentIndex + 1} / ${activeVocab.length}`;
+            
+            // 裏面とボタンを隠す
+            document.getElementById('meaning').classList.add('hidden');
+            document.getElementById('phrase').classList.add('hidden');
+            document.getElementById('buttons').classList.add('hidden');
+            isFlipped = false;
+        }
+
+        function flipCard() {
+            if (isFlipped || activeVocab.length === 0) return;
+            document.getElementById('meaning').classList.remove('hidden');
+            document.getElementById('phrase').classList.remove('hidden');
+            document.getElementById('buttons').classList.remove('hidden');
+            isFlipped = true;
+        }
+
+        function recordAnswer(isCorrect) {
+            const currentVocab = activeVocab[currentIndex];
+            
+            if (isCorrect) {
+                // 正解したらlocalStorageに「覚えた」と記録
+                userProgress[currentVocab.id] = 'memorized';
+                localStorage.setItem('flashcard_progress', JSON.stringify(userProgress));
+                // リストから削除
+                activeVocab.splice(currentIndex, 1);
+            } else {
+                // 間違えたらリストの最後に回す
+                currentIndex++;
+            }
+
+            // インデックスが配列を超えたら最初に戻る
+            if (currentIndex >= activeVocab.length) currentIndex = 0;
+            
+            loadCard();
+        }
+
+        function resetData() {
+            localStorage.removeItem('flashcard_progress');
+            location.reload();
+        }
+
+        // 初期化
+        loadCard();
+    </script>
+</body>
+</html>
