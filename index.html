@@ -45,10 +45,20 @@
             complete: function(results) {
                 vocabData = results.data;
                 
-                // localStorageの記録を元に、まだ「覚えた」になっていない単語だけを抽出
-                activeVocab = vocabData.filter(v => userProgress[v.ID] !== 'memorized');
+                // モード選択
+                const isSecondRound = confirm("2周目（不正解だったカードのみ）を開始しますか？\n(キャンセルで全件学習)");
+
+                if (isSecondRound) {
+                    activeVocab = vocabData.filter(v => 
+                        userProgress[v.ID] && userProgress[v.ID].status === 'wrong'
+                    );
+                } else {
+                    activeVocab = vocabData.filter(v => 
+                        !userProgress[v.ID] || userProgress[v.ID].status !== 'memorized'
+                    );
+                }
                 
-                // ★フレーズが空欄のデータを除外するフィルターを追加（エラー防止）
+                // フレーズが空欄のデータを除外
                 activeVocab = activeVocab.filter(v => v['フレーズ(英語)'] && v['フレーズ(日本語)']);
 
                 loadCard(); // 最初のカードを表示
@@ -60,6 +70,33 @@
             }
         });
 
+        // ★★★ 強調処理用のヘルパー関数（ここを追加） ★★★
+        function getHighlighedText(rawPhrase, targetWord, colorClass = "decoration-blue-500") {
+            if (!rawPhrase || !targetWord) return rawPhrase;
+
+            // 特殊文字をエスケープ（Regexでのエラー防止）
+            const escapedWord = targetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+            // 英語の場合：単語境界(\b)を意識した正規表現
+            if (rawPhrase.match(/[a-zA-Z]/)) {
+                const regexEng = new RegExp(`\\b(${escapedWord})\\b`, 'gi');
+                // 下線を引く（Tailwindのunderlineクラスを使用）
+                if (rawPhrase.match(regexEng)) {
+                    return rawPhrase.replace(regexEng, `<span class="underline ${colorClass}">$1</span>`);
+                }
+            }
+            
+            // 日本語の場合：単純な置換を試みる
+            if (rawPhrase.includes(targetWord)) {
+                // 完全一致する場合のみ下線を引く
+                const regexJp = new RegExp(`(${escapedWord})`, 'g');
+                return rawPhrase.replace(regexJp, `<span class="underline ${colorClass}">$1</span>`);
+            }
+
+            // 一致しなかった場合は元のテキストをそのまま返す
+            return rawPhrase;
+        }
+
         function loadCard() {
             if (activeVocab.length === 0) {
                 document.getElementById('card').innerHTML = '<h1 class="text-2xl font-bold text-green-600">全問クリア！🎉</h1><p class="mt-4 text-gray-600">素晴らしいペースです！</p>';
@@ -70,26 +107,34 @@
 
             const currentVocab = activeVocab[currentIndex];
             
-            // ==========================================
-            // ★ここが修正ポイント：表示内容の入れ替え
-            // ==========================================
+            // Rawデータを取得
+            const rawEngPhrase = currentVocab['フレーズ(英語)'];
+            const targetEngWord = currentVocab['英単語'];
+            const rawJpPhrase = currentVocab['フレーズ(日本語)'];
+            const targetJpWord = currentVocab['日本語訳'];
+
+            // ==========================================================
+            // ★ここが修正ポイント：強調処理をして innerHTML に流し込む
+            // ==========================================================
             
-            // ① 表面 (Wordが表示されていた場所) に「英語フレーズ」を表示
-            document.getElementById('word').innerText = currentVocab['フレーズ(英語)'];
+            // ① 表面 (英語フレーズ) の強調処理
+            document.getElementById('word').innerHTML = getHighlighedText(rawEngPhrase, targetEngWord, "decoration-gray-800");
             
-            // ② 裏面 (Meaningが表示されていた場所) に「日本語フレーズ」を表示
-            document.getElementById('meaning').innerText = currentVocab['フレーズ(日本語)'];
+            // ② 裏面 (日本語フレーズ) の強調処理
+            //    ※品詞によってはCSVの「日本語訳」がフレーズと一致しない場合（活用など）があるため、
+            //    一致したときだけ下線を引くように関数内で制御しています。
+            document.getElementById('meaning').innerHTML = getHighlighedText(rawJpPhrase, targetJpWord, "decoration-blue-600");
             
-            // ③ (オプション) 補助情報として元の単語と訳も薄く表示しておく
+            // ③ 補助情報 (ここはそのまま)
             document.getElementById('sub-info').innerText = `${currentVocab['英単語']} (${currentVocab['品詞']}): ${currentVocab['日本語訳']}`;
             
-            // ==========================================
+            // ==========================================================
             
             document.getElementById('progress').innerText = `${currentIndex + 1} / ${activeVocab.length}`;
             
             // 裏面とボタン、補助情報を隠す
             document.getElementById('meaning').classList.add('hidden');
-            document.getElementById('sub-info').classList.add('hidden'); // ★追加
+            document.getElementById('sub-info').classList.add('hidden');
             document.getElementById('buttons').classList.add('hidden');
             isFlipped = false;
         }
@@ -97,26 +142,28 @@
         function flipCard() {
             if (isFlipped || activeVocab.length === 0) return;
             document.getElementById('meaning').classList.remove('hidden');
-            document.getElementById('sub-info').classList.remove('hidden'); // ★追加
+            document.getElementById('sub-info').classList.remove('hidden');
             document.getElementById('buttons').classList.remove('hidden');
             isFlipped = true;
         }
 
         function recordAnswer(isCorrect) {
             const currentVocab = activeVocab[currentIndex];
-            
+            const now = new Date().toISOString(); // 時刻を記録
+
+            // 学習履歴データの構造を強化
+            userProgress[currentVocab.ID] = {
+                status: isCorrect ? 'memorized' : 'wrong',
+                last_date: now
+            };
+            localStorage.setItem('flashcard_progress', JSON.stringify(userProgress));
+
             if (isCorrect) {
-                // 正解したらlocalStorageに記録
-                userProgress[currentVocab.ID] = 'memorized';
-                localStorage.setItem('flashcard_progress', JSON.stringify(userProgress));
-                // 出題リストから削除
                 activeVocab.splice(currentIndex, 1);
             } else {
-                // 間違えたらリストの最後に回す
                 currentIndex++;
             }
 
-            // インデックスが配列の最後を超えたら最初に戻る
             if (currentIndex >= activeVocab.length) currentIndex = 0;
             
             loadCard();
