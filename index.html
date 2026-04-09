@@ -13,9 +13,9 @@
         <h2 class="text-gray-500 text-sm mb-2" id="progress">- / -</h2>
         
         <div id="card" class="bg-blue-50 cursor-pointer p-10 rounded-lg min-h-[200px] flex flex-col items-center justify-center transition-all duration-300" onclick="flipCard()">
-            <h1 id="word" class="text-3xl font-bold text-gray-800">CSV読み込み中...</h1>
+            <h1 id="word" class="text-2xl font-bold text-gray-800">CSV読み込み中...</h1>
             <p id="meaning" class="text-xl text-blue-600 mt-4 hidden">意味</p>
-            <p id="phrase" class="text-sm text-gray-600 mt-4 hidden">フレーズ</p>
+            <p id="sub-info" class="text-xs text-gray-400 mt-6 hidden">補助情報</p>
         </div>
 
         <div id="buttons" class="mt-8 flex justify-between gap-4 hidden">
@@ -39,20 +39,23 @@
 
         // アプリ起動時に data.csv を読み込む処理
         Papa.parse("data.csv", {
-            download: true,      // 外部ファイルとしてダウンロードして読み込む
-            header: true,        // 1行目をキー（ID, 英単語, などの列名）として扱う
-            skipEmptyLines: true,// 空行を無視する（エラー防止）
+            download: true,
+            header: true,
+            skipEmptyLines: true,
             complete: function(results) {
                 vocabData = results.data;
                 
                 // localStorageの記録を元に、まだ「覚えた」になっていない単語だけを抽出
                 activeVocab = vocabData.filter(v => userProgress[v.ID] !== 'memorized');
                 
+                // ★フレーズが空欄のデータを除外するフィルターを追加（エラー防止）
+                activeVocab = activeVocab.filter(v => v['フレーズ(英語)'] && v['フレーズ(日本語)']);
+
                 loadCard(); // 最初のカードを表示
             },
             error: function(err) {
                 document.getElementById('word').innerText = "エラー";
-                document.getElementById('meaning').innerText = "data.csv の読み込みに失敗しました。GitHubにファイルがあるか確認してください。";
+                document.getElementById('meaning').innerText = "data.csv の読み込みに失敗しました。";
                 document.getElementById('meaning').classList.remove('hidden');
             }
         });
@@ -67,22 +70,26 @@
 
             const currentVocab = activeVocab[currentIndex];
             
-            // CSVのヘッダー名（列名）を指定してデータを流し込む
-            document.getElementById('word').innerText = currentVocab['英単語'];
-            document.getElementById('meaning').innerText = currentVocab['日本語訳'];
+            // ==========================================
+            // ★ここが修正ポイント：表示内容の入れ替え
+            // ==========================================
             
-            // フレーズがない単語もあるかもしれないので、存在チェックをして表示
-            if(currentVocab['フレーズ(英語)']) {
-                document.getElementById('phrase').innerText = currentVocab['フレーズ(英語)'];
-            } else {
-                document.getElementById('phrase').innerText = "";
-            }
+            // ① 表面 (Wordが表示されていた場所) に「英語フレーズ」を表示
+            document.getElementById('word').innerText = currentVocab['フレーズ(英語)'];
+            
+            // ② 裏面 (Meaningが表示されていた場所) に「日本語フレーズ」を表示
+            document.getElementById('meaning').innerText = currentVocab['フレーズ(日本語)'];
+            
+            // ③ (オプション) 補助情報として元の単語と訳も薄く表示しておく
+            document.getElementById('sub-info').innerText = `${currentVocab['英単語']} (${currentVocab['品詞']}): ${currentVocab['日本語訳']}`;
+            
+            // ==========================================
             
             document.getElementById('progress').innerText = `${currentIndex + 1} / ${activeVocab.length}`;
             
-            // 裏面とボタンを隠す
+            // 裏面とボタン、補助情報を隠す
             document.getElementById('meaning').classList.add('hidden');
-            document.getElementById('phrase').classList.add('hidden');
+            document.getElementById('sub-info').classList.add('hidden'); // ★追加
             document.getElementById('buttons').classList.add('hidden');
             isFlipped = false;
         }
@@ -90,7 +97,7 @@
         function flipCard() {
             if (isFlipped || activeVocab.length === 0) return;
             document.getElementById('meaning').classList.remove('hidden');
-            document.getElementById('phrase').classList.remove('hidden');
+            document.getElementById('sub-info').classList.remove('hidden'); // ★追加
             document.getElementById('buttons').classList.remove('hidden');
             isFlipped = true;
         }
