@@ -1,0 +1,401 @@
+ID,英単語,品詞,日本語訳,フレーズ(英語),フレーズ(日本語)
+001,anyway,副,とにかく,Let's try anyway.,とにかくやってみよう。
+002,ship,動,出荷する,We are ready to ship your order.,注文を出荷する準備ができました。
+003,attend,動,"参加する、出席する",attend a workshop,研修会に参加する
+004,successful,形,"成功した、うまくいく",The event was successful.,そのイベントは成功だった。
+005,employee,名,"社員、従業員",a new employee at Tex Corporation,テックス社の新入社員
+006,expand,動,拡大する,Our business is expanding.,当社の事業は拡大しています。
+007,copy,名,"(本、雑誌等の)冊・部、(CD等の)枚、コピー",one free copy of the book,無料の本一冊
+008,close,形,近い,The hotel is close to the airport.,そのホテルは空港に近い。
+009,weekly,形,週に一度の,a weekly magazine,週刊誌
+010,prefer,動,～を（…よりも）好む,I prefer to work part-time.,私はパートタイムで働く方が好きです。
+011,sign,動,署名する,Please sign in at the front desk.,受付で署名してください。
+012,break,名,休憩,Let's take a break.,休憩しましょう。
+013,document,名,書類,an important document,重要な書類
+014,quarter,名,四半期,the third quarter,第3四半期
+015,department,名,"部門、売り場",a department head,部門長
+016,accept,動,受け入れる,accept an offer,オファーを受け入れる
+017,allow,動,許す,allow employees to use company vehicles,従業員に社用車の使用を許す
+018,connect,動,"接続する、つなぐ",a connecting flight,乗り継ぎ便
+019,recently,副,最近,Tex recently bought a printer.,テックスは最近プリンターを買った。
+020,another,形,もう一つの,I'll be here for another two hours.,もうあと2時間ここにいます。
+021,likely,形,～しそうだ,It is likely that Tex will succeed.,テックスは成功しそうだ。
+022,rate,名,"割合、料金",at a rate of 20% a year,年20%の割合で
+023,local,形,地元の,local businesses,地元の会社
+024,retire,動,退職する,Tex retired after 20 years of service.,20年の勤務の後、テックスは退職した。
+025,workplace,名,職場,relationships in the workplace,職場での人間関係
+026,performance,名,"業績、仕事ぶり、性能、公演",an employee's performance,従業員の成績
+027,native,形,"出身の、その地で生まれた",a singer native to the town,その町出身の歌手
+028,modern,形,"現代的な、近代的な",design a modern building,近代的な建物を設計する
+029,satisfied,形,満足した,Tex is fully satisfied with the result.,テックスは結果に十分満足している。
+030,author,名,"著者、作者",the author of a popular book,人気本の著者
+031,experienced,形,経験豊富な,an experienced engineer,経験豊かなエンジニア
+032,branch,名,支店,open a new branch,新しい支店をオープンする
+033,develop,動,"(計画等を)作り出す、開発する、スキルを高める",develop a plan,計画を作り出す
+034,nearly,副,"ほとんど、もう少しで",nearly two years,2年近く
+035,create,動,"創造する、作り出す",create unique designs,独自のデザインを創造する
+036,bill,名,請求書,receive a bill,請求書を受け取る
+037,mail,名,"郵便物、郵便配達",by express mail,速達郵便で
+038,total,名,"合計、総計",The total comes to 100 dollars.,合計100ドルになります。
+039,introduce,動,"紹介する、導入する",Let me introduce Mr. Kato.,加藤さんを紹介します。
+040,charge,動,請求する,We charge $50 for the service.,そのサービスには50ドルを請求します。
+041,profit,名,利益,high profit,高い利益
+042,field,名,"分野、競技場",in the field of art,芸術の分野で
+043,affect,動,影響する,affect the price,値段に影響する
+044,figure,名,"数字、人物",sales figures,売上数字
+045,work,名,作品,of all the works in the museum,美術館の全作品の中で
+046,original,形,"元の、最初の",in original condition,元の状態で
+047,neighborhood,名,"近所、地域",There are no hotels in this neighborhood.,この近所にはホテルがない。
+048,environment,名,環境,work environment,職場環境
+049,consumer,名,消費者,consumer behavior,消費者行動
+050,exhibition,名,"展示会、展示物、展示",an art exhibition,美術展
+051,cafeteria,名,社員食堂,meet in the cafeteria for lunch,昼食のために社員食堂に集まる
+052,consider,動,"考える、検討する",consider working in Japan,日本での勤務を考える
+053,improvement,名,改善,signs of improvement,改善の兆し
+054,possibility,名,可能性,possibility of success,成功の可能性
+055,regard,動,"みなす、評価する",be widely regarded as,～と広くみなされる
+056,lack,名,不足,a lack of information,情報不足
+057,available,形,"入手できる、利用できる、購入できる、手が空いている",Tickets are available online.,チケットはオンラインで入手可能です。
+058,prevent,動,"防ぐ、阻む",Tex prevented us from entering the room.,テックスは私たちが部屋に入るのを妨げた。
+059,praise,動,ほめる,The team was praised by the CEO.,そのチームはCEOにほめられた。
+060,excellent,形,素晴らしい,an excellent service,素晴らしいサービス
+061,announce,動,発表する,announce the winners,入賞者を発表する
+062,round-trip,形,往復の,a round-trip ticket to Hawaii,ハワイへの往復のチケット
+063,opening,名,"空き、開店",a job opening,仕事の空き
+064,result,動,"生じる、終わる",The campaign resulted in success.,そのキャンペーンは成功という結果になった。
+065,report,動,"報告する、直属の部下になる",report to work before a shift begins,シフトが始まる前に出勤を報告する
+066,recover,動,"取り戻す、回復する",recover losses,損失を取り戻す
+067,study,名,"研究、調査",results of a study,研究調査の結果
+068,research,名,"研究、調査",market research,市場調査
+069,demand,名,需要,meet demand,需要を満たす
+070,hire,動,雇う,hire an assistant,アシスタントを雇う
+071,tour,動,"見学する、旅行する",while touring the factory,工場を見学している間
+072,fare,名,運賃,bus fare,バスの運賃
+073,necessary,形,必要な,necessary forms,必要な用紙
+074,approach,動,近付く,The deadline is approaching.,期限が近付いている。
+075,aware,形,気付いて,Tex was aware of the problem.,テックスは問題に気付いていた。
+076,increasingly,副,ますます,an increasingly important role,ますます重要な役割
+077,former,形,"前の、かつての",a former job,前の仕事
+078,cause,名,原因,the cause of the problem,問題の原因
+079,pleased,形,"喜んで、満足して",We are pleased with the final result.,最終結果に満足している。
+080,responsible,形,"担当している、責任がある",Tex is responsible for training employees.,テックスは従業員の研修を担当している。
+081,appointment,名,"約束、予約",an appointment with a doctor,医者の予約
+082,arrangement,名,"手配、調整",make travel arrangements,旅行の手配をする
+083,full-time,形,常勤の,full-time employees,常勤の社員
+084,absolutely,副,"完全に、間違いなく",absolutely free of charge,完全に無料で
+085,résumé,名,履歴書,send a résumé,履歴書を送る
+086,note,動,注意する,Please note that,～に注意してください
+087,client,名,"顧客、クライアント",visit a client,顧客を訪問する
+088,post,動,"掲示する、（インターネットに）掲載する、投稿する",post changes on the bulletin board,掲示板に変更を掲示する
+089,directly,副,直接に,shop directly from a Web site,ホームページから直接買い物をする
+090,blame,動,"～のせいにする、非難する",blame Tex for the failure,失敗をテックスのせいにする
+091,expect,動,"予期する、予定する",Tex is expected to arrive tomorrow.,テックスは明日到着する予定だ。
+092,broadcast,動,放送する,The program is usually broadcast on Saturdays.,その番組は通常土曜日に放送される。
+093,policy,名,"規程、方針",returns policy,返品規程
+094,offer,動,"申し出る、提供する",Tex offered to work the night shift.,テックスは夜のシフトで働くことを申し出た。
+095,forward,動,"転送する、送る",forward an e-mail,メールを転送する
+096,firmly,副,固く,we firmly believe that,我々は～だと固く信じている
+097,divide,動,分ける,The catalog is divided into three sections.,カタログは3つのセクションに分かれています。
+098,content,名,"内容、中身",the table of contents,内容一覧（目次）
+099,guided,形,ガイド付きの,a guided tour,ガイド付きのツアー
+100,degree,名,"学位、程度",a degree in journalism,ジャーナリズムの学位
+101,located,形,位置して,conveniently located near a subway station,地下鉄の駅近くの便利な場所にある
+102,welcome,名,歓迎,receive a warm welcome,温かい歓迎を受ける
+103,inform,動,知らせる,We are happy to inform you that,～を知らせることができて嬉しい
+104,double,動,2倍になる,Sales have doubled this year.,売上が今年2倍になった。
+105,crowded,形,混雑した,The town is crowded with tourists.,町は旅行客で混雑している。
+106,familiar,形,"よく知っている、おなじみの",be familiar with the industry,業界についてよく知っている
+107,earn,動,得る,earn the respect of people,人々の尊敬を得る
+108,operate,動,"操作する、運営する",operate a machine safely,機械を安全に操作する
+109,aisle,名,通路,I prefer an aisle seat.,通路側の席がいいです。
+110,mention,動,"述べる、言及する",as we mentioned before,以前申し上げた通り
+111,attract,動,"引き付ける、呼び込む",a way of attracting customers,お客様を引き付ける方法
+112,highly,副,非常に,a highly successful businessperson,非常に成功しているビジネスパーソン
+113,serious,形,"重大な、真剣な、重要な",a serious problem,重大な問題
+114,duty,名,"任務、職務、関税",main duties of a teacher,教師の主な任務
+115,district,名,地区,a commercial district,商業地区
+116,private,形,"少人数の、個人の",a private tour,少人数のツアー
+117,reasonable,形,"（値段が）手ごろな、妥当な",a reasonable price,手ごろな値段
+118,correct,形,"正確な、正しい",correct information,正しい情報
+119,function,名,機能,basic functions,基本機能
+120,match,動,"匹敵する、合う、マッチする",Few companies can match our quality service.,当社の質の高いサービスに匹敵する会社はほとんどない。
+121,fairly,副,かなり,fairly common,かなり普通の
+122,fuel,名,燃料,fuel costs,燃料のコスト
+123,book,動,予約する,book a room,部屋を予約する
+124,host,名,司会者,the host of a television show,テレビショーの司会者
+125,additional,形,追加の,hire additional staff,追加のスタッフを雇う
+126,budget,名,予算,this year's budget,今年の予算
+127,agency,名,"代理店、機関",a travel agency,旅行代理店
+128,crew,名,"グループ、班",a repair crew,修理係
+129,labor,名,"労働、労働者",labor costs,人件費
+130,overseas,形,海外の,overseas markets,海外市場
+131,prove,動,"わかる、判明する",prove to be difficult,難しいとわかる
+132,provide,動,提供する,provide Tex with information,テックスに情報を提供する
+133,checkout,名,"レジ、（ホテルの）チェックアウト",the checkout counter,レジカウンター
+134,standard,名,基準,safety standards,安全基準
+135,practical,形,"実務の、実際の",practical experience,実務の経験
+136,ability,名,能力,ability to speak three languages,3カ国語を話す能力
+137,cooperation,名,協力,Thank you for your cooperation.,ご協力ありがとうございます。
+138,surprisingly,副,驚いたことに,"Surprisingly, Tex passed the exam.",驚いたことにテックスは試験に合格した。
+139,handling,名,取り扱い,handling costs,手数料
+140,encourage,動,"奨励する、促す",Employees are encouraged to attend the event.,従業員がイベントに参加することを奨励します。
+141,production,名,"生産、作品",the production area,生産エリア
+142,deliver,動,"届ける、配送する、配達する",deliver a presentation,プレゼンを行う
+143,current,形,現在の,the current employees,現在の従業員
+144,interview,名,"面接、インタビュー",the second round of interviews,二次面接
+145,following,前,～に続いて,"Following the speech, we had dinner.",スピーチに続いて、夕食会があった。
+146,supply,名,必需品,office supplies,オフィス用品
+147,bulb,名,電球,order some light bulbs,いくつか電球を注文する
+148,worth,前,価値がある,The book is worth reading.,その本は読む価値がある。
+149,survey,名,アンケート調査,a customer survey,顧客アンケート調査
+150,nearby,形,すぐ近くの,stay at a nearby hotel,すぐ近くのホテルに泊まる
+151,suburb,名,郊外,Tex lives in the suburbs of Tokyo.,テックスは東京の郊外に住んでいる。
+152,preserve,動,"保護する、保存する",preserve the environment,環境を保護する
+153,separate,形,"分かれた、別々の",a separate dining room,個別のダイニングルーム
+154,contract,名,契約,before signing a contract,契約に署名する前に
+155,authority,名,"権限、権力、権威、当局",the person who has the most authority,最も権限を持った人
+156,wage,名,賃金,the wage level,賃金水準
+157,advance,名,"進歩、前進",make advances in technology,技術で進歩を遂げる
+158,throughout,前,"～の間中、～の至る所に",throughout the summer,夏の間中ずっと
+159,effective,形,効果的な,effective advertising campaigns,効果的な広告キャンペーン
+160,typical,形,"普段の、典型的な",on a typical Saturday night,普段の土曜日の夜
+161,rapidly,副,急速に,a rapidly growing company,急速に成長している会社
+162,background,名,"経歴、背景",professional background,職業上の経歴（職歴）
+163,slightly,副,"わずかに、少し",slightly increased from 24 to 27 percent,24%から27%にわずかに増えた
+164,expense,名,"費用、経費",travel expenses,出張経費
+165,found,動,"設立する、創立する",found a company,会社を設立する
+166,eager,形,"～したがる、熱望する",be eager to know,知りたがる
+167,display,名,展示,products on display,展示されている製品
+168,seek,動,探し求める,seek interns for the summer,夏期研修生を募集する
+169,leave,名,休暇,paid leave,有給休暇
+170,suspect,動,(よくないことを)～だろうと思う,I suspect that Tex is lying.,テックスは嘘をついているだろうと思う。
+171,previous,形,"前の、以前の",have no previous experience,以前の経験がない
+172,achieve,動,達成する,achieve a sales target,販売目標を達成する
+173,organization,名,"団体、会社、組織",a recently formed organization,最近結成された団体
+174,particularly,副,特に,particularly interested in history,歴史に特に興味がある
+175,essential,形,"最も重要な、必要不可欠な、本質的な",an essential part of the job,仕事の最も重要な部分
+176,exhibit,名,"展示物、展示会、展示",museum exhibits,博物館の展示物
+177,shuttle,名,定期往復便,free shuttle service,無料の送迎サービス
+178,application,名,"応募書類、応募",fill out an application,応募書類に記入する
+179,valuable,形,貴重な,a valuable addition to the team,チームの貴重な新戦力
+180,sharply,副,急激に,Sales rose sharply.,売上が急激に上がった。
+181,insurance,名,保険,health insurance,健康保険
+182,identify,動,特定する,identify problems,問題を特定する
+183,explore,動,"調査する、探索する",explore the possibility,可能性を探る
+184,suitable,形,"ふさわしい、適切な",suitable for outdoor use,アウトドア用に適した
+185,regulation,名,"規制、規則",under the regulations,規制の下で
+186,propose,動,提案する,propose a budget,予算を提案する
+187,reschedule,動,スケジュール変更する,reschedule an appointment,アポを予定変更する
+188,upcoming,形,今度の,prepare for the upcoming event,今度のイベントの準備をする
+189,wealth,名,"豊富さ、富",share a wealth of knowledge,豊富な知識をシェアする
+190,attach,動,添付する,I have attached my résumé.,履歴書を添付しました。
+191,immediately,副,"すぐに、即座に",immediately solve the problem,問題をただちに解決する
+192,lately,副,最近,I haven't seen Tex lately.,最近テックスを見ていない。
+193,confirm,動,確認する,confirm a booking,予約を確認する
+194,fit,動,"合う、入る",The room can fit 50 people.,その部屋には50人が入る。
+195,negotiate,動,交渉する,negotiate with a client,顧客と交渉する
+196,ideal,形,理想的な,an ideal location,理想的な立地
+197,distribute,動,配布する,distribute a document,書類を配布する
+198,rare,形,まれな,truly rare,本当にまれな
+199,formally,副,"正式に、フォーマルに",formally announce,正式に発表する
+200,require,動,"求める、要求する",Workers are required to wear uniforms.,作業員は制服の着用を求められます。
+201,comfort,名,快適さ,comfort and convenience,快適さと便利さ
+202,delay,動,遅らせる,All flights have been delayed.,すべての便が遅れています。
+203,description,名,"説明、記述、描写",a job description,職務内容の説明
+204,struggle,動,奮闘する,The company is struggling to survive.,その会社は生き残るために奮闘している。
+205,appoint,動,"指名する、任命する",Tex was appointed chairperson of the committee.,テックスは委員会の議長に指名された。
+206,mainly,副,主に,work mainly in the steel industry,主に鉄鋼業界で働く
+207,order,名,"順番、注文",in alphabetical order,アルファベット順
+208,refer,動,"参照する、言及する",Please refer to the map.,地図を参照してください。
+209,series,名,"連続、シリーズ",a series of lectures,一連の講義
+210,tenant,名,"賃借人、入居者",both managers and tenants,管理人も入居者も
+211,analyze,動,分析する,analyze customer feedback,お客様の意見を分析する
+212,bargain,名,お買い得品,I think it's a bargain.,それはお買い得品だと思います。
+213,including,前,～を含む,"ten locations, including Tokyo and Osaka",東京と大阪を含む10店舗
+214,review,動,"検討する、論評する",carefully review the manual,マニュアルに丁寧に目を通す
+215,equally,副,"同じように、均等に",equally important,同じくらい重要な
+216,supplier,名,"納入業者、供給業者",relationships with suppliers,納入業者との関係
+217,benefit,名,"特典、福利厚生",employee benefits,従業員の福利厚生
+218,response,名,"返答、返事",I'm writing in response to your letter.,お手紙へのご返事です。
+219,basis,名,"ベース、基準、根拠",pay on a monthly basis,月単位で支払う
+220,temporary,形,"一時的な、臨時の",temporary workers,臨時雇いの従業員
+221,update,名,最新情報,traffic updates,交通の最新情報
+222,ease,名,"容易さ、たやすさ",ease of use,使いやすさ
+223,finance,名,財務,a workshop on business finance,企業財務についての研修会
+224,memorable,形,"記憶に残るような、印象的な",an exciting and memorable trip,エキサイティングで記憶に残る旅行
+225,regret,動,残念に思う,We regret to inform you that,～をお知らせすることを残念に思います
+226,notice,名,"告知、お知らせ",advance notice,事前告知
+227,progress,名,"前進、進歩",The project is in progress.,プロジェクトが進行中だ。
+228,opportunity,名,"機会、チャンス",I had an opportunity to see Tex.,テックスに会う機会があった。
+229,purchase,名,購入,at the time of purchase,購入時
+230,decline,動,"断る、下降する",decline to respond,返事するのを断る
+231,sufficient,形,十分な,sufficient time,十分な時間
+232,determine,動,"決定する、決心する",determine how to sell the product,製品の売り方を決定する
+233,participate,動,参加する,participate in the seminar,セミナーに参加する
+234,gradually,副,"徐々に、段階的に",Mobile phones are gradually replacing computers.,携帯電話が徐々にコンピュータに取って代わっている。
+235,establish,動,"設立する、創立する",establish a business,会社を設立する
+236,instruction,名,"説明書、説明",Please read all the instructions.,説明書をすべてお読みください。
+237,detail,名,詳細,attention to detail,細部にわたる注意
+238,properly,副,"ちゃんと、適切に",properly trained staff,きちんと訓練されたスタッフ
+239,attempt,名,試み,Tex's attempt to become a singer,歌手になろうとするテックスの試み
+240,property,名,"物件、不動産",a property manager,物件の管理人
+241,border,名,"境、境界線",the border between California and Arizona,カリフォルニアとアリゾナの境
+242,influence,動,影響を与える,influence the decision,結論に影響を与える
+243,presence,名,"存在感、出席",a strong presence in the area,地域での強い存在感
+244,seldom,副,"めったに～しない、まれに",Tex was seldom seen in public.,テックスはめったに公に姿を見せなかった。
+245,aim,動,"目指す、狙う",aim to cut energy use,エネルギーの使用を減らすことを目指す
+246,somewhat,副,"いくぶん、ある程度",somewhat more expensive than I expected,私が予想していたよりいくぶん値段が高い
+247,alike,副,同様に,teachers and students alike,教師も生徒も同様に
+248,evidence,名,"証拠、証明",evidence of payment,支払いの証拠
+249,saving,名,"貯蓄、節約",the savings rate,貯蓄率
+250,represent,動,"代表を務める、相当する、表す",Tex represented the company at the event.,テックスはイベントで会社の代表を務めた。
+251,entire,形,全体の,the entire staff,全スタッフ
+252,architect,名,建築家,a popular architect,人気の建築家
+253,publish,動,出版する,publish a magazine,雑誌を出版する
+254,journal,名,専門誌,a scientific journal,科学の専門誌
+255,import,名,"輸入、輸入品",imports from China,中国からの輸入品
+256,based,形,拠点のある,a Seattle-based firm,シアトルに拠点を置く会社
+257,packaging,名,"梱包、パッケージ",the packaging area,梱包エリア
+258,range,名,範囲,a wide range of service,広範囲のサービス
+259,imply,動,"ほのめかす、暗示する",What is implied about the hotel?,ホテルについて何がほのめかされていますか。
+260,infer,動,"推察する、推論する",What can be inferred from the letter?,手紙から何が推察できますか。
+261,state,動,述べる,What is stated about the hotel?,ホテルについて何が述べられていますか。
+262,intended,形,"対象にされた、意図された",Who is the intended audience?,対象としている聞き手は誰ですか。
+263,commuter,名,通勤者,a commuter train,通勤者が乗る電車（通勤電車）
+264,warehouse,名,倉庫,an empty warehouse,空の倉庫
+265,manufacturer,名,"メーカー、製造業者",a car manufacturer,自動車メーカー
+266,delighted,形,とても喜んでいる,We are delighted to see you.,お会いできてとても嬉しいです。
+267,method,名,方法,the method of payment,支払い方法
+268,traditional,形,"伝統的な、従来の",certainly different from the traditional styles,伝統的なスタイルとは確かに異なる
+269,efficient,形,効率的な,efficient use of energy,エネルギーの効率的な使用
+270,avoid,動,避ける,avoid wasting time,時間の無駄づかいを避ける
+271,balance,名,"残金、残額",bank balance,銀行残高
+272,exchange,動,交換する,Can I exchange this for a larger size?,これをもっと大きなサイズと交換できますか。
+273,search,名,"捜索、検索",the search for the next president,次の社長探し
+274,specific,形,"具体的な、特定の",a specific example,具体的な例
+275,celebration,名,"お祝い、祝典",the grand opening celebration,グランドオープンのお祝い
+276,anniversary,名,"～周年、記念日",celebrate the twentieth anniversary,20周年を祝う
+277,rent,名,家賃,a rent increase,家賃の値上げ
+278,therefore,副,"したがって、それゆえ","Tex won; therefore, he is happy.",テックスは勝った。したがって、彼はハッピーだ。
+279,nevertheless,副,それにもかかわらず,"Tex is poor. Nevertheless, he is happy.",テックスは貧しい。それにもかかわらず、彼はハッピーだ。
+280,accompany,動,"添付する、同行する",The book is accompanied by a CD.,その本にはCDが付いてきます。
+281,complaint,名,"苦情、クレーム",complaints about the noise,騒音についての苦情
+282,maintain,動,維持する,maintain a Web site,ホームページを維持管理する
+283,concern,名,"心配、懸念、関心事",express concern,懸念を表す
+284,recognize,動,"認める、見分ける",Our products are recognized for their quality.,当社の製品は品質の高さで認められています。
+285,various,形,さまざまな,various designs and patterns,さまざまなデザインや柄
+286,assistance,名,"支援、援助",Thank you for your assistance.,ご支援ありがとうございます。
+287,transfer,動,"転勤させる、転勤する",Tex transferred to Mexico City.,テックスはメキシコ市に転勤した。
+288,process,動,処理する,process an order,注文を処理する
+289,approve,動,"承認する、賛成する",approve a plan,計画を承認する
+290,suggestion,名,提案,make suggestions,提案を行う
+291,committee,名,委員会,committee members,委員会のメンバー
+292,impact,名,影響,a negative impact,ネガティブな影響
+293,direct,動,"向ける、管理する",Please direct any questions to Tex.,質問はテックスの方にしてください。
+294,memorandum,名,社内文書,write a memorandum,社内文書を書く
+295,workforce,名,全従業員,50% of the workforce,全従業員の50%
+296,arrival,名,到着,the time of arrival,到着時刻
+297,reward,動,"報いる、ほうびをもらう",Tex was rewarded with a bonus.,テックスはボーナスで報いられた。
+298,store,動,保存する,store food in a refrigerator,冷蔵庫に食べ物を保存する
+299,casual,形,"時々の、偶然の、カジュアルな",a casual reader,時折本を読む人
+300,complex,形,複雑な,a complex system,複雑なシステム
+301,boast,動,"誇れるものがある、自慢する",The city boasts two famous museums.,市は2つの有名な美術館を誇る。
+302,loyal,形,忠実な,loyal customers,常連の顧客
+303,large-scale,形,"大規模な、スケールの大きな",a large-scale project,大規模なプロジェクト
+304,permanent,形,"常設の、常雇用の、永久の",the permanent collection,常設の展示物
+305,practice,名,"ならわし、慣行、開業",a common practice,当たり前の習慣
+306,flyer,名,チラシ,make a flyer,チラシを作る
+307,minutes,名,"議事録、分",read the minutes,議事録を読む
+308,apologize,動,おわびする,We apologize for the inconvenience.,ご不便をおかけしますことをおわびします。
+309,drawing,名,"抽選会、スケッチ",hold a drawing,抽選会を行う
+310,star,動,主演する,Tex Kato stars in the film.,テックス加藤はその映画で主演している。
+311,stress,動,強調する,stress the importance of reading,読書の重要性を強調する
+312,setting,名,環境,a hotel in a beautiful setting,美しい環境にあるホテル
+313,domestic,形,国内の,domestic market,国内の市場
+314,debut,名,デビュー,make a debut,デビューする
+315,device,名,"機器、装置",a medical device,医療機器
+316,income,名,収入,high income,高い収入
+317,facility,名,施設,a research facility,研究施設
+318,institution,名,"機関、団体",a research institution,研究機関
+319,closely,副,"密に、注意深く",work closely with Tex,テックスと密に仕事をする
+320,workload,名,仕事量,reduce the workload,仕事量を減らす
+321,occasion,名,"特別な行事、好機",a special occasion,特別な行事
+322,trend,名,"動向、トレンド",consumer trends,消費者の動向
+323,disappointing,形,"期待外れの、がっかりさせるような",disappointing sales,期待外れの売上
+324,fine,名,罰金,pay a $10 fine,10ドルの罰金を払う
+325,endangered,形,"絶滅寸前の、絶滅の危機にある",endangered animals,絶滅寸前の動物
+326,session,名,"時間、集まり",a Q&A session,質疑応答の時間
+327,capable,形,能力がある,Tex is capable of doing the job.,テックスにはその仕事をする能力がある。
+328,exceed,動,超える,exceed expectations,期待を超える
+329,conclude,動,"終わる、終える、結論を出す",The event will conclude with a concert.,イベントはコンサートで締めくくられる予定です。
+330,caution,名,"注意、警告",use caution,注意を払う
+331,automatically,副,自動的に,The machine will automatically shut down.,その機械は自動的に電源が切れます。
+332,shortly,副,"じきに、まもなく",The meeting will begin shortly.,会議はじきに始まります。
+333,guarantee,動,保証する,guarantee same day delivery,同日配送を保証する
+334,emphasis,名,"強調、重点",put stronger emphasis on,～により重点を置く
+335,remind,動,"再確認する、念押しする",remind employees about the policy,従業員に規則に関して再確認する
+336,recommendation,名,推薦,a letter of recommendation,推薦状
+337,willing,形,"～することを嫌がらない、～する気がある",Tex is willing to work overseas.,テックスは海外で働く意思がある。
+338,award,名,賞,awards ceremony,授賞式
+339,concentration,名,集中,a high concentration of restaurants,たくさんのレストランが集まる場所
+340,permission,名,許可,without permission,許可なしに
+341,firm,名,会社,a family-owned firm,家族経営の会社
+342,enable,動,可能にする,The scholarship enabled Tex to study abroad.,奨学金のおかげでテックスは海外で勉強できた。
+343,luggage,名,手荷物,checked luggage,預け入れ手荷物
+344,fasten,動,"結ぶ、留める",Please fasten your seatbelts.,シートベルトを締めてください。
+345,stapler,名,ホッチキス,Can I borrow your stapler?,ホッチキスをお借りできますか。
+346,submit,動,提出する,submit a report,レポートを提出する
+347,obtain,動,"取得する、得る",obtain an official license,公認の免許を取得する
+348,release,動,"発表する、(CD・映画等を)発売する、封切る",release the sales figures,売上数字を発表する
+349,readily,副,"簡単に、すぐに",readily available,簡単に手に入る
+350,frequent,形,頻繁な,frequent bus services,頻繁なバスの運行
+351,produce,名/動,"農産物、生産する",the produce section of a supermarket,スーパーの農産物売り場
+352,regularly,副,定期的に,a regularly updated list,定期的に更新されるリスト
+353,despite,前,にもかかわらず,despite the snow,雪にもかかわらず
+354,merchandise,名,商品,display merchandise,商品を陳列する
+355,guidelines,名,"指針、ガイドライン",the company guidelines,会社の指針
+356,annual,形,"年に一度の、毎年恒例の",an annual report,年次報告書
+357,leading,形,"首位の、一流の",a leading expert,一流の専門家
+358,proceed,動,進む,proceed to the boarding gate,搭乗口に進む
+359,postpone,動,延期する,postpone a meeting,会議を延期する
+360,indicate,動,示す,the data indicates that,データが～を示している
+361,individual,名/形,"個人、個人の、個別の",each individual in the company,会社の一人一人の個人
+362,initial,形,"初めの、当初の",the initial plan,当初の計画
+363,admission,名,"入場、入場料、入場許可",Admission is free for all members.,メンバーは入場無料です。
+364,colleague,名,同僚,talk with a colleague,同僚と話をする
+365,secure,形/動,"安全な、確保する、獲得する",secure access to the information,情報への安全なアクセス
+366,limited,形,限られた,for a limited time,限られた期間
+367,cancellation,名,"キャンセル、取り消し",flight delays and cancellations,フライトの遅れとキャンセル
+368,compete,動,競う,compete with large companies,大会社と競う
+369,concerning,前,～に関する,any questions concerning the order,注文に関する質問
+370,reject,動,"却下する、拒否する",reject a proposal,提案を却下する
+371,heavily,副,"大量に、非常に頻繁に",a heavily used bus route,非常に頻繁に使われるバスの路線
+372,potential,名/形,"可能性、潜在的な",have the potential,（潜在的な）可能性がある
+373,estimate,名/動,"見積もり、見積もる",an estimate for the project,プロジェクトの見積もり
+374,in-house,形/副,"社内の、社内で",an in-house designer,社内のデザイナー
+375,locate,動,見つける,Tex was unable to locate the book.,テックスはその本を見つけることができなかった。
+376,solution,名,"解決策、解決",find a solution,解決策を見つける
+377,capacity,名,"（生産）能力、収容能力",production capacity,生産能力
+378,barely,副,"かろうじて、やっと",Tex can barely understand English.,テックスはかろうじて英語が理解できる。
+379,departure,名,"出発、逸脱",the scheduled departure date,出発予定日
+380,brief,形,"（文章が）短い、短時間の",a brief report,短い報告書
+381,warranty,名,"保証、保証書",a three-year warranty,3年保証
+382,comparison,名,比較,a cost comparison,コストの比較
+383,contribute,動,"貢献する、寄付する",contribute to a team,チームに貢献する
+384,priority,名,"優先順位、優先事項",a high priority,高い優先順位
+385,consist,動,～から成る,The committee consists of five members.,委員会は5人のメンバーで構成されている。
+386,extension,名,"内線、延長",Call me at extension 4649.,内線4649にお電話ください。
+387,hospitality,名,もてなし,Thank you for your hospitality.,おもてなしに感謝します。
+388,mechanical,形,機械の,due to mechanical trouble,機械のトラブルが原因で
+389,contain,動,"含む、所有する",The book contains useful information.,その本には役立つ情報が含まれている。
+390,editor,名,編集者,an editor at a newspaper,新聞の編集者
+391,athletic,形,"運動好きの、運動選手用の",Tex is not athletic.,テックスは運動好きではない。
+392,mayor,名,"町長、市長",the mayor of Tex Town,テックス・タウンの町長
+393,impress,動,"感心させる、好印象を与える",We were impressed by his knowledge.,我々は彼の知識に感心した。
+394,occupation,名,職業,"name, address, and occupation","氏名と住所、職業"
+395,existing,形,"従来の、既存の",existing customers,従来の顧客
+396,fluent,形,"流ちょうな、堪能な",Applicants must be fluent in Mandarin.,応募者は中国語がペラペラでなければいけません。
+397,supervisor,名,"上司、責任者",permission from a supervisor,上司の許可
+398,focus,動/名,"（注意等を）集中させる、焦点、集中",focus on overseas markets,海外市場に集中する
+399,outstanding,形,"未払いの、傑出した",outstanding balance,未払いの残高
+400,conference,名,会議,a large conference room,大きな会議室
