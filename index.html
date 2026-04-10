@@ -14,13 +14,13 @@
         <p class="text-sm text-gray-500 mb-6">10 Days Strategic Learning</p>
 
         <div class="mb-6 text-left bg-blue-50 p-4 rounded-lg shadow-inner">
-            <div class="flex justify-between items-center mb-1">
-                <span class="text-xs text-gray-500 font-bold">覚えた！:</span>
-                <span id="stat-memo" class="font-bold text-green-600">-</span>
+            <div class="flex justify-between items-end mb-2">
+                <span class="text-sm text-gray-500 font-bold mb-0.5">覚えた！:</span>
+                <span id="stat-memo" class="font-bold text-green-600 text-2xl leading-none">-</span>
             </div>
-            <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-500 font-bold">要復習:</span>
-                <span id="stat-wrong" class="font-bold text-red-500">-</span>
+            <div class="flex justify-between items-end">
+                <span class="text-sm text-gray-500 font-bold mb-0.5">要復習:</span>
+                <span id="stat-wrong" class="font-bold text-red-500 text-2xl leading-none">-</span>
             </div>
         </div>
 
@@ -98,7 +98,7 @@
         let activeVocab = [];
         let currentIndex = 0;
         let isFlipped = false;
-        let currentFormat = ""; // 出題形式
+        let currentFormat = "";
 
         let userProgress = JSON.parse(localStorage.getItem('flashcard_progress')) || {};
 
@@ -115,12 +115,16 @@
         function updateStartScreen() {
             let memoCount = 0;
             let wrongCount = 0;
+            const total = vocabData.length;
+
             vocabData.forEach(v => {
                 if (userProgress[v.ID]?.status === 'memorized') memoCount++;
                 else if (userProgress[v.ID]?.status === 'wrong') wrongCount++;
             });
-            document.getElementById('stat-memo').innerText = memoCount;
-            document.getElementById('stat-wrong').innerText = wrongCount;
+            
+            // ★ 分母を追加し、文字サイズと色を調整するHTMLを生成
+            document.getElementById('stat-memo').innerHTML = `${memoCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
+            document.getElementById('stat-wrong').innerHTML = `${wrongCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
             
             const btnWrong = document.getElementById('btn-wrong');
             btnWrong.disabled = (wrongCount === 0);
@@ -128,7 +132,6 @@
         }
 
         function startStudy(mode) {
-            // ★選択された形式を取得
             currentFormat = document.querySelector('input[name="format"]:checked').value;
 
             if (mode === 'wrong') {
@@ -158,21 +161,20 @@
             const backEl = document.getElementById('text-back');
             const subEl = document.getElementById('sub-info');
 
-            // モードに応じた出し分け
             switch(currentFormat) {
-                case 'EPh-JPh': // 英フレーズ -> 日フレーズ
+                case 'EPh-JPh':
                     frontEl.innerHTML = highlight(v['フレーズ(英語)'], v['英単語']);
                     backEl.innerHTML = highlight(v['フレーズ(日本語)'], v['日本語訳']);
                     break;
-                case 'JPh-EPh': // 日フレーズ -> 英フレーズ
+                case 'JPh-EPh':
                     frontEl.innerHTML = highlight(v['フレーズ(日本語)'], v['日本語訳']);
                     backEl.innerHTML = highlight(v['フレーズ(英語)'], v['英単語']);
                     break;
-                case 'EWd-JWd': // 英単語 -> 日単語
+                case 'EWd-JWd':
                     frontEl.innerText = v['英単語'];
                     backEl.innerText = v['日本語訳'];
                     break;
-                case 'JWd-EWd': // 日単語 -> 英単語
+                case 'JWd-EWd':
                     frontEl.innerText = v['日本語訳'];
                     backEl.innerText = v['英単語'];
                     break;
