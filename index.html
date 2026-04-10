@@ -9,64 +9,91 @@
 </head>
 <body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden">
 
-    <div id="start-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center max-h-[95vh] overflow-y-auto">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2">TOEIC 900 Master</h1>
-        <p class="text-sm text-gray-500 mb-6">10 Days Strategic Learning</p>
+    <div id="start-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center max-h-[95vh] overflow-y-auto relative">
+        
+        <button onclick="showOptions()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+        </button>
 
-        <div class="mb-6 text-left bg-blue-50 p-4 rounded-lg shadow-inner">
-            <div class="flex justify-between items-end mb-2">
-                <span class="text-sm text-gray-500 font-bold mb-0.5">覚えた！:</span>
-                <span id="stat-memo" class="font-bold text-green-600 text-2xl leading-none">-</span>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2 mt-2">TOEIC 900 Master</h1>
+        <p class="text-sm text-gray-500 mb-8">10 Days Strategic Learning</p>
+
+        <div class="mb-8 text-left bg-blue-50 p-5 rounded-lg shadow-inner">
+            <div class="flex justify-between items-end mb-3 border-b border-blue-100 pb-2">
+                <span class="text-sm text-gray-600 font-bold mb-0.5">覚えた！:</span>
+                <span id="stat-memo" class="font-bold text-green-600 text-3xl leading-none">-</span>
             </div>
             <div class="flex justify-between items-end">
-                <span class="text-sm text-gray-500 font-bold mb-0.5">要復習:</span>
-                <span id="stat-wrong" class="font-bold text-red-500 text-2xl leading-none">-</span>
+                <span class="text-sm text-gray-600 font-bold mb-0.5">要復習:</span>
+                <span id="stat-wrong" class="font-bold text-red-500 text-3xl leading-none">-</span>
             </div>
         </div>
 
-        <div class="mb-8 text-left">
-            <h3 class="text-sm font-bold text-gray-700 mb-3 border-l-4 border-blue-500 pl-2">出題形式を選択</h3>
-            <div class="grid grid-cols-1 gap-2">
-                <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
-                    <input type="radio" name="format" value="EPh-JPh" checked class="w-4 h-4 text-blue-600">
-                    <span class="ml-3 text-sm font-medium text-gray-700">英語フレーズ → 日本語フレーズ</span>
-                </label>
-                <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
-                    <input type="radio" name="format" value="JPh-EPh" class="w-4 h-4 text-blue-600">
-                    <span class="ml-3 text-sm font-medium text-gray-700">日本語フレーズ → 英語フレーズ</span>
-                </label>
-                <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
-                    <input type="radio" name="format" value="EWd-JWd" class="w-4 h-4 text-blue-600">
-                    <span class="ml-3 text-sm font-medium text-gray-700">英単語 → 日本語訳</span>
-                </label>
-                <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
-                    <input type="radio" name="format" value="JWd-EWd" class="w-4 h-4 text-blue-600">
-                    <span class="ml-3 text-sm font-medium text-gray-700">日本語訳 → 英単語</span>
-                </label>
-            </div>
-        </div>
-
-        <div class="space-y-3">
-            <button onclick="startStudy('all')" class="w-full bg-blue-600 text-white py-4 rounded-lg font-bold shadow-md active:bg-blue-700 transition-colors">
+        <div class="space-y-4">
+            <button onclick="startStudy('all')" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-md active:bg-blue-700 transition-colors text-lg">
                 学習を開始
             </button>
-            <button onclick="startStudy('wrong')" id="btn-wrong" class="w-full bg-red-500 text-white py-4 rounded-lg font-bold shadow-md active:bg-red-600 transition-colors">
+            <button onclick="startStudy('wrong')" id="btn-wrong" class="w-full bg-red-500 text-white py-4 rounded-xl font-bold shadow-md active:bg-red-600 transition-colors text-lg">
                 要復習のみ開始
             </button>
-            <button onclick="showHistory()" class="w-full bg-gray-100 text-gray-600 py-3 rounded-lg font-bold active:bg-gray-200 transition-colors">
+            <button onclick="showHistory()" class="w-full bg-gray-100 text-gray-600 py-3 rounded-xl font-bold active:bg-gray-200 transition-colors mt-2">
                 履歴を確認
             </button>
         </div>
+    </div>
 
-        <div class="mt-8">
-            <button onclick="resetData()" class="text-xs text-gray-400 underline">データをリセット</button>
+    <div id="options-screen" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md hidden flex flex-col h-[85vh]">
+        <h2 class="text-xl font-bold text-gray-800 mb-6 border-b pb-3 text-center flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            オプション設定
+        </h2>
+        
+        <div class="flex-1 overflow-y-auto pr-2">
+            <div class="mb-8">
+                <h3 class="text-sm font-bold text-gray-700 mb-3 pl-2 border-l-4 border-blue-500">出題形式</h3>
+                <div class="grid grid-cols-1 gap-2">
+                    <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
+                        <input type="radio" name="format" value="EPh-JPh" class="w-4 h-4 text-blue-600">
+                        <span class="ml-3 text-sm font-medium text-gray-700">英語フレーズ → 日本語フレーズ</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
+                        <input type="radio" name="format" value="JPh-EPh" class="w-4 h-4 text-blue-600">
+                        <span class="ml-3 text-sm font-medium text-gray-700">日本語フレーズ → 英語フレーズ</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
+                        <input type="radio" name="format" value="EWd-JWd" class="w-4 h-4 text-blue-600">
+                        <span class="ml-3 text-sm font-medium text-gray-700">英単語 → 日本語訳</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
+                        <input type="radio" name="format" value="JWd-EWd" class="w-4 h-4 text-blue-600">
+                        <span class="ml-3 text-sm font-medium text-gray-700">日本語訳 → 英単語</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-4 pt-4 border-t border-gray-200 text-center">
+                <button onclick="resetData()" class="text-sm text-red-400 font-bold hover:text-red-600 transition-colors">すべての学習記録を消去する</button>
+                <p class="text-[10px] text-gray-400 mt-1">※この操作は元に戻せません</p>
+            </div>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-gray-200">
+            <button onclick="saveOptionsAndClose()" class="w-full bg-gray-800 text-white py-3 rounded-lg font-bold shadow-md active:bg-gray-900 transition-colors">
+                保存して戻る
+            </button>
         </div>
     </div>
 
-    <div id="flashcard-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center hidden">
+    <div id="flashcard-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center hidden flex flex-col h-[85vh]">
         <h2 class="text-gray-500 text-xs mb-4" id="progress">- / -</h2>
         
-        <div id="card" class="bg-blue-50 cursor-pointer p-8 rounded-lg min-h-[250px] flex flex-col items-center justify-center transition-all duration-300" onclick="flipCard()">
+        <div id="card" class="bg-blue-50 cursor-pointer p-8 rounded-lg flex-1 flex flex-col items-center justify-center transition-all duration-300" onclick="flipCard()">
             <div id="card-front" class="w-full">
                 <p id="label-front" class="text-[10px] uppercase tracking-widest text-blue-400 mb-2 font-bold">FRONT</p>
                 <h1 id="text-front" class="text-2xl font-bold text-gray-800 break-words leading-relaxed">読み込み中...</h1>
@@ -79,18 +106,18 @@
             </div>
         </div>
 
-        <div id="buttons" class="mt-8 flex justify-between gap-4 hidden">
-            <button onclick="recordAnswer(false)" class="bg-red-500 text-white flex-1 py-4 rounded-xl font-bold shadow-lg">✕</button>
-            <button onclick="recordAnswer(true)" class="bg-green-500 text-white flex-1 py-4 rounded-xl font-bold shadow-lg">✓</button>
+        <div id="buttons" class="mt-6 flex justify-between gap-4 hidden">
+            <button onclick="recordAnswer(false)" class="bg-red-500 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg">✕</button>
+            <button onclick="recordAnswer(true)" class="bg-green-500 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg">✓</button>
         </div>
         
-        <button onclick="backToStart()" class="mt-8 text-sm text-gray-400 underline">← 終了する</button>
+        <button onclick="backToStart()" class="mt-6 text-sm text-gray-400 underline font-bold">← 中断して戻る</button>
     </div>
 
     <div id="history-screen" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md hidden flex flex-col h-[85vh]">
         <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2 text-center">学習履歴</h2>
         <div id="history-list" class="overflow-y-auto flex-1 space-y-3 pr-2"></div>
-        <button onclick="backToStartFromHistory()" class="mt-6 text-sm text-gray-500 underline font-bold">← 戻る</button>
+        <button onclick="backToStartFromHistory()" class="mt-6 text-sm text-gray-500 underline font-bold text-center">← 戻る</button>
     </div>
 
     <script>
@@ -98,8 +125,9 @@
         let activeVocab = [];
         let currentIndex = 0;
         let isFlipped = false;
-        let currentFormat = "";
-
+        
+        // ★ オプションの読み込み（デフォルトは英語フレーズ）
+        let currentFormat = localStorage.getItem('flashcard_format') || "EPh-JPh";
         let userProgress = JSON.parse(localStorage.getItem('flashcard_progress')) || {};
 
         Papa.parse("data.csv", {
@@ -109,6 +137,7 @@
             complete: function(results) {
                 vocabData = results.data.filter(v => v['ID'] && v['英単語']);
                 updateStartScreen();
+                setRadioChecked(); // ラジオボタンの初期状態をセット
             }
         });
 
@@ -122,7 +151,6 @@
                 else if (userProgress[v.ID]?.status === 'wrong') wrongCount++;
             });
             
-            // ★ 分母を追加し、文字サイズと色を調整するHTMLを生成
             document.getElementById('stat-memo').innerHTML = `${memoCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
             document.getElementById('stat-wrong').innerHTML = `${wrongCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
             
@@ -131,9 +159,34 @@
             btnWrong.style.opacity = (wrongCount === 0) ? "0.5" : "1";
         }
 
-        function startStudy(mode) {
-            currentFormat = document.querySelector('input[name="format"]:checked').value;
+        // ==========================================
+        // オプション画面の制御
+        // ==========================================
+        function setRadioChecked() {
+            const radios = document.getElementsByName('format');
+            for(let i = 0; i < radios.length; i++) {
+                if(radios[i].value === currentFormat) {
+                    radios[i].checked = true;
+                }
+            }
+        }
 
+        function showOptions() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('options-screen').classList.remove('hidden');
+        }
+
+        function saveOptionsAndClose() {
+            // 選択された形式を取得して保存
+            currentFormat = document.querySelector('input[name="format"]:checked').value;
+            localStorage.setItem('flashcard_format', currentFormat);
+            
+            document.getElementById('options-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+        // ==========================================
+
+        function startStudy(mode) {
             if (mode === 'wrong') {
                 activeVocab = vocabData.filter(v => userProgress[v.ID]?.status === 'wrong');
             } else {
@@ -151,7 +204,7 @@
 
         function loadCard() {
             if (activeVocab.length === 0) {
-                document.getElementById('card').innerHTML = '<h1 class="text-xl font-bold">Session Clear!</h1>';
+                document.getElementById('card').innerHTML = '<h1 class="text-2xl font-bold text-green-600 mb-2">Session Clear!🎉</h1><p class="text-gray-600 text-sm">お疲れ様でした。</p>';
                 document.getElementById('buttons').classList.add('hidden');
                 return;
             }
@@ -226,6 +279,10 @@
             list.innerHTML = '';
             const history = vocabData.filter(v => userProgress[v.ID]).sort((a,b) => new Date(userProgress[b.ID].last_date) - new Date(userProgress[a.ID].last_date));
             
+            if(history.length === 0) {
+                list.innerHTML = '<p class="text-center text-gray-400 mt-10">履歴がありません</p>';
+            }
+            
             history.forEach(v => {
                 const isWrong = userProgress[v.ID].status === 'wrong';
                 list.innerHTML += `
@@ -248,7 +305,10 @@
         }
 
         function resetData() {
-            if(confirm("全記録を消去しますか？")) { localStorage.removeItem('flashcard_progress'); location.reload(); }
+            if(confirm("全記録を消去しますか？")) { 
+                localStorage.removeItem('flashcard_progress'); 
+                location.reload(); 
+            }
         }
     </script>
 </body>
