@@ -9,11 +9,45 @@
 </head>
 <body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
 
-    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
+    <div id="start-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">TOEIC 900 Flashcard</h1>
+        <p class="text-sm text-gray-500 mb-8">10 Days Challenge</p>
+
+        <div class="mb-8 text-left bg-blue-50 p-5 rounded-lg shadow-inner">
+            <h3 class="text-sm font-bold text-gray-700 mb-3 border-b pb-2">現在の学習進捗</h3>
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-gray-600">全登録フレーズ:</span>
+                <span id="stat-total" class="font-bold text-gray-800 text-lg">-</span>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-green-600 font-bold">覚えた！:</span>
+                <span id="stat-memo" class="font-bold text-green-600 text-lg">-</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-red-500 font-bold">要復習（不正解）:</span>
+                <span id="stat-wrong" class="font-bold text-red-500 text-lg">-</span>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <button onclick="startStudy('all')" class="w-full bg-blue-600 text-white py-4 rounded-lg font-bold shadow-md active:bg-blue-700 transition-colors">
+                全件学習を開始<br><span class="text-xs font-normal opacity-80">（まだ覚えていないカード全て）</span>
+            </button>
+            <button onclick="startStudy('wrong')" id="btn-wrong" class="w-full bg-red-500 text-white py-4 rounded-lg font-bold shadow-md active:bg-red-600 transition-colors">
+                要復習のみ開始<br><span class="text-xs font-normal opacity-80">（前回間違えたカードのみ）</span>
+            </button>
+        </div>
+
+        <div class="mt-8">
+            <button onclick="resetData()" class="text-sm text-gray-400 underline">学習記録をすべてリセット</button>
+        </div>
+    </div>
+
+    <div id="flashcard-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center hidden">
         <h2 class="text-gray-500 text-sm mb-2" id="progress">- / -</h2>
         
         <div id="card" class="bg-blue-50 cursor-pointer p-10 rounded-lg min-h-[200px] flex flex-col items-center justify-center transition-all duration-300" onclick="flipCard()">
-            <h1 id="word" class="text-2xl font-bold text-gray-800">CSV読み込み中...</h1>
+            <h1 id="word" class="text-2xl font-bold text-gray-800">準備中...</h1>
             <p id="meaning" class="text-xl text-blue-600 mt-4 hidden">意味</p>
             <p id="sub-info" class="text-xs text-gray-400 mt-6 hidden">補助情報</p>
         </div>
@@ -24,7 +58,7 @@
         </div>
         
         <div class="mt-4">
-            <button onclick="resetData()" class="text-sm text-gray-400 underline">学習データをリセット</button>
+            <button onclick="backToStart()" class="text-sm text-gray-400 underline">← スタート画面に戻る</button>
         </div>
     </div>
 
@@ -34,72 +68,108 @@
         let currentIndex = 0;
         let isFlipped = false;
 
-        // localStorageから学習履歴を読み込む
         let userProgress = JSON.parse(localStorage.getItem('flashcard_progress')) || {};
 
-        // アプリ起動時に data.csv を読み込む処理
+        // アプリ起動時
         Papa.parse("data.csv", {
             download: true,
             header: true,
             skipEmptyLines: true,
             complete: function(results) {
-                vocabData = results.data;
-                
-                // モード選択
-                const isSecondRound = confirm("2周目（不正解だったカードのみ）を開始しますか？\n(キャンセルで全件学習)");
-
-                if (isSecondRound) {
-                    activeVocab = vocabData.filter(v => 
-                        userProgress[v.ID] && userProgress[v.ID].status === 'wrong'
-                    );
-                } else {
-                    activeVocab = vocabData.filter(v => 
-                        !userProgress[v.ID] || userProgress[v.ID].status !== 'memorized'
-                    );
-                }
-                
-                // フレーズが空欄のデータを除外
-                activeVocab = activeVocab.filter(v => v['フレーズ(英語)'] && v['フレーズ(日本語)']);
-
-                loadCard(); // 最初のカードを表示
+                // 不完全な行を弾いて全体データを保持
+                vocabData = results.data.filter(v => v['フレーズ(英語)'] && v['フレーズ(日本語)']);
+                // 完了したらスタート画面を更新して表示
+                updateStartScreen();
             },
             error: function(err) {
-                document.getElementById('word').innerText = "エラー";
-                document.getElementById('meaning').innerText = "data.csv の読み込みに失敗しました。";
-                document.getElementById('meaning').classList.remove('hidden');
+                alert("data.csv の読み込みに失敗しました。");
             }
         });
 
-        // ★★★ 強調処理用のヘルパー関数（ここを追加） ★★★
+        // ダッシュボードの数値を計算して表示する関数
+        function updateStartScreen() {
+            let memoCount = 0;
+            let wrongCount = 0;
+
+            vocabData.forEach(v => {
+                if (userProgress[v.ID] && userProgress[v.ID].status === 'memorized') {
+                    memoCount++;
+                } else if (userProgress[v.ID] && userProgress[v.ID].status === 'wrong') {
+                    wrongCount++;
+                }
+            });
+
+            document.getElementById('stat-total').innerText = vocabData.length;
+            document.getElementById('stat-memo').innerText = memoCount;
+            document.getElementById('stat-wrong').innerText = wrongCount;
+
+            // 要復習が0件の時はボタンを薄くして押せないようにする親切設計
+            const wrongBtn = document.getElementById('btn-wrong');
+            if (wrongCount === 0) {
+                wrongBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                wrongBtn.disabled = true;
+            } else {
+                wrongBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                wrongBtn.disabled = false;
+            }
+        }
+
+        // スタートボタンが押された時の処理
+        function startStudy(mode) {
+            if (mode === 'wrong') {
+                // 間違えたものだけ抽出
+                activeVocab = vocabData.filter(v => userProgress[v.ID] && userProgress[v.ID].status === 'wrong');
+            } else {
+                // 覚えていないもの全て（新規＋間違えたもの）
+                activeVocab = vocabData.filter(v => !userProgress[v.ID] || userProgress[v.ID].status !== 'memorized');
+            }
+
+            if (activeVocab.length === 0) {
+                alert("学習するカードがありません！");
+                return;
+            }
+
+            // カードをシャッフルする（順番で覚えてしまうのを防ぐため）
+            activeVocab.sort(() => Math.random() - 0.5);
+
+            currentIndex = 0;
+            
+            // 画面の切り替え
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('flashcard-screen').classList.remove('hidden');
+            
+            loadCard();
+        }
+
+        // タイトルに戻る処理
+        function backToStart() {
+            updateStartScreen(); // 最新の進捗を再計算
+            document.getElementById('flashcard-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        // 強調処理用の関数（前回作成したものそのまま）
         function getHighlighedText(rawPhrase, targetWord, colorClass = "decoration-blue-500") {
             if (!rawPhrase || !targetWord) return rawPhrase;
-
-            // 特殊文字をエスケープ（Regexでのエラー防止）
             const escapedWord = targetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-            // 英語の場合：単語境界(\b)を意識した正規表現
             if (rawPhrase.match(/[a-zA-Z]/)) {
                 const regexEng = new RegExp(`\\b(${escapedWord})\\b`, 'gi');
-                // 下線を引く（Tailwindのunderlineクラスを使用）
                 if (rawPhrase.match(regexEng)) {
                     return rawPhrase.replace(regexEng, `<span class="underline ${colorClass}">$1</span>`);
                 }
             }
-            
-            // 日本語の場合：単純な置換を試みる
             if (rawPhrase.includes(targetWord)) {
-                // 完全一致する場合のみ下線を引く
                 const regexJp = new RegExp(`(${escapedWord})`, 'g');
                 return rawPhrase.replace(regexJp, `<span class="underline ${colorClass}">$1</span>`);
             }
-
-            // 一致しなかった場合は元のテキストをそのまま返す
             return rawPhrase;
         }
 
+        // カード読み込み・裏返し・記録の処理（変更なし）
         function loadCard() {
             if (activeVocab.length === 0) {
-                document.getElementById('card').innerHTML = '<h1 class="text-2xl font-bold text-green-600">全問クリア！🎉</h1><p class="mt-4 text-gray-600">素晴らしいペースです！</p>';
+                document.getElementById('card').innerHTML = '<h1 class="text-2xl font-bold text-green-600">全問クリア！🎉</h1><p class="mt-4 text-gray-600">お疲れ様でした！</p>';
                 document.getElementById('buttons').classList.add('hidden');
                 document.getElementById('progress').innerText = "完了";
                 return;
@@ -107,32 +177,12 @@
 
             const currentVocab = activeVocab[currentIndex];
             
-            // Rawデータを取得
-            const rawEngPhrase = currentVocab['フレーズ(英語)'];
-            const targetEngWord = currentVocab['英単語'];
-            const rawJpPhrase = currentVocab['フレーズ(日本語)'];
-            const targetJpWord = currentVocab['日本語訳'];
-
-            // ==========================================================
-            // ★ここが修正ポイント：強調処理をして innerHTML に流し込む
-            // ==========================================================
-            
-            // ① 表面 (英語フレーズ) の強調処理
-            document.getElementById('word').innerHTML = getHighlighedText(rawEngPhrase, targetEngWord, "decoration-gray-800");
-            
-            // ② 裏面 (日本語フレーズ) の強調処理
-            //    ※品詞によってはCSVの「日本語訳」がフレーズと一致しない場合（活用など）があるため、
-            //    一致したときだけ下線を引くように関数内で制御しています。
-            document.getElementById('meaning').innerHTML = getHighlighedText(rawJpPhrase, targetJpWord, "decoration-blue-600");
-            
-            // ③ 補助情報 (ここはそのまま)
+            document.getElementById('word').innerHTML = getHighlighedText(currentVocab['フレーズ(英語)'], currentVocab['英単語'], "decoration-gray-800");
+            document.getElementById('meaning').innerHTML = getHighlighedText(currentVocab['フレーズ(日本語)'], currentVocab['日本語訳'], "decoration-blue-600");
             document.getElementById('sub-info').innerText = `${currentVocab['英単語']} (${currentVocab['品詞']}): ${currentVocab['日本語訳']}`;
-            
-            // ==========================================================
             
             document.getElementById('progress').innerText = `${currentIndex + 1} / ${activeVocab.length}`;
             
-            // 裏面とボタン、補助情報を隠す
             document.getElementById('meaning').classList.add('hidden');
             document.getElementById('sub-info').classList.add('hidden');
             document.getElementById('buttons').classList.add('hidden');
@@ -149,9 +199,8 @@
 
         function recordAnswer(isCorrect) {
             const currentVocab = activeVocab[currentIndex];
-            const now = new Date().toISOString(); // 時刻を記録
+            const now = new Date().toISOString();
 
-            // 学習履歴データの構造を強化
             userProgress[currentVocab.ID] = {
                 status: isCorrect ? 'memorized' : 'wrong',
                 last_date: now
@@ -165,7 +214,6 @@
             }
 
             if (currentIndex >= activeVocab.length) currentIndex = 0;
-            
             loadCard();
         }
 
