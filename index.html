@@ -10,7 +10,6 @@
 <body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden">
 
     <div id="start-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center max-h-[95vh] overflow-y-auto relative">
-        
         <button onclick="showOptions()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -19,9 +18,10 @@
         </button>
 
         <h1 class="text-3xl font-bold text-gray-800 mb-2 mt-2">TOEIC 900 Master</h1>
-        <p class="text-sm text-gray-500 mb-8">10 Days Strategic Learning</p>
+        <p class="text-sm text-gray-500 mb-6">10 Days Strategic Learning</p>
 
         <div class="mb-8 text-left bg-blue-50 p-5 rounded-lg shadow-inner">
+            <h3 class="text-xs font-bold text-blue-500 mb-2 uppercase tracking-wider" id="dash-mode-title">モード</h3>
             <div class="flex justify-between items-end mb-3 border-b border-blue-100 pb-2">
                 <span class="text-sm text-gray-600 font-bold mb-0.5">覚えた！:</span>
                 <span id="stat-memo" class="font-bold text-green-600 text-3xl leading-none">-</span>
@@ -39,20 +39,14 @@
             <button onclick="startStudy('wrong')" id="btn-wrong" class="w-full bg-red-500 text-white py-4 rounded-xl font-bold shadow-md active:bg-red-600 transition-colors text-lg">
                 要復習のみ開始
             </button>
-            <button onclick="showHistory()" class="w-full bg-gray-100 text-gray-600 py-3 rounded-xl font-bold active:bg-gray-200 transition-colors mt-2">
+            <button onclick="openHistory()" class="w-full bg-gray-100 text-gray-600 py-3 rounded-xl font-bold active:bg-gray-200 transition-colors mt-2">
                 履歴を確認
             </button>
         </div>
     </div>
 
     <div id="options-screen" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md hidden flex flex-col h-[85vh]">
-        <h2 class="text-xl font-bold text-gray-800 mb-6 border-b pb-3 text-center flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            オプション設定
-        </h2>
+        <h2 class="text-xl font-bold text-gray-800 mb-6 border-b pb-3 text-center">オプション設定</h2>
         
         <div class="flex-1 overflow-y-auto pr-2">
             <div class="mb-8">
@@ -60,11 +54,11 @@
                 <div class="grid grid-cols-1 gap-2">
                     <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
                         <input type="radio" name="format" value="EPh-JPh" class="w-4 h-4 text-blue-600">
-                        <span class="ml-3 text-sm font-medium text-gray-700">英語フレーズ → 日本語フレーズ</span>
+                        <span class="ml-3 text-sm font-medium text-gray-700">英語フレーズ → 日本語</span>
                     </label>
                     <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
                         <input type="radio" name="format" value="JPh-EPh" class="w-4 h-4 text-blue-600">
-                        <span class="ml-3 text-sm font-medium text-gray-700">日本語フレーズ → 英語フレーズ</span>
+                        <span class="ml-3 text-sm font-medium text-gray-700">日本語フレーズ → 英語</span>
                     </label>
                     <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
                         <input type="radio" name="format" value="EWd-JWd" class="w-4 h-4 text-blue-600">
@@ -79,7 +73,6 @@
 
             <div class="mb-4 pt-4 border-t border-gray-200 text-center">
                 <button onclick="resetData()" class="text-sm text-red-400 font-bold hover:text-red-600 transition-colors">すべての学習記録を消去する</button>
-                <p class="text-[10px] text-gray-400 mt-1">※この操作は元に戻せません</p>
             </div>
         </div>
 
@@ -114,10 +107,19 @@
         <button onclick="backToStart()" class="mt-6 text-sm text-gray-400 underline font-bold">← 中断して戻る</button>
     </div>
 
-    <div id="history-screen" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md hidden flex flex-col h-[85vh]">
-        <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2 text-center">学習履歴</h2>
-        <div id="history-list" class="overflow-y-auto flex-1 space-y-3 pr-2"></div>
-        <button onclick="backToStartFromHistory()" class="mt-6 text-sm text-gray-500 underline font-bold text-center">← 戻る</button>
+    <div id="history-screen" class="bg-white p-4 rounded-xl shadow-lg w-full max-w-md hidden flex flex-col h-[90vh]">
+        <h2 class="text-lg font-bold text-gray-800 mb-3 text-center">学習履歴と正答率</h2>
+        
+        <div class="flex border-b border-gray-200 mb-4 bg-gray-50 rounded-t-lg">
+            <button onclick="switchHistoryTab('EPh-JPh')" id="tab-EPh-JPh" class="flex-1 py-2 text-[10px] font-bold border-b-2 border-blue-600 text-blue-600 transition-colors">英フ→日</button>
+            <button onclick="switchHistoryTab('JPh-EPh')" id="tab-JPh-EPh" class="flex-1 py-2 text-[10px] font-bold border-b-2 border-transparent text-gray-400 transition-colors">日フ→英</button>
+            <button onclick="switchHistoryTab('EWd-JWd')" id="tab-EWd-JWd" class="flex-1 py-2 text-[10px] font-bold border-b-2 border-transparent text-gray-400 transition-colors">英単→日</button>
+            <button onclick="switchHistoryTab('JWd-EWd')" id="tab-JWd-EWd" class="flex-1 py-2 text-[10px] font-bold border-b-2 border-transparent text-gray-400 transition-colors">日単→英</button>
+        </div>
+
+        <div id="history-list" class="overflow-y-auto flex-1 space-y-3 pr-1 custom-scrollbar"></div>
+        
+        <button onclick="backToStartFromHistory()" class="mt-4 pt-3 border-t text-sm text-gray-500 underline font-bold text-center">← 戻る</button>
     </div>
 
     <script>
@@ -126,9 +128,18 @@
         let currentIndex = 0;
         let isFlipped = false;
         
-        // ★ オプションの読み込み（デフォルトは英語フレーズ）
         let currentFormat = localStorage.getItem('flashcard_format') || "EPh-JPh";
-        let userProgress = JSON.parse(localStorage.getItem('flashcard_progress')) || {};
+        let historyTab = currentFormat; // 履歴画面で開いているタブ
+
+        // データ構造: userProgress[ID][format] = { status, correct_count, total_count, last_date }
+        let userProgress = JSON.parse(localStorage.getItem('flashcard_progress_v2')) || {};
+
+        const modeNames = {
+            'EPh-JPh': '英語フレーズ → 日本語',
+            'JPh-EPh': '日本語フレーズ → 英語',
+            'EWd-JWd': '英単語 → 日本語訳',
+            'JWd-EWd': '日本語訳 → 英単語'
+        };
 
         Papa.parse("data.csv", {
             download: true,
@@ -136,8 +147,26 @@
             skipEmptyLines: true,
             complete: function(results) {
                 vocabData = results.data.filter(v => v['ID'] && v['英単語']);
+                
+                // 古いデータ形式(v1)からの簡易マイグレーション機能
+                let oldProgress = JSON.parse(localStorage.getItem('flashcard_progress'));
+                if (oldProgress && Object.keys(userProgress).length === 0) {
+                    for(let id in oldProgress) {
+                        userProgress[id] = {
+                            "EPh-JPh": {
+                                status: oldProgress[id].status,
+                                correct_count: oldProgress[id].status === 'memorized' ? 1 : 0,
+                                total_count: 1,
+                                last_date: oldProgress[id].last_date
+                            }
+                        };
+                    }
+                    localStorage.setItem('flashcard_progress_v2', JSON.stringify(userProgress));
+                    localStorage.removeItem('flashcard_progress');
+                }
+
                 updateStartScreen();
-                setRadioChecked(); // ラジオボタンの初期状態をセット
+                setRadioChecked();
             }
         });
 
@@ -146,9 +175,12 @@
             let wrongCount = 0;
             const total = vocabData.length;
 
+            document.getElementById('dash-mode-title').innerText = modeNames[currentFormat];
+
             vocabData.forEach(v => {
-                if (userProgress[v.ID]?.status === 'memorized') memoCount++;
-                else if (userProgress[v.ID]?.status === 'wrong') wrongCount++;
+                const record = userProgress[v.ID]?.[currentFormat];
+                if (record?.status === 'memorized') memoCount++;
+                else if (record?.status === 'wrong') wrongCount++;
             });
             
             document.getElementById('stat-memo').innerHTML = `${memoCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
@@ -160,14 +192,12 @@
         }
 
         // ==========================================
-        // オプション画面の制御
+        // オプション画面
         // ==========================================
         function setRadioChecked() {
             const radios = document.getElementsByName('format');
             for(let i = 0; i < radios.length; i++) {
-                if(radios[i].value === currentFormat) {
-                    radios[i].checked = true;
-                }
+                if(radios[i].value === currentFormat) radios[i].checked = true;
             }
         }
 
@@ -177,20 +207,21 @@
         }
 
         function saveOptionsAndClose() {
-            // 選択された形式を取得して保存
             currentFormat = document.querySelector('input[name="format"]:checked').value;
             localStorage.setItem('flashcard_format', currentFormat);
-            
+            updateStartScreen();
             document.getElementById('options-screen').classList.add('hidden');
             document.getElementById('start-screen').classList.remove('hidden');
         }
-        // ==========================================
 
+        // ==========================================
+        // フラッシュカード画面
+        // ==========================================
         function startStudy(mode) {
             if (mode === 'wrong') {
-                activeVocab = vocabData.filter(v => userProgress[v.ID]?.status === 'wrong');
+                activeVocab = vocabData.filter(v => userProgress[v.ID]?.[currentFormat]?.status === 'wrong');
             } else {
-                activeVocab = vocabData.filter(v => userProgress[v.ID]?.status !== 'memorized');
+                activeVocab = vocabData.filter(v => userProgress[v.ID]?.[currentFormat]?.status !== 'memorized');
             }
 
             if (activeVocab.length === 0) return alert("学習対象がありません。");
@@ -258,8 +289,19 @@
 
         function recordAnswer(isCorrect) {
             const v = activeVocab[currentIndex];
-            userProgress[v.ID] = { status: isCorrect ? 'memorized' : 'wrong', last_date: new Date().toISOString() };
-            localStorage.setItem('flashcard_progress', JSON.stringify(userProgress));
+            const now = new Date().toISOString();
+            
+            if (!userProgress[v.ID]) userProgress[v.ID] = {};
+            const prevData = userProgress[v.ID][currentFormat] || { correct_count: 0, total_count: 0 };
+            
+            userProgress[v.ID][currentFormat] = { 
+                status: isCorrect ? 'memorized' : 'wrong', 
+                correct_count: prevData.correct_count + (isCorrect ? 1 : 0),
+                total_count: prevData.total_count + 1,
+                last_date: now 
+            };
+            
+            localStorage.setItem('flashcard_progress_v2', JSON.stringify(userProgress));
 
             if (isCorrect) activeVocab.splice(currentIndex, 1);
             else currentIndex++;
@@ -274,29 +316,76 @@
             document.getElementById('start-screen').classList.remove('hidden');
         }
 
-        function showHistory() {
+        // ==========================================
+        // 履歴・正答率画面
+        // ==========================================
+        function openHistory() {
+            historyTab = currentFormat; // 現在のモードを初期タブにする
+            switchHistoryTab(historyTab);
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('history-screen').classList.remove('hidden');
+        }
+
+        function switchHistoryTab(tabName) {
+            historyTab = tabName;
+            
+            // タブの見た目更新
+            const tabs = ['EPh-JPh', 'JPh-EPh', 'EWd-JWd', 'JWd-EWd'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if (t === tabName) {
+                    el.classList.remove('border-transparent', 'text-gray-400');
+                    el.classList.add('border-blue-600', 'text-blue-600');
+                } else {
+                    el.classList.add('border-transparent', 'text-gray-400');
+                    el.classList.remove('border-blue-600', 'text-blue-600');
+                }
+            });
+
+            renderHistoryList();
+        }
+
+        function renderHistoryList() {
             const list = document.getElementById('history-list');
             list.innerHTML = '';
-            const history = vocabData.filter(v => userProgress[v.ID]).sort((a,b) => new Date(userProgress[b.ID].last_date) - new Date(userProgress[a.ID].last_date));
+            
+            // 選択中のタブの履歴を持つデータだけを抽出し、最新順にソート
+            const history = vocabData
+                .filter(v => userProgress[v.ID] && userProgress[v.ID][historyTab])
+                .sort((a,b) => new Date(userProgress[b.ID][historyTab].last_date) - new Date(userProgress[a.ID][historyTab].last_date));
             
             if(history.length === 0) {
-                list.innerHTML = '<p class="text-center text-gray-400 mt-10">履歴がありません</p>';
+                list.innerHTML = '<p class="text-center text-gray-400 mt-10 text-sm">このモードの履歴はありません</p>';
+                return;
             }
             
             history.forEach(v => {
-                const isWrong = userProgress[v.ID].status === 'wrong';
+                const record = userProgress[v.ID][historyTab];
+                const isWrong = record.status === 'wrong';
+                
+                // 表面と裏面の表示内容をタブに合わせて切り替え
+                let frontText = "", backText = "";
+                switch(historyTab) {
+                    case 'EPh-JPh': frontText = highlight(v['フレーズ(英語)'], v['英単語']); backText = v['フレーズ(日本語)']; break;
+                    case 'JPh-EPh': frontText = highlight(v['フレーズ(日本語)'], v['日本語訳']); backText = v['フレーズ(英語)']; break;
+                    case 'EWd-JWd': frontText = v['英単語']; backText = v['日本語訳']; break;
+                    case 'JWd-EWd': frontText = v['日本語訳']; backText = v['英単語']; break;
+                }
+
+                // 正答率の計算
+                const accRate = Math.round((record.correct_count / record.total_count) * 100);
+                const accColor = accRate >= 80 ? 'text-green-600 bg-green-100' : (accRate < 50 ? 'text-red-600 bg-red-100' : 'text-blue-600 bg-blue-100');
+
                 list.innerHTML += `
-                    <div class="p-3 bg-gray-50 border rounded-lg text-left ${isWrong ? 'border-red-200' : ''}">
-                        <div class="flex justify-between text-[10px] mb-1 font-bold">
-                            <span class="${isWrong ? 'text-red-500' : 'text-green-600'}">${isWrong ? '要復習' : '習得'}</span>
-                            <span class="text-gray-400">${v.ID}</span>
+                    <div class="p-3 bg-white border shadow-sm rounded-lg text-left ${isWrong ? 'border-red-300' : 'border-gray-200'}">
+                        <div class="flex justify-between items-center mb-2 border-b border-gray-100 pb-1">
+                            <span class="text-[10px] font-bold ${isWrong ? 'text-red-500' : 'text-green-600'}">${isWrong ? '要復習' : '習得'}</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${accColor}">正答率: ${record.correct_count}/${record.total_count}回 (${accRate}%)</span>
                         </div>
-                        <p class="text-sm font-bold text-gray-800">${v['フレーズ(英語)']}</p>
-                        <p class="text-xs text-gray-500">${v['英単語']} : ${v['日本語訳']}</p>
+                        <p class="text-sm font-bold text-gray-800 leading-tight mb-1">${frontText}</p>
+                        <p class="text-xs text-gray-500">${backText}</p>
                     </div>`;
             });
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('history-screen').classList.remove('hidden');
         }
 
         function backToStartFromHistory() {
@@ -306,10 +395,15 @@
 
         function resetData() {
             if(confirm("全記録を消去しますか？")) { 
-                localStorage.removeItem('flashcard_progress'); 
+                localStorage.removeItem('flashcard_progress_v2'); 
                 location.reload(); 
             }
         }
     </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
 </body>
 </html>
