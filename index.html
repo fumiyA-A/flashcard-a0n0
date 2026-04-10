@@ -7,9 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
-<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden">
 
-    <div id="start-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
+    <div id="start-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center max-h-[90vh] overflow-y-auto">
         <h1 class="text-3xl font-bold text-gray-800 mb-2">TOEIC 900 Flashcard</h1>
         <p class="text-sm text-gray-500 mb-8">10 Days Challenge</p>
 
@@ -36,12 +36,29 @@
             <button onclick="startStudy('wrong')" id="btn-wrong" class="w-full bg-red-500 text-white py-4 rounded-lg font-bold shadow-md active:bg-red-600 transition-colors">
                 要復習のみ開始<br><span class="text-xs font-normal opacity-80">（前回間違えたカードのみ）</span>
             </button>
+            
+            <button onclick="showHistory()" class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-bold shadow-md active:bg-gray-300 transition-colors mt-4">
+                過去の学習記録（履歴）を見る
+            </button>
         </div>
 
-        <div class="mt-8">
+        <div class="mt-8 pt-4 border-t border-gray-200">
             <button onclick="resetData()" class="text-sm text-gray-400 underline">学習記録をすべてリセット</button>
         </div>
     </div>
+
+
+    <div id="history-screen" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md hidden flex flex-col h-[85vh]">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2 text-center">学習履歴</h2>
+        
+        <div id="history-list" class="overflow-y-auto flex-1 space-y-3 pr-2 custom-scrollbar">
+            </div>
+
+        <div class="mt-6 text-center pt-4 border-t border-gray-200">
+            <button onclick="backToStartFromHistory()" class="text-sm text-gray-500 underline font-bold px-4 py-2">← スタート画面に戻る</button>
+        </div>
+    </div>
+
 
     <div id="flashcard-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center hidden">
         <h2 class="text-gray-500 text-sm mb-2" id="progress">- / -</h2>
@@ -70,15 +87,12 @@
 
         let userProgress = JSON.parse(localStorage.getItem('flashcard_progress')) || {};
 
-        // アプリ起動時
         Papa.parse("data.csv", {
             download: true,
             header: true,
             skipEmptyLines: true,
             complete: function(results) {
-                // 不完全な行を弾いて全体データを保持
                 vocabData = results.data.filter(v => v['フレーズ(英語)'] && v['フレーズ(日本語)']);
-                // 完了したらスタート画面を更新して表示
                 updateStartScreen();
             },
             error: function(err) {
@@ -86,7 +100,6 @@
             }
         });
 
-        // ダッシュボードの数値を計算して表示する関数
         function updateStartScreen() {
             let memoCount = 0;
             let wrongCount = 0;
@@ -103,7 +116,6 @@
             document.getElementById('stat-memo').innerText = memoCount;
             document.getElementById('stat-wrong').innerText = wrongCount;
 
-            // 要復習が0件の時はボタンを薄くして押せないようにする親切設計
             const wrongBtn = document.getElementById('btn-wrong');
             if (wrongCount === 0) {
                 wrongBtn.classList.add('opacity-50', 'cursor-not-allowed');
@@ -114,13 +126,71 @@
             }
         }
 
-        // スタートボタンが押された時の処理
+        // ==========================================
+        // ★新規追加：学習履歴画面の制御
+        // ==========================================
+        function showHistory() {
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = ''; // リストを初期化
+
+            // 学習記録が存在するデータのみを抽出
+            let historyData = vocabData.filter(v => userProgress[v.ID]);
+
+            if (historyData.length === 0) {
+                historyList.innerHTML = '<p class="text-gray-500 text-center mt-10">まだ学習記録がありません。<br>まずは学習を開始しましょう！</p>';
+            } else {
+                // 学習した日時が新しい順（降順）に並び替え
+                historyData.sort((a, b) => {
+                    const dateA = new Date(userProgress[a.ID].last_date || 0);
+                    const dateB = new Date(userProgress[b.ID].last_date || 0);
+                    return dateB - dateA;
+                });
+
+                // リストのHTMLを生成
+                historyData.forEach(v => {
+                    const status = userProgress[v.ID].status;
+                    const dateObj = new Date(userProgress[v.ID].last_date);
+                    // 時間を見やすくフォーマット（例: 4/10 14:30）
+                    const dateStr = `${dateObj.getMonth() + 1}/${dateObj.getDate()} ${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
+                    
+                    const isWrong = status === 'wrong';
+                    // 状態に応じてバッジの色を変更
+                    const statusBadge = isWrong 
+                        ? `<span class="bg-red-100 text-red-600 text-xs px-2 py-1 rounded font-bold">要復習</span>`
+                        : `<span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded font-bold">覚えた</span>`;
+
+                    // ハイライト付きのテキストを生成
+                    const highlightedEng = getHighlighedText(v['フレーズ(英語)'], v['英単語'], "decoration-gray-800");
+                    const highlightedJp = getHighlighedText(v['フレーズ(日本語)'], v['日本語訳'], "decoration-blue-600");
+
+                    const itemHtml = `
+                        <div class="bg-gray-50 p-4 rounded-lg border ${isWrong ? 'border-red-300' : 'border-gray-200'} text-left shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                ${statusBadge}
+                                <span class="text-xs text-gray-400 font-mono">${dateStr}</span>
+                            </div>
+                            <p class="font-bold text-gray-800 text-sm mb-1">${highlightedEng}</p>
+                            <p class="text-xs text-gray-600 mb-2">${highlightedJp}</p>
+                            <p class="text-[10px] text-gray-400">ID:${v.ID} | ${v['英単語']}</p>
+                        </div>
+                    `;
+                    historyList.innerHTML += itemHtml;
+                });
+            }
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('history-screen').classList.remove('hidden');
+        }
+
+        function backToStartFromHistory() {
+            document.getElementById('history-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
         function startStudy(mode) {
             if (mode === 'wrong') {
-                // 間違えたものだけ抽出
                 activeVocab = vocabData.filter(v => userProgress[v.ID] && userProgress[v.ID].status === 'wrong');
             } else {
-                // 覚えていないもの全て（新規＋間違えたもの）
                 activeVocab = vocabData.filter(v => !userProgress[v.ID] || userProgress[v.ID].status !== 'memorized');
             }
 
@@ -129,26 +199,21 @@
                 return;
             }
 
-            // カードをシャッフルする（順番で覚えてしまうのを防ぐため）
             activeVocab.sort(() => Math.random() - 0.5);
-
             currentIndex = 0;
             
-            // 画面の切り替え
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('flashcard-screen').classList.remove('hidden');
             
             loadCard();
         }
 
-        // タイトルに戻る処理
         function backToStart() {
-            updateStartScreen(); // 最新の進捗を再計算
+            updateStartScreen(); 
             document.getElementById('flashcard-screen').classList.add('hidden');
             document.getElementById('start-screen').classList.remove('hidden');
         }
 
-        // 強調処理用の関数（前回作成したものそのまま）
         function getHighlighedText(rawPhrase, targetWord, colorClass = "decoration-blue-500") {
             if (!rawPhrase || !targetWord) return rawPhrase;
             const escapedWord = targetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -166,7 +231,6 @@
             return rawPhrase;
         }
 
-        // カード読み込み・裏返し・記録の処理（変更なし）
         function loadCard() {
             if (activeVocab.length === 0) {
                 document.getElementById('card').innerHTML = '<h1 class="text-2xl font-bold text-green-600">全問クリア！🎉</h1><p class="mt-4 text-gray-600">お疲れ様でした！</p>';
@@ -224,5 +288,23 @@
             }
         }
     </script>
+
+    <style>
+        /* スクロールバーを見やすくするためのカスタムCSS */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
 </body>
 </html>
