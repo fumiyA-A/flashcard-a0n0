@@ -72,6 +72,10 @@
                         <input type="checkbox" name="range" value="4" class="w-4 h-4 text-green-600 rounded">
                         <span class="ml-2 text-sm font-medium text-gray-700">ID 301 - 400</span>
                     </label>
+                    <label class="flex items-center p-3 bg-blue-50 rounded-lg border cursor-pointer hover:bg-blue-100 transition-colors col-span-2 shadow-sm">
+                        <input type="checkbox" name="range" value="5" class="w-4 h-4 text-blue-600 rounded">
+                        <span class="ml-2 text-sm font-bold text-blue-800">Essential (E1 - E100)</span>
+                    </label>
                 </div>
             </div>
 
@@ -167,11 +171,12 @@
         let vocabData = [];
         let activeVocab = [];
         let currentIndex = 0;
-        let sessionTotal = 0; // ★ セッションの総カード数を保持
+        let sessionTotal = 0;
         let isFlipped = false;
         
         let currentFormat = localStorage.getItem('flashcard_format') || "EPh-JPh";
-        let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4];
+        // デフォルトでは1〜4の基本ブロックに加え、5（Essential）も選択状態にしておく
+        let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4, 5];
         let historyTab = currentFormat;
 
         let userProgress = JSON.parse(localStorage.getItem('flashcard_progress_v2')) || {};
@@ -193,13 +198,28 @@
             }
         });
 
+        // ==========================================
+        // ★ 範囲判定ロジックを英数字ID (E1など) に対応
+        // ==========================================
         function isVocabInRange(vocab) {
-            const id = parseInt(vocab.ID, 10);
+            const rawId = String(vocab.ID);
+            
+            // "E"から始まるID（Essential）の判定
+            if (rawId.startsWith('E') || rawId.startsWith('e')) {
+                return selectedRanges.includes(5);
+            }
+            
+            // 通常の数字IDの判定
+            const id = parseInt(rawId, 10);
             if (isNaN(id)) return false;
+            
             if (selectedRanges.includes(1) && id >= 1 && id <= 100) return true;
             if (selectedRanges.includes(2) && id >= 101 && id <= 200) return true;
             if (selectedRanges.includes(3) && id >= 201 && id <= 300) return true;
+            if (selectedRanges.includes(4) && id >= 301 && id <= 400) return true;
+            // 400以上が数字で追加された場合も対応できるようにしておく
             if (selectedRanges.includes(4) && id >= 301) return true;
+            
             return false;
         }
 
@@ -212,8 +232,11 @@
             document.getElementById('dash-mode-title').innerText = modeNames[currentFormat];
             
             let rangeText = "";
-            if(selectedRanges.length === 4) rangeText = "全範囲 (1-400)";
-            else rangeText = selectedRanges.map(r => `[${r}]`).join(", ") + " ブロック";
+            if(selectedRanges.length === 5) {
+                rangeText = "全範囲 (Basic + Essential)";
+            } else {
+                rangeText = selectedRanges.map(r => r === 5 ? "[E]" : `[${r}]`).join(", ") + " ブロック";
+            }
             document.getElementById('dash-range-title').innerText = rangeText;
 
             targetVocab.forEach(v => {
@@ -276,10 +299,9 @@
             if (activeVocab.length === 0) return alert("この範囲には学習するカードがありません。");
 
             activeVocab.sort(() => Math.random() - 0.5);
-            sessionTotal = activeVocab.length; // ★ セッションの総数を固定
+            sessionTotal = activeVocab.length;
             currentIndex = 0;
             
-            // ★ カード画面のUIリセット
             document.getElementById('card-front').classList.remove('hidden');
             document.getElementById('session-clear-msg').classList.add('hidden');
             document.getElementById('start-screen').classList.add('hidden');
@@ -306,7 +328,6 @@
         }
 
         function loadCard() {
-            // ★ セッション終了の判定（総数に達したらクリア画面を表示）
             if (currentIndex >= sessionTotal) {
                 document.getElementById('card-front').classList.add('hidden');
                 document.getElementById('card-back').classList.add('hidden');
@@ -343,7 +364,6 @@
 
             subEl.innerText = `ID:${v['ID']} | ${v['英単語']} | ${v['日本語訳']} | ${v['品詞']}`;
             
-            // ★ 残り枚数のカウントダウン表示
             const remaining = sessionTotal - currentIndex;
             document.getElementById('progress').innerHTML = `<span class="text-blue-600 font-extrabold text-base">${remaining}</span> <span class="text-gray-400 mx-1">/</span> <span class="text-gray-500">${sessionTotal}</span>`;
             
@@ -375,7 +395,6 @@
             
             localStorage.setItem('flashcard_progress_v2', JSON.stringify(userProgress));
 
-            // ★ インデックスを進めるだけ（配列から削除しない）
             currentIndex++;
             loadCard();
         }
