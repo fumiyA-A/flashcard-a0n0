@@ -70,6 +70,7 @@
             
             <div class="mb-6">
                 <h3 class="text-sm font-bold text-gray-700 mb-3 pl-2 border-l-4 border-green-500">出題範囲（複数選択可）</h3>
+                
                 <div class="mb-4">
                     <h4 class="text-xs font-bold text-gray-500 mb-2">Score 600 Level</h4>
                     <div class="grid grid-cols-2 gap-2">
@@ -94,9 +95,35 @@
 
                 <div class="mb-4">
                     <h4 class="text-xs font-bold text-gray-500 mb-2">Score 730 Level</h4>
-                    <label class="flex items-center p-3 bg-green-50 rounded-lg border cursor-pointer hover:bg-green-100 transition-colors shadow-sm">
-                        <input type="checkbox" name="range" value="6" class="w-4 h-4 text-green-600 rounded">
-                        <span class="ml-2 text-sm font-bold text-green-800">ID 401 - 900</span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
+                            <input type="checkbox" name="range" value="6" class="w-4 h-4 text-green-600 rounded">
+                            <span class="ml-2 text-sm font-medium text-gray-700">ID 401 - 500</span>
+                        </label>
+                        <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
+                            <input type="checkbox" name="range" value="7" class="w-4 h-4 text-green-600 rounded">
+                            <span class="ml-2 text-sm font-medium text-gray-700">ID 501 - 600</span>
+                        </label>
+                        <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
+                            <input type="checkbox" name="range" value="8" class="w-4 h-4 text-green-600 rounded">
+                            <span class="ml-2 text-sm font-medium text-gray-700">ID 601 - 700</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="text-xs font-bold text-gray-500 mb-2">Score 860 Level</h4>
+                    <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors shadow-sm">
+                        <input type="checkbox" name="range" value="9" class="w-4 h-4 text-green-600 rounded">
+                        <span class="ml-2 text-sm font-medium text-gray-700">ID 701 - 800</span>
+                    </label>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="text-xs font-bold text-gray-500 mb-2">Score 990 Level</h4>
+                    <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors shadow-sm">
+                        <input type="checkbox" name="range" value="10" class="w-4 h-4 text-green-600 rounded">
+                        <span class="ml-2 text-sm font-medium text-gray-700">ID 801 - 900</span>
                     </label>
                 </div>
 
@@ -228,7 +255,8 @@
         let isFlipped = false;
         
         let currentFormat = localStorage.getItem('flashcard_format') || "EPh-JPh";
-        let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4, 5, 6];
+        // 初期状態では全範囲を選択状態にする (1〜10)
+        let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         let historyTab = currentFormat;
 
         let userProgress = JSON.parse(localStorage.getItem('flashcard_progress_v2')) || {};
@@ -240,13 +268,16 @@
             'JWd-EWd': '日本語訳 → 英単語'
         };
 
+        // ★ レベルラベルの取得処理の細分化
         function getLevelName(idStr) {
             const str = String(idStr);
             if (str.startsWith('E') || str.startsWith('e')) return "Essential";
             const num = parseInt(str, 10);
             if (!isNaN(num)) {
                 if (num >= 1 && num <= 400) return "600 Level";
-                if (num >= 401 && num <= 900) return "730 Level";
+                if (num >= 401 && num <= 700) return "730 Level";
+                if (num >= 701 && num <= 800) return "860 Level";
+                if (num >= 801 && num <= 900) return "990 Level";
             }
             return "Extra";
         }
@@ -261,6 +292,7 @@
             }
         });
 
+        // ★ IDからどのチェックボックスに該当するか判定するロジック
         function isVocabInRange(vocab) {
             const rawId = String(vocab.ID);
             if (rawId.startsWith('E') || rawId.startsWith('e')) return selectedRanges.includes(5);
@@ -271,7 +303,11 @@
             if (selectedRanges.includes(2) && id >= 101 && id <= 200) return true;
             if (selectedRanges.includes(3) && id >= 201 && id <= 300) return true;
             if (selectedRanges.includes(4) && id >= 301 && id <= 400) return true;
-            if (selectedRanges.includes(6) && id >= 401 && id <= 900) return true;
+            if (selectedRanges.includes(6) && id >= 401 && id <= 500) return true;
+            if (selectedRanges.includes(7) && id >= 501 && id <= 600) return true;
+            if (selectedRanges.includes(8) && id >= 601 && id <= 700) return true;
+            if (selectedRanges.includes(9) && id >= 701 && id <= 800) return true;
+            if (selectedRanges.includes(10) && id >= 801 && id <= 900) return true;
             return false;
         }
 
@@ -287,13 +323,16 @@
 
             document.getElementById('dash-mode-title').innerText = modeNames[currentFormat];
             
+            // ★ スタート画面の選択範囲バッジの表示処理
             let rangeText = "";
-            if (selectedRanges.length === 6) {
-                rangeText = "全範囲 (600 & 730 & Essential)";
+            if (selectedRanges.length === 10) { // 全10個のチェックボックス
+                rangeText = "全範囲 (All Levels)";
             } else {
                 let parts = [];
-                if (selectedRanges.some(r => r <= 4)) parts.push("600L");
-                if (selectedRanges.includes(6)) parts.push("730L");
+                if (selectedRanges.some(r => r >= 1 && r <= 4)) parts.push("600L");
+                if (selectedRanges.some(r => r >= 6 && r <= 8)) parts.push("730L");
+                if (selectedRanges.includes(9)) parts.push("860L");
+                if (selectedRanges.includes(10)) parts.push("990L");
                 if (selectedRanges.includes(5)) parts.push("Ess");
                 rangeText = parts.join(" & ") + " 選択中";
             }
@@ -500,7 +539,6 @@
                     break;
             }
 
-            // ★ 備考データの表示制御
             if (v['備考']) {
                 noteText.innerText = v['備考'];
                 noteArea.classList.remove('hidden');
@@ -515,7 +553,6 @@
                 streakInfo = `<span class="ml-2 text-green-500 font-bold">連続正解: ${record.consecutive_correct || 0}回</span>`;
             }
 
-            // ★ 品詞を消去した正しい補助情報表示
             subEl.innerHTML = `<span class="bg-gray-200 text-gray-600 px-1 rounded mr-1">${levelLabel}</span> ID:${v['ID']} | ${v['英単語']} | ${v['日本語訳']} ${streakInfo}`;
             
             const remaining = sessionTotal - currentIndex;
