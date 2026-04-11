@@ -123,6 +123,24 @@
                 </div>
             </div>
 
+            <div class="mb-6 border-t pt-4 border-gray-100">
+                <h3 class="text-sm font-bold text-gray-700 mb-3 pl-2 border-l-4 border-purple-500">データ移行・バックアップ</h3>
+                <div class="space-y-2">
+                    <button onclick="exportData()" class="w-full bg-white border border-gray-300 text-gray-700 py-2.5 rounded-lg text-sm font-bold shadow-sm hover:bg-gray-50 transition-colors flex justify-center items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        履歴をバックアップ (JSON)
+                    </button>
+                    <div class="relative">
+                        <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
+                        <button onclick="document.getElementById('import-file').click()" class="w-full bg-white border border-gray-300 text-gray-700 py-2.5 rounded-lg text-sm font-bold shadow-sm hover:bg-gray-50 transition-colors flex justify-center items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                            履歴を復元する (JSON)
+                        </button>
+                    </div>
+                </div>
+                <p class="text-[10px] text-gray-400 mt-2 text-center">※別端末へデータを引き継ぐ際に使用します</p>
+            </div>
+
             <div class="mb-2 pt-4 border-t border-gray-200 text-center">
                 <button onclick="resetData()" class="text-sm text-red-400 font-bold hover:text-red-600 transition-colors">すべての学習記録を消去する</button>
             </div>
@@ -200,7 +218,6 @@
         let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4, 5];
         let historyTab = currentFormat;
 
-        // ★ 新構造：{ status, correct_count, total_count, consecutive_correct, next_review, last_date }
         let userProgress = JSON.parse(localStorage.getItem('flashcard_progress_v2')) || {};
 
         const modeNames = {
@@ -265,7 +282,6 @@
             }
             document.getElementById('dash-range-title').innerText = rangeText;
 
-            // ★ 4段階のステータス判定
             targetVocab.forEach(v => {
                 const record = userProgress[v.ID]?.[currentFormat];
                 if (!record) {
@@ -273,11 +289,10 @@
                 } else if (record.status === 'wrong') {
                     wrongCount++;
                 } else {
-                    // status === 'memorized'
                     if (!record.next_review || record.next_review <= nowIso) {
-                        dueCount++; // 復習時期到達
+                        dueCount++;
                     } else {
-                        safeCount++; // まだ復習しなくてよい
+                        safeCount++;
                     }
                 }
             });
@@ -304,6 +319,55 @@
             btnWrong.style.opacity = (wrongCount === 0) ? "0.5" : "1";
         }
 
+        // ==========================================
+        // ★新規追加：エクスポート・インポート機能
+        // ==========================================
+        function exportData() {
+            // 現在の学習履歴データを文字列化
+            const dataStr = localStorage.getItem('flashcard_progress_v2') || "{}";
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            // 隠しリンクを作成して自動ダウンロードを発火
+            const a = document.createElement('a');
+            a.href = url;
+            // ファイル名に日付を付けて区別しやすくする
+            const dateStr = new Date().toISOString().split('T')[0];
+            a.download = `toeic_progress_backup_${dateStr}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    // 簡易的なデータ検証（オブジェクトであるか）
+                    if (importedData && typeof importedData === 'object') {
+                        localStorage.setItem('flashcard_progress_v2', JSON.stringify(importedData));
+                        alert("データの復元が完了しました。最新の状態でページを再読み込みします。");
+                        location.reload();
+                    } else {
+                        alert("不正なファイル形式です。");
+                    }
+                } catch (err) {
+                    alert("ファイルの読み込みに失敗しました。正しいJSONファイルを選択してください。");
+                }
+            };
+            // 別のファイルを選び直せるようにinputの値をリセット
+            event.target.value = '';
+            reader.readAsText(file);
+        }
+
+        // ==========================================
+        // オプション画面
+        // ==========================================
         function loadOptionSettings() {
             const radios = document.getElementsByName('format');
             for(let i = 0; i < radios.length; i++) {
@@ -346,19 +410,17 @@
             if (mode === 'wrong') {
                 activeVocab = targetVocab.filter(v => userProgress[v.ID]?.[currentFormat]?.status === 'wrong');
             } else if (mode === 'srs') {
-                // 忘却曲線モード: Due + Wrong
                 activeVocab = targetVocab.filter(v => {
                     const record = userProgress[v.ID]?.[currentFormat];
-                    if (!record) return false; // 新規は除外
+                    if (!record) return false;
                     if (record.status === 'wrong') return true;
                     if (record.status === 'memorized' && (!record.next_review || record.next_review <= nowIso)) return true;
                     return false;
                 });
             } else {
-                // 全件学習: Safe(定着済み) 以外すべて
                 activeVocab = targetVocab.filter(v => {
                     const record = userProgress[v.ID]?.[currentFormat];
-                    if (!record) return true; // 新規
+                    if (!record) return true;
                     if (record.status === 'wrong') return true;
                     if (record.status === 'memorized' && (!record.next_review || record.next_review <= nowIso)) return true;
                     return false;
@@ -432,8 +494,6 @@
             }
 
             const levelLabel = getLevelName(v['ID']);
-            
-            // ★ 進捗情報を補助情報に表示（連続正解数など）
             const record = userProgress[v.ID]?.[currentFormat];
             let streakInfo = "";
             if (record) {
@@ -457,18 +517,17 @@
             isFlipped = true;
         }
 
-        // ★ 超短期決戦用・次回レビュー計算ロジック
         function getNextReviewDate(consecutive_correct) {
             const now = new Date();
             let hours = 0;
             switch(consecutive_correct) {
                 case 0: hours = 0; break;
-                case 1: hours = 4; break;   // 初回正解 → 4時間後
-                case 2: hours = 12; break;  // 2連続 → 12時間後（翌朝）
-                case 3: hours = 24; break;  // 3連続 → 1日後
-                case 4: hours = 48; break;  // 4連続 → 2日後
-                case 5: hours = 96; break;  // 5連続 → 4日後
-                default: hours = 168; break; // 6連続以上 → 7日後
+                case 1: hours = 4; break;
+                case 2: hours = 12; break;
+                case 3: hours = 24; break;
+                case 4: hours = 48; break;
+                case 5: hours = 96; break;
+                default: hours = 168; break;
             }
             return new Date(now.getTime() + hours * 60 * 60 * 1000).toISOString();
         }
@@ -480,7 +539,6 @@
             if (!userProgress[v.ID]) userProgress[v.ID] = {};
             const prevData = userProgress[v.ID][currentFormat] || { correct_count: 0, total_count: 0, consecutive_correct: 0 };
             
-            // ★ 連続正解数の更新
             const currentStreak = prevData.consecutive_correct || 0;
             const newStreak = isCorrect ? currentStreak + 1 : 0;
             const nextReview = getNextReviewDate(newStreak);
@@ -559,7 +617,6 @@
                 const accColor = accRate >= 80 ? 'text-green-600 bg-green-100' : (accRate < 50 ? 'text-red-600 bg-red-100' : 'text-blue-600 bg-blue-100');
                 const levelLabel = getLevelName(v['ID']);
 
-                // ★ 履歴画面にも「連続正解数」を表示
                 list.innerHTML += `
                     <div class="p-3 bg-white border shadow-sm rounded-lg text-left ${isWrong ? 'border-red-300' : 'border-gray-200'}">
                         <div class="flex justify-between items-center mb-2 border-b border-gray-100 pb-1">
