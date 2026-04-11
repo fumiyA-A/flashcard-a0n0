@@ -21,7 +21,11 @@
         <p class="text-sm text-gray-500 mb-6">10 Days Strategic Learning</p>
 
         <div class="mb-8 text-left bg-blue-50 p-5 rounded-lg shadow-inner">
-            <h3 class="text-xs font-bold text-blue-500 mb-2 uppercase tracking-wider" id="dash-mode-title">モード</h3>
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-xs font-bold text-blue-500 uppercase tracking-wider" id="dash-mode-title">モード</h3>
+                <span id="dash-range-title" class="text-[10px] font-bold bg-blue-200 text-blue-700 px-2 py-0.5 rounded-full">範囲: 選択中</span>
+            </div>
+            
             <div class="flex justify-between items-end mb-3 border-b border-blue-100 pb-2">
                 <span class="text-sm text-gray-600 font-bold mb-0.5">覚えた！:</span>
                 <span id="stat-memo" class="font-bold text-green-600 text-3xl leading-none">-</span>
@@ -46,10 +50,33 @@
     </div>
 
     <div id="options-screen" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md hidden flex flex-col h-[85vh]">
-        <h2 class="text-xl font-bold text-gray-800 mb-6 border-b pb-3 text-center">オプション設定</h2>
+        <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-3 text-center">オプション設定</h2>
         
-        <div class="flex-1 overflow-y-auto pr-2">
-            <div class="mb-8">
+        <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+            
+            <div class="mb-6">
+                <h3 class="text-sm font-bold text-gray-700 mb-3 pl-2 border-l-4 border-green-500">出題範囲（複数選択可）</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
+                        <input type="checkbox" name="range" value="1" class="w-4 h-4 text-green-600 rounded">
+                        <span class="ml-2 text-sm font-medium text-gray-700">ID 1 - 100</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
+                        <input type="checkbox" name="range" value="2" class="w-4 h-4 text-green-600 rounded">
+                        <span class="ml-2 text-sm font-medium text-gray-700">ID 101 - 200</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
+                        <input type="checkbox" name="range" value="3" class="w-4 h-4 text-green-600 rounded">
+                        <span class="ml-2 text-sm font-medium text-gray-700">ID 201 - 300</span>
+                    </label>
+                    <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
+                        <input type="checkbox" name="range" value="4" class="w-4 h-4 text-green-600 rounded">
+                        <span class="ml-2 text-sm font-medium text-gray-700">ID 301 - 400</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-6 border-t pt-4 border-gray-100">
                 <h3 class="text-sm font-bold text-gray-700 mb-3 pl-2 border-l-4 border-blue-500">出題形式</h3>
                 <div class="grid grid-cols-1 gap-2">
                     <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
@@ -71,7 +98,7 @@
                 </div>
             </div>
 
-            <div class="mb-4 pt-4 border-t border-gray-200 text-center">
+            <div class="mb-2 pt-4 border-t border-gray-200 text-center">
                 <button onclick="resetData()" class="text-sm text-red-400 font-bold hover:text-red-600 transition-colors">すべての学習記録を消去する</button>
             </div>
         </div>
@@ -129,9 +156,10 @@
         let isFlipped = false;
         
         let currentFormat = localStorage.getItem('flashcard_format') || "EPh-JPh";
-        let historyTab = currentFormat; // 履歴画面で開いているタブ
+        // ★ 選択された範囲を配列として保存（デフォルトは全て）
+        let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4];
+        let historyTab = currentFormat;
 
-        // データ構造: userProgress[ID][format] = { status, correct_count, total_count, last_date }
         let userProgress = JSON.parse(localStorage.getItem('flashcard_progress_v2')) || {};
 
         const modeNames = {
@@ -147,37 +175,38 @@
             skipEmptyLines: true,
             complete: function(results) {
                 vocabData = results.data.filter(v => v['ID'] && v['英単語']);
-                
-                // 古いデータ形式(v1)からの簡易マイグレーション機能
-                let oldProgress = JSON.parse(localStorage.getItem('flashcard_progress'));
-                if (oldProgress && Object.keys(userProgress).length === 0) {
-                    for(let id in oldProgress) {
-                        userProgress[id] = {
-                            "EPh-JPh": {
-                                status: oldProgress[id].status,
-                                correct_count: oldProgress[id].status === 'memorized' ? 1 : 0,
-                                total_count: 1,
-                                last_date: oldProgress[id].last_date
-                            }
-                        };
-                    }
-                    localStorage.setItem('flashcard_progress_v2', JSON.stringify(userProgress));
-                    localStorage.removeItem('flashcard_progress');
-                }
-
                 updateStartScreen();
-                setRadioChecked();
             }
         });
+
+        // ★ IDが選択された範囲に含まれるかを判定する関数
+        function isVocabInRange(vocab) {
+            const id = parseInt(vocab.ID, 10);
+            if (isNaN(id)) return false;
+            if (selectedRanges.includes(1) && id >= 1 && id <= 100) return true;
+            if (selectedRanges.includes(2) && id >= 101 && id <= 200) return true;
+            if (selectedRanges.includes(3) && id >= 201 && id <= 300) return true;
+            if (selectedRanges.includes(4) && id >= 301) return true; // 301以上
+            return false;
+        }
 
         function updateStartScreen() {
             let memoCount = 0;
             let wrongCount = 0;
-            const total = vocabData.length;
+            
+            // ★ 選択範囲のみで絞り込んだデータを母数とする
+            const targetVocab = vocabData.filter(isVocabInRange);
+            const total = targetVocab.length;
 
             document.getElementById('dash-mode-title').innerText = modeNames[currentFormat];
+            
+            // 表示用の範囲テキストを生成
+            let rangeText = "";
+            if(selectedRanges.length === 4) rangeText = "全範囲 (1-400)";
+            else rangeText = selectedRanges.map(r => `[${r}]`).join(", ") + " ブロック";
+            document.getElementById('dash-range-title').innerText = rangeText;
 
-            vocabData.forEach(v => {
+            targetVocab.forEach(v => {
                 const record = userProgress[v.ID]?.[currentFormat];
                 if (record?.status === 'memorized') memoCount++;
                 else if (record?.status === 'wrong') wrongCount++;
@@ -194,21 +223,43 @@
         // ==========================================
         // オプション画面
         // ==========================================
-        function setRadioChecked() {
+        function loadOptionSettings() {
+            // フォーマットのラジオボタン
             const radios = document.getElementsByName('format');
             for(let i = 0; i < radios.length; i++) {
                 if(radios[i].value === currentFormat) radios[i].checked = true;
             }
+            // 範囲のチェックボックス
+            const checkboxes = document.getElementsByName('range');
+            for(let i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = selectedRanges.includes(parseInt(checkboxes[i].value, 10));
+            }
         }
 
         function showOptions() {
+            loadOptionSettings();
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('options-screen').classList.remove('hidden');
         }
 
         function saveOptionsAndClose() {
+            // 出題範囲の保存
+            const checkboxes = document.getElementsByName('range');
+            let newRanges = [];
+            for(let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) newRanges.push(parseInt(checkboxes[i].value, 10));
+            }
+            if (newRanges.length === 0) {
+                alert("出題範囲を少なくとも1つ選択してください。");
+                return; // 閉じさせない
+            }
+            selectedRanges = newRanges;
+            localStorage.setItem('flashcard_ranges', JSON.stringify(selectedRanges));
+
+            // 出題形式の保存
             currentFormat = document.querySelector('input[name="format"]:checked').value;
             localStorage.setItem('flashcard_format', currentFormat);
+            
             updateStartScreen();
             document.getElementById('options-screen').classList.add('hidden');
             document.getElementById('start-screen').classList.remove('hidden');
@@ -218,13 +269,16 @@
         // フラッシュカード画面
         // ==========================================
         function startStudy(mode) {
+            // ★ まず選択範囲で絞り込む
+            const targetVocab = vocabData.filter(isVocabInRange);
+
             if (mode === 'wrong') {
-                activeVocab = vocabData.filter(v => userProgress[v.ID]?.[currentFormat]?.status === 'wrong');
+                activeVocab = targetVocab.filter(v => userProgress[v.ID]?.[currentFormat]?.status === 'wrong');
             } else {
-                activeVocab = vocabData.filter(v => userProgress[v.ID]?.[currentFormat]?.status !== 'memorized');
+                activeVocab = targetVocab.filter(v => userProgress[v.ID]?.[currentFormat]?.status !== 'memorized');
             }
 
-            if (activeVocab.length === 0) return alert("学習対象がありません。");
+            if (activeVocab.length === 0) return alert("この範囲には学習するカードがありません。");
 
             activeVocab.sort(() => Math.random() - 0.5);
             currentIndex = 0;
@@ -264,7 +318,7 @@
                     break;
             }
 
-            subEl.innerText = `${v['英単語']} | ${v['日本語訳']} | ${v['品詞']}`;
+            subEl.innerText = `ID:${v['ID']} | ${v['英単語']} | ${v['日本語訳']} | ${v['品詞']}`;
             document.getElementById('progress').innerText = `${currentIndex + 1} / ${activeVocab.length}`;
             
             document.getElementById('card-back').classList.add('hidden');
@@ -320,7 +374,7 @@
         // 履歴・正答率画面
         // ==========================================
         function openHistory() {
-            historyTab = currentFormat; // 現在のモードを初期タブにする
+            historyTab = currentFormat; 
             switchHistoryTab(historyTab);
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('history-screen').classList.remove('hidden');
@@ -329,7 +383,6 @@
         function switchHistoryTab(tabName) {
             historyTab = tabName;
             
-            // タブの見た目更新
             const tabs = ['EPh-JPh', 'JPh-EPh', 'EWd-JWd', 'JWd-EWd'];
             tabs.forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
@@ -349,13 +402,14 @@
             const list = document.getElementById('history-list');
             list.innerHTML = '';
             
-            // 選択中のタブの履歴を持つデータだけを抽出し、最新順にソート
-            const history = vocabData
+            // ★履歴画面も、現在選択されている範囲(targetVocab)のみ表示する
+            const targetVocab = vocabData.filter(isVocabInRange);
+            const history = targetVocab
                 .filter(v => userProgress[v.ID] && userProgress[v.ID][historyTab])
                 .sort((a,b) => new Date(userProgress[b.ID][historyTab].last_date) - new Date(userProgress[a.ID][historyTab].last_date));
             
             if(history.length === 0) {
-                list.innerHTML = '<p class="text-center text-gray-400 mt-10 text-sm">このモードの履歴はありません</p>';
+                list.innerHTML = '<p class="text-center text-gray-400 mt-10 text-sm">この範囲・モードの履歴はありません</p>';
                 return;
             }
             
@@ -363,7 +417,6 @@
                 const record = userProgress[v.ID][historyTab];
                 const isWrong = record.status === 'wrong';
                 
-                // 表面と裏面の表示内容をタブに合わせて切り替え
                 let frontText = "", backText = "";
                 switch(historyTab) {
                     case 'EPh-JPh': frontText = highlight(v['フレーズ(英語)'], v['英単語']); backText = v['フレーズ(日本語)']; break;
@@ -372,7 +425,6 @@
                     case 'JWd-EWd': frontText = v['日本語訳']; backText = v['英単語']; break;
                 }
 
-                // 正答率の計算
                 const accRate = Math.round((record.correct_count / record.total_count) * 100);
                 const accColor = accRate >= 80 ? 'text-green-600 bg-green-100' : (accRate < 50 ? 'text-red-600 bg-red-100' : 'text-blue-600 bg-blue-100');
 
