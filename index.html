@@ -172,7 +172,6 @@
             header: true,
             skipEmptyLines: true,
             complete: function(results) {
-                // ★ 「文中の英単語」「文中の日本語」がある行だけを読み込む（エラー防止）
                 vocabData = results.data.filter(v => v['ID'] && v['文中の英単語'] && v['文中の日本語']);
                 updateStartScreen();
             }
@@ -267,16 +266,26 @@
             loadCard();
         }
 
-        // ==========================================
-        // ★ ハイライト関数の改修（新CSVに対応）
-        // ==========================================
         function highlightExact(fullText, exactTargetWord) {
             if (!fullText || !exactTargetWord) return fullText;
-            // ターゲット文字列をエスケープ
             const escaped = exactTargetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            // 単純な置換（大文字小文字は区別しない）
             const regex = new RegExp(`(${escaped})`, 'gi');
             return fullText.replace(regex, `<span class="underline decoration-2 decoration-blue-400">$1</span>`);
+        }
+
+        // ==========================================
+        // ★新規追加：ヒント用の伏せ字を生成する関数
+        // ==========================================
+        function getHintPhrase(fullText, targetWord) {
+            if (!fullText || !targetWord) return fullText;
+            const escaped = targetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${escaped})`, 'gi');
+            
+            // 対象単語の頭文字だけ残して、文字数-1個のハイフンにする
+            return fullText.replace(regex, (match) => {
+                if (match.length <= 1) return match;
+                return match.charAt(0) + '-'.repeat(match.length - 1);
+            });
         }
 
         function loadCard() {
@@ -297,7 +306,9 @@
                     backEl.innerHTML = highlightExact(v['フレーズ(日本語)'], v['文中の日本語']);
                     break;
                 case 'JPh-EPh':
-                    frontEl.innerHTML = highlightExact(v['フレーズ(日本語)'], v['文中の日本語']);
+                    // ★ 修正：表面は日本語（下線なし）＋英語のヒント、裏面は英語（下線あり）
+                    const hintPhrase = getHintPhrase(v['フレーズ(英語)'], v['文中の英単語']);
+                    frontEl.innerHTML = `${v['フレーズ(日本語)']}<br><span class="text-lg text-gray-400 font-normal mt-4 block tracking-widest">${hintPhrase}</span>`;
                     backEl.innerHTML = highlightExact(v['フレーズ(英語)'], v['文中の英単語']);
                     break;
                 case 'EWd-JWd':
@@ -398,7 +409,8 @@
                 let frontText = "", backText = "";
                 switch(historyTab) {
                     case 'EPh-JPh': frontText = highlightExact(v['フレーズ(英語)'], v['文中の英単語']); backText = v['フレーズ(日本語)']; break;
-                    case 'JPh-EPh': frontText = highlightExact(v['フレーズ(日本語)'], v['文中の日本語']); backText = v['フレーズ(英語)']; break;
+                    // ★修正：履歴画面も、表面は日本語そのまま、裏面は英語（下線あり）に合わせる
+                    case 'JPh-EPh': frontText = v['フレーズ(日本語)']; backText = highlightExact(v['フレーズ(英語)'], v['文中の英単語']); break;
                     case 'EWd-JWd': frontText = v['英単語']; backText = v['日本語訳']; break;
                     case 'JWd-EWd': frontText = v['日本語訳']; backText = v['英単語']; break;
                 }
