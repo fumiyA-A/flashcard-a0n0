@@ -110,9 +110,14 @@
     </div>
 
     <div id="flashcard-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center hidden flex flex-col h-[85vh]">
-        <h2 class="text-gray-500 text-xs mb-4" id="progress">- / -</h2>
         
-        <div id="card" class="bg-blue-50 cursor-pointer p-8 rounded-lg flex-1 flex flex-col items-center justify-center transition-all duration-300" onclick="flipCard()">
+        <div class="flex justify-center items-center mb-4 space-x-2">
+            <span class="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Remaining</span>
+            <div id="progress" class="text-sm font-bold text-blue-600 bg-blue-50 border border-blue-100 px-4 py-1 rounded-full shadow-inner">- / -</div>
+        </div>
+        
+        <div id="card" class="bg-blue-50 cursor-pointer p-8 rounded-lg flex-1 flex flex-col items-center justify-center transition-all duration-300 relative overflow-hidden" onclick="flipCard()">
+            
             <div id="card-front" class="w-full">
                 <p id="label-front" class="text-[10px] uppercase tracking-widest text-blue-400 mb-2 font-bold">FRONT</p>
                 <h1 id="text-front" class="text-2xl font-bold text-gray-800 break-words leading-relaxed">読み込み中...</h1>
@@ -123,11 +128,21 @@
                 <h1 id="text-back" class="text-xl font-bold text-blue-600 break-words leading-relaxed">意味</h1>
                 <p id="sub-info" class="text-xs text-gray-400 mt-4 italic">補助情報</p>
             </div>
+
+            <div id="session-clear-msg" class="w-full hidden flex flex-col items-center justify-center">
+                <div class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-green-600 mb-2">Session Clear!</h1>
+                <p class="text-gray-500 text-sm font-medium leading-relaxed">お疲れ様でした。<br>スタート画面に戻って進捗を確認しましょう。</p>
+            </div>
         </div>
 
         <div id="buttons" class="mt-6 flex justify-between gap-4 hidden">
-            <button onclick="recordAnswer(false)" class="bg-red-500 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg">✕</button>
-            <button onclick="recordAnswer(true)" class="bg-green-500 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg">✓</button>
+            <button onclick="recordAnswer(false)" class="bg-red-500 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg hover:bg-red-600 transition-colors">✕</button>
+            <button onclick="recordAnswer(true)" class="bg-green-500 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg hover:bg-green-600 transition-colors">✓</button>
         </div>
         
         <button onclick="backToStart()" class="mt-6 text-sm text-gray-400 underline font-bold">← 中断して戻る</button>
@@ -152,6 +167,7 @@
         let vocabData = [];
         let activeVocab = [];
         let currentIndex = 0;
+        let sessionTotal = 0; // ★ セッションの総カード数を保持
         let isFlipped = false;
         
         let currentFormat = localStorage.getItem('flashcard_format') || "EPh-JPh";
@@ -260,9 +276,15 @@
             if (activeVocab.length === 0) return alert("この範囲には学習するカードがありません。");
 
             activeVocab.sort(() => Math.random() - 0.5);
+            sessionTotal = activeVocab.length; // ★ セッションの総数を固定
             currentIndex = 0;
+            
+            // ★ カード画面のUIリセット
+            document.getElementById('card-front').classList.remove('hidden');
+            document.getElementById('session-clear-msg').classList.add('hidden');
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('flashcard-screen').classList.remove('hidden');
+            
             loadCard();
         }
 
@@ -273,15 +295,10 @@
             return fullText.replace(regex, `<span class="underline decoration-2 decoration-blue-400">$1</span>`);
         }
 
-        // ==========================================
-        // ★新規追加：ヒント用の伏せ字を生成する関数
-        // ==========================================
         function getHintPhrase(fullText, targetWord) {
             if (!fullText || !targetWord) return fullText;
             const escaped = targetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             const regex = new RegExp(`(${escaped})`, 'gi');
-            
-            // 対象単語の頭文字だけ残して、文字数-1個のハイフンにする
             return fullText.replace(regex, (match) => {
                 if (match.length <= 1) return match;
                 return match.charAt(0) + '-'.repeat(match.length - 1);
@@ -289,9 +306,13 @@
         }
 
         function loadCard() {
-            if (activeVocab.length === 0) {
-                document.getElementById('card').innerHTML = '<h1 class="text-2xl font-bold text-green-600 mb-2">Session Clear!🎉</h1><p class="text-gray-600 text-sm">お疲れ様でした。</p>';
+            // ★ セッション終了の判定（総数に達したらクリア画面を表示）
+            if (currentIndex >= sessionTotal) {
+                document.getElementById('card-front').classList.add('hidden');
+                document.getElementById('card-back').classList.add('hidden');
                 document.getElementById('buttons').classList.add('hidden');
+                document.getElementById('session-clear-msg').classList.remove('hidden');
+                document.getElementById('progress').innerText = `0 / ${sessionTotal}`;
                 return;
             }
 
@@ -306,7 +327,6 @@
                     backEl.innerHTML = highlightExact(v['フレーズ(日本語)'], v['文中の日本語']);
                     break;
                 case 'JPh-EPh':
-                    // ★ 修正：表面は日本語（下線なし）＋英語のヒント、裏面は英語（下線あり）
                     const hintPhrase = getHintPhrase(v['フレーズ(英語)'], v['文中の英単語']);
                     frontEl.innerHTML = `${v['フレーズ(日本語)']}<br><span class="text-lg text-gray-400 font-normal mt-4 block tracking-widest">${hintPhrase}</span>`;
                     backEl.innerHTML = highlightExact(v['フレーズ(英語)'], v['文中の英単語']);
@@ -322,7 +342,10 @@
             }
 
             subEl.innerText = `ID:${v['ID']} | ${v['英単語']} | ${v['日本語訳']} | ${v['品詞']}`;
-            document.getElementById('progress').innerText = `${currentIndex + 1} / ${activeVocab.length}`;
+            
+            // ★ 残り枚数のカウントダウン表示
+            const remaining = sessionTotal - currentIndex;
+            document.getElementById('progress').innerHTML = `<span class="text-blue-600 font-extrabold text-base">${remaining}</span> <span class="text-gray-400 mx-1">/</span> <span class="text-gray-500">${sessionTotal}</span>`;
             
             document.getElementById('card-back').classList.add('hidden');
             document.getElementById('buttons').classList.add('hidden');
@@ -330,7 +353,7 @@
         }
 
         function flipCard() {
-            if (isFlipped) return;
+            if (isFlipped || currentIndex >= sessionTotal) return;
             document.getElementById('card-back').classList.remove('hidden');
             document.getElementById('buttons').classList.remove('hidden');
             isFlipped = true;
@@ -352,10 +375,8 @@
             
             localStorage.setItem('flashcard_progress_v2', JSON.stringify(userProgress));
 
-            if (isCorrect) activeVocab.splice(currentIndex, 1);
-            else currentIndex++;
-
-            if (currentIndex >= activeVocab.length) currentIndex = 0;
+            // ★ インデックスを進めるだけ（配列から削除しない）
+            currentIndex++;
             loadCard();
         }
 
@@ -409,7 +430,6 @@
                 let frontText = "", backText = "";
                 switch(historyTab) {
                     case 'EPh-JPh': frontText = highlightExact(v['フレーズ(英語)'], v['文中の英単語']); backText = v['フレーズ(日本語)']; break;
-                    // ★修正：履歴画面も、表面は日本語そのまま、裏面は英語（下線あり）に合わせる
                     case 'JPh-EPh': frontText = v['フレーズ(日本語)']; backText = highlightExact(v['フレーズ(英語)'], v['文中の英単語']); break;
                     case 'EWd-JWd': frontText = v['英単語']; backText = v['日本語訳']; break;
                     case 'JWd-EWd': frontText = v['日本語訳']; backText = v['英単語']; break;
