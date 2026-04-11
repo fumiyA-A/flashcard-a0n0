@@ -9,42 +9,56 @@
 </head>
 <body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden">
 
-    <div id="start-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center max-h-[95vh] overflow-y-auto relative">
+    <div id="start-screen" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md text-center max-h-[95vh] overflow-y-auto relative">
         <button onclick="showOptions()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
         </button>
 
-        <h1 class="text-3xl font-bold text-gray-800 mb-2 mt-2">TOEIC 900 Master</h1>
-        <p class="text-sm text-gray-500 mb-6">10 Days Strategic Learning</p>
+        <h1 class="text-2xl font-bold text-gray-800 mb-1 mt-2">TOEIC 900 Master</h1>
+        <p class="text-xs text-gray-500 mb-6">Spaced Repetition System</p>
 
-        <div class="mb-8 text-left bg-blue-50 p-5 rounded-lg shadow-inner">
-            <div class="flex justify-between items-center mb-2">
-                <h3 class="text-xs font-bold text-blue-500 uppercase tracking-wider" id="dash-mode-title">モード</h3>
-                <span id="dash-range-title" class="text-[10px] font-bold bg-blue-200 text-blue-700 px-2 py-0.5 rounded-full">範囲: 選択中</span>
+        <div class="mb-6 text-left bg-blue-50 p-4 rounded-lg shadow-inner">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-[10px] font-bold text-blue-500 uppercase tracking-wider" id="dash-mode-title">モード</h3>
+                <span id="dash-range-title" class="text-[9px] font-bold bg-blue-200 text-blue-700 px-2 py-0.5 rounded-full">範囲: 選択中</span>
             </div>
             
-            <div class="flex justify-between items-end mb-3 border-b border-blue-100 pb-2">
-                <span class="text-sm text-gray-600 font-bold mb-0.5">覚えた！:</span>
-                <span id="stat-memo" class="font-bold text-green-600 text-3xl leading-none">-</span>
+            <div class="flex justify-between items-end mb-2 border-b border-blue-100 pb-1.5">
+                <span class="text-xs text-gray-600 font-bold mb-0.5">定着済み (Safe):</span>
+                <span id="stat-safe" class="font-bold text-green-600 text-xl leading-none">-</span>
+            </div>
+            <div class="flex justify-between items-end mb-2 border-b border-blue-100 pb-1.5">
+                <span class="text-xs text-gray-600 font-bold mb-0.5">復習時期 (Due):</span>
+                <span id="stat-due" class="font-bold text-yellow-600 text-xl leading-none">-</span>
+            </div>
+            <div class="flex justify-between items-end mb-2 border-b border-blue-100 pb-1.5">
+                <span class="text-xs text-gray-600 font-bold mb-0.5">要復習 (Wrong):</span>
+                <span id="stat-wrong" class="font-bold text-red-500 text-xl leading-none">-</span>
             </div>
             <div class="flex justify-between items-end">
-                <span class="text-sm text-gray-600 font-bold mb-0.5">要復習:</span>
-                <span id="stat-wrong" class="font-bold text-red-500 text-3xl leading-none">-</span>
+                <span class="text-xs text-gray-600 font-bold mb-0.5">未学習 (New):</span>
+                <span id="stat-new" class="font-bold text-gray-400 text-xl leading-none">-</span>
             </div>
         </div>
 
-        <div class="space-y-4">
-            <button onclick="startStudy('all')" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-md active:bg-blue-700 transition-colors text-lg">
-                学習を開始
+        <div class="space-y-3">
+            <button onclick="startStudy('srs')" id="btn-srs" class="w-full bg-yellow-500 text-white py-3 rounded-xl font-bold shadow-md active:bg-yellow-600 transition-colors flex flex-col items-center justify-center">
+                <span class="text-lg">忘却曲線モード</span>
+                <span class="text-[10px] font-normal opacity-90 mt-0.5">復習時期のカード ＋ 要復習カード</span>
             </button>
-            <button onclick="startStudy('wrong')" id="btn-wrong" class="w-full bg-red-500 text-white py-4 rounded-xl font-bold shadow-md active:bg-red-600 transition-colors text-lg">
-                要復習のみ開始
-            </button>
-            <button onclick="openHistory()" class="w-full bg-gray-100 text-gray-600 py-3 rounded-xl font-bold active:bg-gray-200 transition-colors mt-2">
-                履歴を確認
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="startStudy('all')" class="w-full bg-blue-600 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-blue-700 transition-colors">
+                    新規を含む全件
+                </button>
+                <button onclick="startStudy('wrong')" id="btn-wrong" class="w-full bg-red-500 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-red-600 transition-colors">
+                    要復習のみ
+                </button>
+            </div>
+            <button onclick="openHistory()" class="w-full bg-gray-100 text-gray-600 py-3 rounded-xl text-sm font-bold active:bg-gray-200 transition-colors mt-2">
+                学習履歴と正答率を確認
             </button>
         </div>
     </div>
@@ -56,7 +70,6 @@
             
             <div class="mb-6">
                 <h3 class="text-sm font-bold text-gray-700 mb-3 pl-2 border-l-4 border-green-500">出題範囲（複数選択可）</h3>
-                
                 <div class="mb-4">
                     <h4 class="text-xs font-bold text-gray-500 mb-2">Score 600 Level</h4>
                     <div class="grid grid-cols-2 gap-2">
@@ -187,6 +200,7 @@
         let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4, 5];
         let historyTab = currentFormat;
 
+        // ★ 新構造：{ status, correct_count, total_count, consecutive_correct, next_review, last_date }
         let userProgress = JSON.parse(localStorage.getItem('flashcard_progress_v2')) || {};
 
         const modeNames = {
@@ -196,7 +210,6 @@
             'JWd-EWd': '日本語訳 → 英単語'
         };
 
-        // ★ IDからレベル名を取得する関数
         function getLevelName(idStr) {
             const str = String(idStr);
             if (str.startsWith('E') || str.startsWith('e')) return "Essential";
@@ -217,32 +230,30 @@
 
         function isVocabInRange(vocab) {
             const rawId = String(vocab.ID);
-            
-            if (rawId.startsWith('E') || rawId.startsWith('e')) {
-                return selectedRanges.includes(5);
-            }
+            if (rawId.startsWith('E') || rawId.startsWith('e')) return selectedRanges.includes(5);
             
             const id = parseInt(rawId, 10);
             if (isNaN(id)) return false;
-            
             if (selectedRanges.includes(1) && id >= 1 && id <= 100) return true;
             if (selectedRanges.includes(2) && id >= 101 && id <= 200) return true;
             if (selectedRanges.includes(3) && id >= 201 && id <= 300) return true;
             if (selectedRanges.includes(4) && id >= 301 && id <= 400) return true;
             if (selectedRanges.includes(4) && id >= 301) return true;
-            
             return false;
         }
 
         function updateStartScreen() {
-            let memoCount = 0;
+            let safeCount = 0;
+            let dueCount = 0;
             let wrongCount = 0;
+            let newCount = 0;
+            
             const targetVocab = vocabData.filter(isVocabInRange);
             const total = targetVocab.length;
+            const nowIso = new Date().toISOString();
 
             document.getElementById('dash-mode-title').innerText = modeNames[currentFormat];
             
-            // ★ バッジの表示をレベルに応じてスマートに変更
             let rangeText = "";
             if (selectedRanges.length === 5) {
                 rangeText = "全範囲 (600 Level + Essential)";
@@ -254,15 +265,40 @@
             }
             document.getElementById('dash-range-title').innerText = rangeText;
 
+            // ★ 4段階のステータス判定
             targetVocab.forEach(v => {
                 const record = userProgress[v.ID]?.[currentFormat];
-                if (record?.status === 'memorized') memoCount++;
-                else if (record?.status === 'wrong') wrongCount++;
+                if (!record) {
+                    newCount++;
+                } else if (record.status === 'wrong') {
+                    wrongCount++;
+                } else {
+                    // status === 'memorized'
+                    if (!record.next_review || record.next_review <= nowIso) {
+                        dueCount++; // 復習時期到達
+                    } else {
+                        safeCount++; // まだ復習しなくてよい
+                    }
+                }
             });
             
-            document.getElementById('stat-memo').innerHTML = `${memoCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
+            document.getElementById('stat-safe').innerHTML = `${safeCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
+            document.getElementById('stat-due').innerHTML = `${dueCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
             document.getElementById('stat-wrong').innerHTML = `${wrongCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
+            document.getElementById('stat-new').innerHTML = `${newCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
             
+            const btnSrs = document.getElementById('btn-srs');
+            const totalDue = dueCount + wrongCount;
+            if (totalDue === 0) {
+                btnSrs.disabled = true;
+                btnSrs.classList.replace('bg-yellow-500', 'bg-gray-300');
+                btnSrs.classList.replace('active:bg-yellow-600', 'active:bg-gray-300');
+            } else {
+                btnSrs.disabled = false;
+                btnSrs.classList.replace('bg-gray-300', 'bg-yellow-500');
+                btnSrs.classList.replace('active:bg-gray-300', 'active:bg-yellow-600');
+            }
+
             const btnWrong = document.getElementById('btn-wrong');
             btnWrong.disabled = (wrongCount === 0);
             btnWrong.style.opacity = (wrongCount === 0) ? "0.5" : "1";
@@ -305,13 +341,31 @@
 
         function startStudy(mode) {
             const targetVocab = vocabData.filter(isVocabInRange);
+            const nowIso = new Date().toISOString();
+
             if (mode === 'wrong') {
                 activeVocab = targetVocab.filter(v => userProgress[v.ID]?.[currentFormat]?.status === 'wrong');
+            } else if (mode === 'srs') {
+                // 忘却曲線モード: Due + Wrong
+                activeVocab = targetVocab.filter(v => {
+                    const record = userProgress[v.ID]?.[currentFormat];
+                    if (!record) return false; // 新規は除外
+                    if (record.status === 'wrong') return true;
+                    if (record.status === 'memorized' && (!record.next_review || record.next_review <= nowIso)) return true;
+                    return false;
+                });
             } else {
-                activeVocab = targetVocab.filter(v => userProgress[v.ID]?.[currentFormat]?.status !== 'memorized');
+                // 全件学習: Safe(定着済み) 以外すべて
+                activeVocab = targetVocab.filter(v => {
+                    const record = userProgress[v.ID]?.[currentFormat];
+                    if (!record) return true; // 新規
+                    if (record.status === 'wrong') return true;
+                    if (record.status === 'memorized' && (!record.next_review || record.next_review <= nowIso)) return true;
+                    return false;
+                });
             }
 
-            if (activeVocab.length === 0) return alert("この範囲には学習するカードがありません。");
+            if (activeVocab.length === 0) return alert("このモード/範囲には学習するカードがありません。");
 
             activeVocab.sort(() => Math.random() - 0.5);
             sessionTotal = activeVocab.length;
@@ -377,9 +431,16 @@
                     break;
             }
 
-            // ★ サブ情報にレベルラベルを追加
             const levelLabel = getLevelName(v['ID']);
-            subEl.innerHTML = `<span class="bg-gray-200 text-gray-600 px-1 rounded mr-1">${levelLabel}</span> ID:${v['ID']} | ${v['英単語']} | ${v['日本語訳']} | ${v['品詞']}`;
+            
+            // ★ 進捗情報を補助情報に表示（連続正解数など）
+            const record = userProgress[v.ID]?.[currentFormat];
+            let streakInfo = "";
+            if (record) {
+                streakInfo = `<span class="ml-2 text-green-500 font-bold">連続正解: ${record.consecutive_correct || 0}回</span>`;
+            }
+
+            subEl.innerHTML = `<span class="bg-gray-200 text-gray-600 px-1 rounded mr-1">${levelLabel}</span> ID:${v['ID']} | ${v['英単語']} | ${v['日本語訳']} ${streakInfo}`;
             
             const remaining = sessionTotal - currentIndex;
             document.getElementById('progress').innerHTML = `<span class="text-blue-600 font-extrabold text-base">${remaining}</span> <span class="text-gray-400 mx-1">/</span> <span class="text-gray-500">${sessionTotal}</span>`;
@@ -396,17 +457,40 @@
             isFlipped = true;
         }
 
+        // ★ 超短期決戦用・次回レビュー計算ロジック
+        function getNextReviewDate(consecutive_correct) {
+            const now = new Date();
+            let hours = 0;
+            switch(consecutive_correct) {
+                case 0: hours = 0; break;
+                case 1: hours = 4; break;   // 初回正解 → 4時間後
+                case 2: hours = 12; break;  // 2連続 → 12時間後（翌朝）
+                case 3: hours = 24; break;  // 3連続 → 1日後
+                case 4: hours = 48; break;  // 4連続 → 2日後
+                case 5: hours = 96; break;  // 5連続 → 4日後
+                default: hours = 168; break; // 6連続以上 → 7日後
+            }
+            return new Date(now.getTime() + hours * 60 * 60 * 1000).toISOString();
+        }
+
         function recordAnswer(isCorrect) {
             const v = activeVocab[currentIndex];
             const now = new Date().toISOString();
             
             if (!userProgress[v.ID]) userProgress[v.ID] = {};
-            const prevData = userProgress[v.ID][currentFormat] || { correct_count: 0, total_count: 0 };
+            const prevData = userProgress[v.ID][currentFormat] || { correct_count: 0, total_count: 0, consecutive_correct: 0 };
             
+            // ★ 連続正解数の更新
+            const currentStreak = prevData.consecutive_correct || 0;
+            const newStreak = isCorrect ? currentStreak + 1 : 0;
+            const nextReview = getNextReviewDate(newStreak);
+
             userProgress[v.ID][currentFormat] = { 
                 status: isCorrect ? 'memorized' : 'wrong', 
                 correct_count: prevData.correct_count + (isCorrect ? 1 : 0),
                 total_count: prevData.total_count + 1,
+                consecutive_correct: newStreak,
+                next_review: nextReview,
                 last_date: now 
             };
             
@@ -473,10 +557,9 @@
 
                 const accRate = Math.round((record.correct_count / record.total_count) * 100);
                 const accColor = accRate >= 80 ? 'text-green-600 bg-green-100' : (accRate < 50 ? 'text-red-600 bg-red-100' : 'text-blue-600 bg-blue-100');
-                
-                // ★ 履歴のカードにもレベルラベルを付ける
                 const levelLabel = getLevelName(v['ID']);
 
+                // ★ 履歴画面にも「連続正解数」を表示
                 list.innerHTML += `
                     <div class="p-3 bg-white border shadow-sm rounded-lg text-left ${isWrong ? 'border-red-300' : 'border-gray-200'}">
                         <div class="flex justify-between items-center mb-2 border-b border-gray-100 pb-1">
@@ -484,7 +567,10 @@
                                 <span class="text-[10px] font-bold ${isWrong ? 'text-red-500' : 'text-green-600'}">${isWrong ? '要復習' : '習得'}</span>
                                 <span class="text-[8px] bg-gray-100 text-gray-500 px-1 rounded">${levelLabel}</span>
                             </div>
-                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${accColor}">正答率: ${record.correct_count}/${record.total_count}回 (${accRate}%)</span>
+                            <div class="flex flex-col items-end">
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${accColor}">正答率: ${record.correct_count}/${record.total_count}回 (${accRate}%)</span>
+                                <span class="text-[9px] text-gray-400 mt-0.5 mr-1">連続: ${record.consecutive_correct || 0}回</span>
+                            </div>
                         </div>
                         <p class="text-sm font-bold text-gray-800 leading-tight mb-1">${frontText}</p>
                         <p class="text-xs text-gray-500">${backText}</p>
