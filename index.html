@@ -53,7 +53,6 @@
         <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-3 text-center">オプション設定</h2>
         
         <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-            
             <div class="mb-6">
                 <h3 class="text-sm font-bold text-gray-700 mb-3 pl-2 border-l-4 border-green-500">出題範囲（複数選択可）</h3>
                 <div class="grid grid-cols-2 gap-2">
@@ -156,7 +155,6 @@
         let isFlipped = false;
         
         let currentFormat = localStorage.getItem('flashcard_format') || "EPh-JPh";
-        // ★ 選択された範囲を配列として保存（デフォルトは全て）
         let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4];
         let historyTab = currentFormat;
 
@@ -174,33 +172,30 @@
             header: true,
             skipEmptyLines: true,
             complete: function(results) {
-                vocabData = results.data.filter(v => v['ID'] && v['英単語']);
+                // ★ 「文中の英単語」「文中の日本語」がある行だけを読み込む（エラー防止）
+                vocabData = results.data.filter(v => v['ID'] && v['文中の英単語'] && v['文中の日本語']);
                 updateStartScreen();
             }
         });
 
-        // ★ IDが選択された範囲に含まれるかを判定する関数
         function isVocabInRange(vocab) {
             const id = parseInt(vocab.ID, 10);
             if (isNaN(id)) return false;
             if (selectedRanges.includes(1) && id >= 1 && id <= 100) return true;
             if (selectedRanges.includes(2) && id >= 101 && id <= 200) return true;
             if (selectedRanges.includes(3) && id >= 201 && id <= 300) return true;
-            if (selectedRanges.includes(4) && id >= 301) return true; // 301以上
+            if (selectedRanges.includes(4) && id >= 301) return true;
             return false;
         }
 
         function updateStartScreen() {
             let memoCount = 0;
             let wrongCount = 0;
-            
-            // ★ 選択範囲のみで絞り込んだデータを母数とする
             const targetVocab = vocabData.filter(isVocabInRange);
             const total = targetVocab.length;
 
             document.getElementById('dash-mode-title').innerText = modeNames[currentFormat];
             
-            // 表示用の範囲テキストを生成
             let rangeText = "";
             if(selectedRanges.length === 4) rangeText = "全範囲 (1-400)";
             else rangeText = selectedRanges.map(r => `[${r}]`).join(", ") + " ブロック";
@@ -220,16 +215,11 @@
             btnWrong.style.opacity = (wrongCount === 0) ? "0.5" : "1";
         }
 
-        // ==========================================
-        // オプション画面
-        // ==========================================
         function loadOptionSettings() {
-            // フォーマットのラジオボタン
             const radios = document.getElementsByName('format');
             for(let i = 0; i < radios.length; i++) {
                 if(radios[i].value === currentFormat) radios[i].checked = true;
             }
-            // 範囲のチェックボックス
             const checkboxes = document.getElementsByName('range');
             for(let i = 0; i < checkboxes.length; i++) {
                 checkboxes[i].checked = selectedRanges.includes(parseInt(checkboxes[i].value, 10));
@@ -243,20 +233,15 @@
         }
 
         function saveOptionsAndClose() {
-            // 出題範囲の保存
             const checkboxes = document.getElementsByName('range');
             let newRanges = [];
             for(let i = 0; i < checkboxes.length; i++) {
                 if (checkboxes[i].checked) newRanges.push(parseInt(checkboxes[i].value, 10));
             }
-            if (newRanges.length === 0) {
-                alert("出題範囲を少なくとも1つ選択してください。");
-                return; // 閉じさせない
-            }
+            if (newRanges.length === 0) return alert("出題範囲を少なくとも1つ選択してください。");
+            
             selectedRanges = newRanges;
             localStorage.setItem('flashcard_ranges', JSON.stringify(selectedRanges));
-
-            // 出題形式の保存
             currentFormat = document.querySelector('input[name="format"]:checked').value;
             localStorage.setItem('flashcard_format', currentFormat);
             
@@ -265,13 +250,8 @@
             document.getElementById('start-screen').classList.remove('hidden');
         }
 
-        // ==========================================
-        // フラッシュカード画面
-        // ==========================================
         function startStudy(mode) {
-            // ★ まず選択範囲で絞り込む
             const targetVocab = vocabData.filter(isVocabInRange);
-
             if (mode === 'wrong') {
                 activeVocab = targetVocab.filter(v => userProgress[v.ID]?.[currentFormat]?.status === 'wrong');
             } else {
@@ -285,6 +265,18 @@
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('flashcard-screen').classList.remove('hidden');
             loadCard();
+        }
+
+        // ==========================================
+        // ★ ハイライト関数の改修（新CSVに対応）
+        // ==========================================
+        function highlightExact(fullText, exactTargetWord) {
+            if (!fullText || !exactTargetWord) return fullText;
+            // ターゲット文字列をエスケープ
+            const escaped = exactTargetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            // 単純な置換（大文字小文字は区別しない）
+            const regex = new RegExp(`(${escaped})`, 'gi');
+            return fullText.replace(regex, `<span class="underline decoration-2 decoration-blue-400">$1</span>`);
         }
 
         function loadCard() {
@@ -301,12 +293,12 @@
 
             switch(currentFormat) {
                 case 'EPh-JPh':
-                    frontEl.innerHTML = highlight(v['フレーズ(英語)'], v['英単語']);
-                    backEl.innerHTML = highlight(v['フレーズ(日本語)'], v['日本語訳']);
+                    frontEl.innerHTML = highlightExact(v['フレーズ(英語)'], v['文中の英単語']);
+                    backEl.innerHTML = highlightExact(v['フレーズ(日本語)'], v['文中の日本語']);
                     break;
                 case 'JPh-EPh':
-                    frontEl.innerHTML = highlight(v['フレーズ(日本語)'], v['日本語訳']);
-                    backEl.innerHTML = highlight(v['フレーズ(英語)'], v['英単語']);
+                    frontEl.innerHTML = highlightExact(v['フレーズ(日本語)'], v['文中の日本語']);
+                    backEl.innerHTML = highlightExact(v['フレーズ(英語)'], v['文中の英単語']);
                     break;
                 case 'EWd-JWd':
                     frontEl.innerText = v['英単語'];
@@ -324,14 +316,6 @@
             document.getElementById('card-back').classList.add('hidden');
             document.getElementById('buttons').classList.add('hidden');
             isFlipped = false;
-        }
-
-        function highlight(text, target) {
-            if (!text || !target) return text;
-            const escaped = target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const isEng = text.match(/[a-zA-Z]/);
-            const regex = isEng ? new RegExp(`\\b(${escaped})\\b`, 'gi') : new RegExp(`(${escaped})`, 'g');
-            return text.replace(regex, `<span class="underline decoration-2 decoration-blue-400">$1</span>`);
         }
 
         function flipCard() {
@@ -370,9 +354,6 @@
             document.getElementById('start-screen').classList.remove('hidden');
         }
 
-        // ==========================================
-        // 履歴・正答率画面
-        // ==========================================
         function openHistory() {
             historyTab = currentFormat; 
             switchHistoryTab(historyTab);
@@ -382,7 +363,6 @@
 
         function switchHistoryTab(tabName) {
             historyTab = tabName;
-            
             const tabs = ['EPh-JPh', 'JPh-EPh', 'EWd-JWd', 'JWd-EWd'];
             tabs.forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
@@ -394,7 +374,6 @@
                     el.classList.remove('border-blue-600', 'text-blue-600');
                 }
             });
-
             renderHistoryList();
         }
 
@@ -402,7 +381,6 @@
             const list = document.getElementById('history-list');
             list.innerHTML = '';
             
-            // ★履歴画面も、現在選択されている範囲(targetVocab)のみ表示する
             const targetVocab = vocabData.filter(isVocabInRange);
             const history = targetVocab
                 .filter(v => userProgress[v.ID] && userProgress[v.ID][historyTab])
@@ -419,8 +397,8 @@
                 
                 let frontText = "", backText = "";
                 switch(historyTab) {
-                    case 'EPh-JPh': frontText = highlight(v['フレーズ(英語)'], v['英単語']); backText = v['フレーズ(日本語)']; break;
-                    case 'JPh-EPh': frontText = highlight(v['フレーズ(日本語)'], v['日本語訳']); backText = v['フレーズ(英語)']; break;
+                    case 'EPh-JPh': frontText = highlightExact(v['フレーズ(英語)'], v['文中の英単語']); backText = v['フレーズ(日本語)']; break;
+                    case 'JPh-EPh': frontText = highlightExact(v['フレーズ(日本語)'], v['文中の日本語']); backText = v['フレーズ(英語)']; break;
                     case 'EWd-JWd': frontText = v['英単語']; backText = v['日本語訳']; break;
                     case 'JWd-EWd': frontText = v['日本語訳']; backText = v['英単語']; break;
                 }
