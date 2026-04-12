@@ -53,10 +53,13 @@
                 <button onclick="startStudy('all')" class="w-full bg-blue-600 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-blue-700 transition-colors">
                     新規を含む全件
                 </button>
-                <button onclick="startStudy('wrong')" id="btn-wrong" class="w-full bg-red-500 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-red-600 transition-colors">
-                    要復習のみ
+                <button onclick="startStudy('new')" id="btn-new" class="w-full bg-teal-500 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-teal-600 transition-colors">
+                    未学習のみ
                 </button>
             </div>
+            <button onclick="startStudy('wrong')" id="btn-wrong" class="w-full bg-red-500 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-red-600 transition-colors">
+                要復習のみ
+            </button>
             <button onclick="openHistory()" class="w-full bg-gray-100 text-gray-600 py-3 rounded-xl text-sm font-bold active:bg-gray-200 transition-colors mt-2">
                 学習履歴と正答率を確認
             </button>
@@ -255,7 +258,6 @@
         let isFlipped = false;
         
         let currentFormat = localStorage.getItem('flashcard_format') || "EPh-JPh";
-        // 初期状態では全範囲を選択状態にする (1〜10)
         let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         let historyTab = currentFormat;
 
@@ -268,7 +270,6 @@
             'JWd-EWd': '日本語訳 → 英単語'
         };
 
-        // ★ レベルラベルの取得処理の細分化
         function getLevelName(idStr) {
             const str = String(idStr);
             if (str.startsWith('E') || str.startsWith('e')) return "Essential";
@@ -292,7 +293,6 @@
             }
         });
 
-        // ★ IDからどのチェックボックスに該当するか判定するロジック
         function isVocabInRange(vocab) {
             const rawId = String(vocab.ID);
             if (rawId.startsWith('E') || rawId.startsWith('e')) return selectedRanges.includes(5);
@@ -323,9 +323,8 @@
 
             document.getElementById('dash-mode-title').innerText = modeNames[currentFormat];
             
-            // ★ スタート画面の選択範囲バッジの表示処理
             let rangeText = "";
-            if (selectedRanges.length === 10) { // 全10個のチェックボックス
+            if (selectedRanges.length === 10) {
                 rangeText = "全範囲 (All Levels)";
             } else {
                 let parts = [];
@@ -373,6 +372,13 @@
             const btnWrong = document.getElementById('btn-wrong');
             btnWrong.disabled = (wrongCount === 0);
             btnWrong.style.opacity = (wrongCount === 0) ? "0.5" : "1";
+
+            // ★ 追加：未学習のみボタンの制御
+            const btnNew = document.getElementById('btn-new');
+            if (btnNew) {
+                btnNew.disabled = (newCount === 0);
+                btnNew.style.opacity = (newCount === 0) ? "0.5" : "1";
+            }
         }
 
         function exportData() {
@@ -461,6 +467,9 @@
                     if (record.status === 'memorized' && (!record.next_review || record.next_review <= nowIso)) return true;
                     return false;
                 });
+            } else if (mode === 'new') {
+                // ★ 追加：未学習のみモードの抽出ロジック
+                activeVocab = targetVocab.filter(v => !userProgress[v.ID]?.[currentFormat]);
             } else {
                 activeVocab = targetVocab.filter(v => {
                     const record = userProgress[v.ID]?.[currentFormat];
