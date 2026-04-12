@@ -162,6 +162,46 @@
             </div>
 
             <div class="mb-6 border-t pt-4 border-gray-100">
+                <h3 class="text-sm font-bold text-gray-700 mb-2 pl-2 border-l-4 border-yellow-500">忘却曲線の間隔設定</h3>
+                <p class="text-[10px] text-gray-500 mb-3 pl-1 leading-tight">連続で正解したカードが、次に復習(Due)になるまでの間隔を調整できます。</p>
+                <div class="space-y-3 px-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-600 font-medium w-16">1回正解:</span>
+                        <input type="range" id="srs-0" min="1" max="24" step="1" class="w-3/5 accent-yellow-500" oninput="updateSrsLabel(0, this.value)">
+                        <span id="srs-val-0" class="text-[10px] font-bold text-gray-800 w-12 text-right"></span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-600 font-medium w-16">2回連続:</span>
+                        <input type="range" id="srs-1" min="2" max="48" step="2" class="w-3/5 accent-yellow-500" oninput="updateSrsLabel(1, this.value)">
+                        <span id="srs-val-1" class="text-[10px] font-bold text-gray-800 w-12 text-right"></span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-600 font-medium w-16">3回連続:</span>
+                        <input type="range" id="srs-2" min="6" max="96" step="6" class="w-3/5 accent-yellow-500" oninput="updateSrsLabel(2, this.value)">
+                        <span id="srs-val-2" class="text-[10px] font-bold text-gray-800 w-12 text-right"></span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-600 font-medium w-16">4回連続:</span>
+                        <input type="range" id="srs-3" min="12" max="168" step="12" class="w-3/5 accent-yellow-500" oninput="updateSrsLabel(3, this.value)">
+                        <span id="srs-val-3" class="text-[10px] font-bold text-gray-800 w-12 text-right"></span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-600 font-medium w-16">5回連続:</span>
+                        <input type="range" id="srs-4" min="24" max="336" step="24" class="w-3/5 accent-yellow-500" oninput="updateSrsLabel(4, this.value)">
+                        <span id="srs-val-4" class="text-[10px] font-bold text-gray-800 w-12 text-right"></span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-600 font-medium w-16">6回以上:</span>
+                        <input type="range" id="srs-5" min="24" max="720" step="24" class="w-3/5 accent-yellow-500" oninput="updateSrsLabel(5, this.value)">
+                        <span id="srs-val-5" class="text-[10px] font-bold text-gray-800 w-12 text-right"></span>
+                    </div>
+                </div>
+                <div class="text-right mt-2">
+                    <button onclick="resetSrsIntervals()" class="text-[10px] text-gray-400 hover:text-gray-600 underline">デフォルトに戻す</button>
+                </div>
+            </div>
+
+            <div class="mb-6 border-t pt-4 border-gray-100">
                 <h3 class="text-sm font-bold text-gray-700 mb-3 pl-2 border-l-4 border-purple-500">データ移行・バックアップ</h3>
                 <div class="space-y-2">
                     <button onclick="exportData()" class="w-full bg-white border border-gray-300 text-gray-700 py-2.5 rounded-lg text-sm font-bold shadow-sm hover:bg-gray-50 transition-colors flex justify-center items-center">
@@ -262,6 +302,10 @@
         let historyTab = currentFormat;
 
         let userProgress = JSON.parse(localStorage.getItem('flashcard_progress_v2')) || {};
+
+        // ★ 忘却曲線の間隔（デフォルト値：単位は時間）
+        const DEFAULT_SRS_INTERVALS = [4, 12, 24, 48, 96, 168];
+        let srsIntervals = JSON.parse(localStorage.getItem('flashcard_srs_intervals')) || DEFAULT_SRS_INTERVALS.slice();
 
         const modeNames = {
             'EPh-JPh': '英語フレーズ → 日本語',
@@ -373,7 +417,6 @@
             btnWrong.disabled = (wrongCount === 0);
             btnWrong.style.opacity = (wrongCount === 0) ? "0.5" : "1";
 
-            // ★ 追加：未学習のみボタンの制御
             const btnNew = document.getElementById('btn-new');
             if (btnNew) {
                 btnNew.disabled = (newCount === 0);
@@ -418,15 +461,51 @@
             reader.readAsText(file);
         }
 
+        // ==========================================
+        // ★ GUI スライダー関連処理
+        // ==========================================
+        function updateSrsLabel(index, val) {
+            const el = document.getElementById(`srs-val-${index}`);
+            const hours = parseInt(val, 10);
+            if (hours >= 24) {
+                const days = hours / 24;
+                el.innerText = Number.isInteger(days) ? `${days}日後` : `${days.toFixed(1)}日後`;
+            } else {
+                el.innerText = `${hours}時間後`;
+            }
+        }
+
         function loadOptionSettings() {
+            // フォーマット
             const radios = document.getElementsByName('format');
             for(let i = 0; i < radios.length; i++) {
                 if(radios[i].value === currentFormat) radios[i].checked = true;
             }
+            // 範囲
             const checkboxes = document.getElementsByName('range');
             for(let i = 0; i < checkboxes.length; i++) {
                 checkboxes[i].checked = selectedRanges.includes(parseInt(checkboxes[i].value, 10));
             }
+            // SRS スライダー
+            for(let i = 0; i < 6; i++) {
+                const slider = document.getElementById(`srs-${i}`);
+                if (slider) {
+                    slider.value = srsIntervals[i];
+                    updateSrsLabel(i, slider.value);
+                }
+            }
+        }
+
+        function resetSrsIntervals() {
+            srsIntervals = DEFAULT_SRS_INTERVALS.slice();
+            for(let i = 0; i < 6; i++) {
+                const slider = document.getElementById(`srs-${i}`);
+                if (slider) {
+                    slider.value = srsIntervals[i];
+                    updateSrsLabel(i, slider.value);
+                }
+            }
+            alert("忘却曲線の間隔をデフォルトに戻しました。");
         }
 
         function showOptions() {
@@ -442,12 +521,21 @@
                 if (checkboxes[i].checked) newRanges.push(parseInt(checkboxes[i].value, 10));
             }
             if (newRanges.length === 0) return alert("出題範囲を少なくとも1つ選択してください。");
-            
             selectedRanges = newRanges;
             localStorage.setItem('flashcard_ranges', JSON.stringify(selectedRanges));
+            
             currentFormat = document.querySelector('input[name="format"]:checked').value;
             localStorage.setItem('flashcard_format', currentFormat);
             
+            // SRS 設定の保存
+            for(let i = 0; i < 6; i++) {
+                const slider = document.getElementById(`srs-${i}`);
+                if (slider) {
+                    srsIntervals[i] = parseInt(slider.value, 10);
+                }
+            }
+            localStorage.setItem('flashcard_srs_intervals', JSON.stringify(srsIntervals));
+
             updateStartScreen();
             document.getElementById('options-screen').classList.add('hidden');
             document.getElementById('start-screen').classList.remove('hidden');
@@ -468,7 +556,6 @@
                     return false;
                 });
             } else if (mode === 'new') {
-                // ★ 追加：未学習のみモードの抽出ロジック
                 activeVocab = targetVocab.filter(v => !userProgress[v.ID]?.[currentFormat]);
             } else {
                 activeVocab = targetVocab.filter(v => {
@@ -582,15 +669,16 @@
         function getNextReviewDate(consecutive_correct) {
             const now = new Date();
             let hours = 0;
-            switch(consecutive_correct) {
-                case 0: hours = 0; break;
-                case 1: hours = 4; break;
-                case 2: hours = 12; break;
-                case 3: hours = 24; break;
-                case 4: hours = 48; break;
-                case 5: hours = 96; break;
-                default: hours = 168; break;
+            
+            if (consecutive_correct === 0) {
+                hours = 0;
+            } else {
+                // 配列のインデックスは0から始まるため、連続正解数 - 1 を使用
+                // 例: 1回正解(newStreak=1) -> srsIntervals[0]
+                const index = Math.min(consecutive_correct - 1, 5); 
+                hours = srsIntervals[index];
             }
+            
             return new Date(now.getTime() + hours * 60 * 60 * 1000).toISOString();
         }
 
