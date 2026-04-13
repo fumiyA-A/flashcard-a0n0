@@ -253,7 +253,7 @@
                     <span id="note-text" class="leading-relaxed text-xs"></span>
                 </div>
 
-                <p id="sub-info" class="text-[10px] text-gray-400 mt-4 italic leading-tight">補助情報</p>
+                <div id="sub-info" class="mt-4 w-full"></div>
             </div>
 
             <div id="session-clear-msg" class="w-full hidden flex flex-col items-center justify-center">
@@ -303,7 +303,6 @@
 
         let userProgress = JSON.parse(localStorage.getItem('flashcard_progress_v2')) || {};
 
-        // ★ 忘却曲線の間隔（デフォルト値：単位は時間）
         const DEFAULT_SRS_INTERVALS = [4, 12, 24, 48, 96, 168];
         let srsIntervals = JSON.parse(localStorage.getItem('flashcard_srs_intervals')) || DEFAULT_SRS_INTERVALS.slice();
 
@@ -461,9 +460,6 @@
             reader.readAsText(file);
         }
 
-        // ==========================================
-        // ★ GUI スライダー関連処理
-        // ==========================================
         function updateSrsLabel(index, val) {
             const el = document.getElementById(`srs-val-${index}`);
             const hours = parseInt(val, 10);
@@ -476,17 +472,14 @@
         }
 
         function loadOptionSettings() {
-            // フォーマット
             const radios = document.getElementsByName('format');
             for(let i = 0; i < radios.length; i++) {
                 if(radios[i].value === currentFormat) radios[i].checked = true;
             }
-            // 範囲
             const checkboxes = document.getElementsByName('range');
             for(let i = 0; i < checkboxes.length; i++) {
                 checkboxes[i].checked = selectedRanges.includes(parseInt(checkboxes[i].value, 10));
             }
-            // SRS スライダー
             for(let i = 0; i < 6; i++) {
                 const slider = document.getElementById(`srs-${i}`);
                 if (slider) {
@@ -521,13 +514,12 @@
                 if (checkboxes[i].checked) newRanges.push(parseInt(checkboxes[i].value, 10));
             }
             if (newRanges.length === 0) return alert("出題範囲を少なくとも1つ選択してください。");
+            
             selectedRanges = newRanges;
             localStorage.setItem('flashcard_ranges', JSON.stringify(selectedRanges));
-            
             currentFormat = document.querySelector('input[name="format"]:checked').value;
             localStorage.setItem('flashcard_format', currentFormat);
             
-            // SRS 設定の保存
             for(let i = 0; i < 6; i++) {
                 const slider = document.getElementById(`srs-${i}`);
                 if (slider) {
@@ -645,11 +637,23 @@
             const levelLabel = getLevelName(v['ID']);
             const record = userProgress[v.ID]?.[currentFormat];
             let streakInfo = "";
-            if (record) {
-                streakInfo = `<span class="ml-2 text-green-500 font-bold">連続正解: ${record.consecutive_correct || 0}回</span>`;
+            if (record && record.consecutive_correct > 0) {
+                streakInfo = `<span class="ml-2 text-green-500 font-bold text-[10px]">🔥 連続: ${record.consecutive_correct}回</span>`;
             }
 
-            subEl.innerHTML = `<span class="bg-gray-200 text-gray-600 px-1 rounded mr-1">${levelLabel}</span> ID:${v['ID']} | ${v['英単語']} | ${v['日本語訳']} ${streakInfo}`;
+            // ★ 補助情報（英単語と日本語訳）を大きく見やすく改修
+            subEl.innerHTML = `
+                <div class="flex flex-wrap justify-center items-center gap-2 text-[10px] text-gray-400 mb-2">
+                    <span class="bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded">${levelLabel}</span>
+                    <span>ID: ${v['ID']}</span>
+                    ${streakInfo}
+                </div>
+                <div class="text-sm font-bold text-gray-700 bg-gray-50/50 py-2 px-3 rounded border border-gray-100 shadow-sm w-full">
+                    <span class="text-blue-600">${v['英単語']}</span> 
+                    <span class="text-gray-300 font-normal mx-1">|</span> 
+                    <span>${v['日本語訳']}</span>
+                </div>
+            `;
             
             const remaining = sessionTotal - currentIndex;
             document.getElementById('progress').innerHTML = `<span class="text-blue-600 font-extrabold text-base">${remaining}</span> <span class="text-gray-400 mx-1">/</span> <span class="text-gray-500">${sessionTotal}</span>`;
@@ -673,8 +677,6 @@
             if (consecutive_correct === 0) {
                 hours = 0;
             } else {
-                // 配列のインデックスは0から始まるため、連続正解数 - 1 を使用
-                // 例: 1回正解(newStreak=1) -> srsIntervals[0]
                 const index = Math.min(consecutive_correct - 1, 5); 
                 hours = srsIntervals[index];
             }
