@@ -163,7 +163,7 @@
 
             <div class="mb-6 border-t pt-4 border-gray-100">
                 <h3 class="text-sm font-bold text-gray-700 mb-2 pl-2 border-l-4 border-yellow-500">忘却曲線の間隔設定</h3>
-                <p class="text-[10px] text-gray-500 mb-3 pl-1 leading-tight">連続で正解したカードが、次に復習(Due)になるまでの間隔を調整できます。</p>
+                <p class="text-[10px] text-gray-500 mb-3 pl-1 leading-tight">連続で正解したカードが、次に復習(Due)になるまでの間隔を調整できます。<br>※累計正答率が50%以下の「苦手カード」は、自動的に間隔が半分に短縮されます。</p>
                 <div class="space-y-3 px-1">
                     <div class="flex items-center justify-between">
                         <span class="text-xs text-gray-600 font-medium w-16">1回正解:</span>
@@ -514,9 +514,9 @@
                 if (checkboxes[i].checked) newRanges.push(parseInt(checkboxes[i].value, 10));
             }
             if (newRanges.length === 0) return alert("出題範囲を少なくとも1つ選択してください。");
-            
             selectedRanges = newRanges;
             localStorage.setItem('flashcard_ranges', JSON.stringify(selectedRanges));
+            
             currentFormat = document.querySelector('input[name="format"]:checked').value;
             localStorage.setItem('flashcard_format', currentFormat);
             
@@ -636,17 +636,30 @@
 
             const levelLabel = getLevelName(v['ID']);
             const record = userProgress[v.ID]?.[currentFormat];
+            
+            // ★ 進捗ステータス・連続正解・正答率の表示
             let streakInfo = "";
-            if (record && record.consecutive_correct > 0) {
-                streakInfo = `<span class="ml-2 text-green-500 font-bold text-[10px]">🔥 連続: ${record.consecutive_correct}回</span>`;
+            let weaknessAlert = "";
+            
+            if (record) {
+                if (record.consecutive_correct > 0) {
+                    streakInfo = `<span class="ml-2 text-green-500 font-bold text-[10px]">🔥 連続: ${record.consecutive_correct}回</span>`;
+                }
+                // 正答率50%以下なら「苦手」アラートを表示
+                if (record.total_count > 0) {
+                    const accRate = record.correct_count / record.total_count;
+                    if (accRate <= 0.5) {
+                        weaknessAlert = `<span class="ml-2 text-red-500 font-bold text-[10px] animate-pulse">⚠️苦手(正答率${Math.round(accRate*100)}%)</span>`;
+                    }
+                }
             }
 
-            // ★ 補助情報（英単語と日本語訳）を大きく見やすく改修
             subEl.innerHTML = `
-                <div class="flex flex-wrap justify-center items-center gap-2 text-[10px] text-gray-400 mb-2">
+                <div class="flex flex-wrap justify-center items-center gap-1 text-[10px] text-gray-400 mb-2">
                     <span class="bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded">${levelLabel}</span>
                     <span>ID: ${v['ID']}</span>
                     ${streakInfo}
+                    ${weaknessAlert}
                 </div>
                 <div class="text-sm font-bold text-gray-700 bg-gray-50/50 py-2 px-3 rounded border border-gray-100 shadow-sm w-full">
                     <span class="text-blue-600">${v['英単語']}</span> 
@@ -670,7 +683,8 @@
             isFlipped = true;
         }
 
-        function getNextReviewDate(consecutive_correct) {
+        // ★ 改修：正答率50%以下なら間隔を半分にするペナルティを追加
+        function getNextReviewDate(consecutive_correct, correct_count, total_count) {
             const now = new Date();
             let hours = 0;
             
@@ -679,6 +693,15 @@
             } else {
                 const index = Math.min(consecutive_correct - 1, 5); 
                 hours = srsIntervals[index];
+            }
+            
+            // 累計正答率が50%以下の場合は、間隔を半分にする（最低1時間）
+            if (total_count > 0) {
+                const accuracy = correct_count / total_count;
+                if (accuracy <= 0.5 && hours > 0) {
+                    hours = Math.floor(hours / 2);
+                    if (hours < 1) hours = 1;
+                }
             }
             
             return new Date(now.getTime() + hours * 60 * 60 * 1000).toISOString();
@@ -693,12 +716,18 @@
             
             const currentStreak = prevData.consecutive_correct || 0;
             const newStreak = isCorrect ? currentStreak + 1 : 0;
-            const nextReview = getNextReviewDate(newStreak);
+            
+            // 今回の回答結果を含めた累計の正解数・出題数
+            const newCorrectCount = prevData.correct_count + (isCorrect ? 1 : 0);
+            const newTotalCount = prevData.total_count + 1;
+
+            // 新しい間隔の計算（正答率情報も渡す）
+            const nextReview = getNextReviewDate(newStreak, newCorrectCount, newTotalCount);
 
             userProgress[v.ID][currentFormat] = { 
                 status: isCorrect ? 'memorized' : 'wrong', 
-                correct_count: prevData.correct_count + (isCorrect ? 1 : 0),
-                total_count: prevData.total_count + 1,
+                correct_count: newCorrectCount,
+                total_count: newTotalCount,
                 consecutive_correct: newStreak,
                 next_review: nextReview,
                 last_date: now 
