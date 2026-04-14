@@ -196,6 +196,14 @@
                         <span id="srs-val-5" class="text-[10px] font-bold text-gray-800 w-12 text-right"></span>
                     </div>
                 </div>
+
+                <div class="mt-4 pt-3 border-t border-yellow-100">
+                    <label class="flex items-center p-2 bg-yellow-50 rounded-lg border border-yellow-100 cursor-pointer hover:bg-yellow-100 transition-colors">
+                        <input type="checkbox" id="setting-exclude-100" class="w-4 h-4 text-yellow-600 rounded">
+                        <span class="ml-2 text-[11px] font-bold text-yellow-800">正答率100%の単語は忘却曲線(Due)から除外する</span>
+                    </label>
+                </div>
+
                 <div class="text-right mt-2">
                     <button onclick="resetSrsIntervals()" class="text-[10px] text-gray-400 hover:text-gray-600 underline">デフォルトに戻す</button>
                 </div>
@@ -306,6 +314,9 @@
         const DEFAULT_SRS_INTERVALS = [4, 12, 24, 48, 96, 168];
         let srsIntervals = JSON.parse(localStorage.getItem('flashcard_srs_intervals')) || DEFAULT_SRS_INTERVALS.slice();
 
+        // ★ 新規追加：100%正解のカードを除外する設定の読み込み
+        let exclude100Srs = JSON.parse(localStorage.getItem('flashcard_exclude_100_srs')) || false;
+
         const modeNames = {
             'EPh-JPh': '英語フレーズ → 日本語',
             'JPh-EPh': '日本語フレーズ → 英語',
@@ -388,7 +399,12 @@
                     wrongCount++;
                 } else {
                     if (!record.next_review || record.next_review <= nowIso) {
-                        dueCount++;
+                        // ★ 100%除外設定がONかつ、正答率100%の単語の場合は「Due」にせず「Safe」に逃がす
+                        if (exclude100Srs && record.total_count > 0 && record.correct_count === record.total_count) {
+                            safeCount++;
+                        } else {
+                            dueCount++;
+                        }
                     } else {
                         safeCount++;
                     }
@@ -487,6 +503,9 @@
                     updateSrsLabel(i, slider.value);
                 }
             }
+            // ★ 除外設定チェックボックスの読み込み
+            const excludeCheck = document.getElementById('setting-exclude-100');
+            if(excludeCheck) excludeCheck.checked = exclude100Srs;
         }
 
         function resetSrsIntervals() {
@@ -514,9 +533,9 @@
                 if (checkboxes[i].checked) newRanges.push(parseInt(checkboxes[i].value, 10));
             }
             if (newRanges.length === 0) return alert("出題範囲を少なくとも1つ選択してください。");
+            
             selectedRanges = newRanges;
             localStorage.setItem('flashcard_ranges', JSON.stringify(selectedRanges));
-            
             currentFormat = document.querySelector('input[name="format"]:checked').value;
             localStorage.setItem('flashcard_format', currentFormat);
             
@@ -527,6 +546,13 @@
                 }
             }
             localStorage.setItem('flashcard_srs_intervals', JSON.stringify(srsIntervals));
+
+            // ★ 除外設定の保存
+            const excludeCheck = document.getElementById('setting-exclude-100');
+            if (excludeCheck) {
+                exclude100Srs = excludeCheck.checked;
+                localStorage.setItem('flashcard_exclude_100_srs', JSON.stringify(exclude100Srs));
+            }
 
             updateStartScreen();
             document.getElementById('options-screen').classList.add('hidden');
@@ -544,7 +570,13 @@
                     const record = userProgress[v.ID]?.[currentFormat];
                     if (!record) return false;
                     if (record.status === 'wrong') return true;
-                    if (record.status === 'memorized' && (!record.next_review || record.next_review <= nowIso)) return true;
+                    if (record.status === 'memorized' && (!record.next_review || record.next_review <= nowIso)) {
+                        // ★ 100%除外設定がONなら、SRSモードからは除外する
+                        if (exclude100Srs && record.total_count > 0 && record.correct_count === record.total_count) {
+                            return false;
+                        }
+                        return true;
+                    }
                     return false;
                 });
             } else if (mode === 'new') {
@@ -637,7 +669,6 @@
             const levelLabel = getLevelName(v['ID']);
             const record = userProgress[v.ID]?.[currentFormat];
             
-            // ★ 進捗ステータス・連続正解・正答率の表示
             let streakInfo = "";
             let weaknessAlert = "";
             
@@ -645,7 +676,6 @@
                 if (record.consecutive_correct > 0) {
                     streakInfo = `<span class="ml-2 text-green-500 font-bold text-[10px]">🔥 連続: ${record.consecutive_correct}回</span>`;
                 }
-                // 正答率50%以下なら「苦手」アラートを表示
                 if (record.total_count > 0) {
                     const accRate = record.correct_count / record.total_count;
                     if (accRate <= 0.5) {
@@ -683,7 +713,6 @@
             isFlipped = true;
         }
 
-        // ★ 改修：正答率50%以下なら間隔を半分にするペナルティを追加
         function getNextReviewDate(consecutive_correct, correct_count, total_count) {
             const now = new Date();
             let hours = 0;
@@ -695,7 +724,6 @@
                 hours = srsIntervals[index];
             }
             
-            // 累計正答率が50%以下の場合は、間隔を半分にする（最低1時間）
             if (total_count > 0) {
                 const accuracy = correct_count / total_count;
                 if (accuracy <= 0.5 && hours > 0) {
@@ -717,11 +745,9 @@
             const currentStreak = prevData.consecutive_correct || 0;
             const newStreak = isCorrect ? currentStreak + 1 : 0;
             
-            // 今回の回答結果を含めた累計の正解数・出題数
             const newCorrectCount = prevData.correct_count + (isCorrect ? 1 : 0);
             const newTotalCount = prevData.total_count + 1;
 
-            // 新しい間隔の計算（正答率情報も渡す）
             const nextReview = getNextReviewDate(newStreak, newCorrectCount, newTotalCount);
 
             userProgress[v.ID][currentFormat] = { 
