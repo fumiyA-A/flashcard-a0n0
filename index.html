@@ -238,49 +238,51 @@
         </div>
     </div>
 
-    <div id="flashcard-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center hidden flex flex-col h-[85vh]">
+    <div id="flashcard-screen" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md text-center hidden flex flex-col h-[85vh]">
         
-        <div class="flex justify-center items-center mb-4 space-x-2">
+        <div class="flex justify-center items-center mb-4 space-x-2 flex-shrink-0">
             <span class="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Remaining</span>
             <div id="progress" class="text-sm font-bold text-blue-600 bg-blue-50 border border-blue-100 px-4 py-1 rounded-full shadow-inner">- / -</div>
         </div>
         
-        <div id="card" class="bg-blue-50 cursor-pointer p-8 rounded-lg flex-1 flex flex-col items-center justify-center transition-all duration-300 relative overflow-hidden" onclick="flipCard()">
+        <div id="card" class="bg-blue-50 cursor-pointer p-6 rounded-lg flex-1 flex flex-col overflow-y-auto custom-scrollbar transition-all duration-300 relative" onclick="flipCard()">
             
-            <div id="card-front" class="w-full">
-                <p id="label-front" class="text-[10px] uppercase tracking-widest text-blue-400 mb-2 font-bold">FRONT</p>
-                <h1 id="text-front" class="text-2xl font-bold text-gray-800 break-words leading-relaxed">読み込み中...</h1>
-            </div>
-            
-            <div id="card-back" class="w-full mt-4 pt-4 border-t border-blue-100 hidden">
-                <p id="label-back" class="text-[10px] uppercase tracking-widest text-green-400 mb-2 font-bold">BACK</p>
-                <h1 id="text-back" class="text-xl font-bold text-blue-600 break-words leading-relaxed">意味</h1>
+            <div class="w-full my-auto flex flex-col items-center justify-center py-2">
+                <div id="card-front" class="w-full">
+                    <p id="label-front" class="text-[10px] uppercase tracking-widest text-blue-400 mb-2 font-bold">FRONT</p>
+                    <h1 id="text-front" class="text-2xl font-bold text-gray-800 break-words leading-relaxed">読み込み中...</h1>
+                </div>
                 
-                <div id="note-area" class="mt-4 p-3 bg-yellow-50 text-yellow-800 text-sm rounded-lg text-left w-full hidden border border-yellow-100 shadow-sm">
-                    <span class="font-bold text-yellow-600 text-[10px] uppercase tracking-wider block mb-1">💡 備考 / 派生語</span>
-                    <span id="note-text" class="leading-relaxed text-xs"></span>
+                <div id="card-back" class="w-full mt-4 pt-4 border-t border-blue-100 hidden">
+                    <p id="label-back" class="text-[10px] uppercase tracking-widest text-green-400 mb-2 font-bold">BACK</p>
+                    <h1 id="text-back" class="text-xl font-bold text-blue-600 break-words leading-relaxed">意味</h1>
+                    
+                    <div id="note-area" class="mt-4 p-3 bg-yellow-50 text-yellow-800 text-sm rounded-lg text-left w-full hidden border border-yellow-100 shadow-sm">
+                        <span class="font-bold text-yellow-600 text-[10px] uppercase tracking-wider block mb-1">💡 備考 / 派生語</span>
+                        <span id="note-text" class="leading-relaxed text-xs"></span>
+                    </div>
+
+                    <div id="sub-info" class="mt-4 w-full"></div>
                 </div>
 
-                <div id="sub-info" class="mt-4 w-full"></div>
-            </div>
-
-            <div id="session-clear-msg" class="w-full hidden flex flex-col items-center justify-center">
-                <div class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
+                <div id="session-clear-msg" class="w-full hidden flex-col items-center justify-center">
+                    <div class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl font-bold text-green-600 mb-2">Session Clear!</h1>
+                    <p class="text-gray-500 text-sm font-medium leading-relaxed">お疲れ様でした。<br>スタート画面に戻って進捗を確認しましょう。</p>
                 </div>
-                <h1 class="text-2xl font-bold text-green-600 mb-2">Session Clear!</h1>
-                <p class="text-gray-500 text-sm font-medium leading-relaxed">お疲れ様でした。<br>スタート画面に戻って進捗を確認しましょう。</p>
             </div>
         </div>
 
-        <div id="buttons" class="mt-6 flex justify-between gap-4 hidden">
+        <div id="buttons" class="mt-6 flex justify-between gap-4 hidden flex-shrink-0">
             <button onclick="recordAnswer(false)" class="bg-red-500 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg hover:bg-red-600 transition-colors">✕</button>
             <button onclick="recordAnswer(true)" class="bg-green-500 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg hover:bg-green-600 transition-colors">✓</button>
         </div>
         
-        <button onclick="backToStart()" class="mt-4 text-sm text-gray-400 underline font-bold">← 中断して戻る</button>
+        <button onclick="backToStart()" class="mt-4 text-sm text-gray-400 underline font-bold flex-shrink-0">← 中断して戻る</button>
     </div>
 
     <div id="history-screen" class="bg-white p-4 rounded-xl shadow-lg w-full max-w-md hidden flex flex-col h-[90vh]">
@@ -314,7 +316,6 @@
         const DEFAULT_SRS_INTERVALS = [4, 12, 24, 48, 96, 168];
         let srsIntervals = JSON.parse(localStorage.getItem('flashcard_srs_intervals')) || DEFAULT_SRS_INTERVALS.slice();
 
-        // ★ 新規追加：100%正解のカードを除外する設定の読み込み
         let exclude100Srs = JSON.parse(localStorage.getItem('flashcard_exclude_100_srs')) || false;
 
         const modeNames = {
@@ -399,7 +400,6 @@
                     wrongCount++;
                 } else {
                     if (!record.next_review || record.next_review <= nowIso) {
-                        // ★ 100%除外設定がONかつ、正答率100%の単語の場合は「Due」にせず「Safe」に逃がす
                         if (exclude100Srs && record.total_count > 0 && record.correct_count === record.total_count) {
                             safeCount++;
                         } else {
@@ -503,7 +503,6 @@
                     updateSrsLabel(i, slider.value);
                 }
             }
-            // ★ 除外設定チェックボックスの読み込み
             const excludeCheck = document.getElementById('setting-exclude-100');
             if(excludeCheck) excludeCheck.checked = exclude100Srs;
         }
@@ -547,7 +546,6 @@
             }
             localStorage.setItem('flashcard_srs_intervals', JSON.stringify(srsIntervals));
 
-            // ★ 除外設定の保存
             const excludeCheck = document.getElementById('setting-exclude-100');
             if (excludeCheck) {
                 exclude100Srs = excludeCheck.checked;
@@ -571,7 +569,6 @@
                     if (!record) return false;
                     if (record.status === 'wrong') return true;
                     if (record.status === 'memorized' && (!record.next_review || record.next_review <= nowIso)) {
-                        // ★ 100%除外設定がONなら、SRSモードからは除外する
                         if (exclude100Srs && record.total_count > 0 && record.correct_count === record.total_count) {
                             return false;
                         }
@@ -601,6 +598,9 @@
             document.getElementById('session-clear-msg').classList.add('hidden');
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('flashcard-screen').classList.remove('hidden');
+            
+            // スクロール位置を一番上に戻す
+            document.getElementById('card').scrollTop = 0;
             
             loadCard();
         }
@@ -711,6 +711,11 @@
             document.getElementById('card-back').classList.remove('hidden');
             document.getElementById('buttons').classList.remove('hidden');
             isFlipped = true;
+            // 裏面を表示した際にスクロール位置を下に下げる
+            setTimeout(() => {
+                const card = document.getElementById('card');
+                card.scrollTo({ top: card.scrollHeight, behavior: 'smooth' });
+            }, 50);
         }
 
         function getNextReviewDate(consecutive_correct, correct_count, total_count) {
@@ -762,6 +767,7 @@
             localStorage.setItem('flashcard_progress_v2', JSON.stringify(userProgress));
 
             currentIndex++;
+            document.getElementById('card').scrollTop = 0; // 新しいカードをめくるたびにスクロールを上に戻す
             loadCard();
         }
 
