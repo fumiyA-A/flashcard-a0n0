@@ -2,12 +2,17 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My Flashcard</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#f3f4f6">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192x192.png?text=Flashcard">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
-<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden">
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden select-none">
 
     <div id="start-screen" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md text-center max-h-[95vh] overflow-y-auto relative">
         
@@ -84,6 +89,32 @@
         <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-6 text-left">
             
             <div>
+                <h3 class="text-sm font-bold text-pink-500 mb-2 border-l-4 border-pink-500 pl-2">はじめに：スマホの「アプリ」にする</h3>
+                <p class="text-xs text-gray-600 leading-relaxed mb-2">
+                    ホーム画面に追加すると、ブラウザの枠が消えて全画面のサクサク動く本物のアプリになります。<br>
+                    <span class="text-red-500 font-bold">※Safari等のブラウザと「アプリ版」ではデータが別々に保存されるため、一番最初にこの設定を行ってください！</span>
+                </p>
+                <div class="space-y-2">
+                    <div class="bg-pink-50 p-3 rounded border border-pink-100">
+                        <p class="text-xs font-bold text-gray-800 mb-1">📱 iPhone (Safari) の場合</p>
+                        <ol class="text-[11px] text-gray-700 list-decimal list-inside pl-1 space-y-1">
+                            <li>画面下部の「共有アイコン（四角から上矢印）」をタップ</li>
+                            <li>少し下にスクロールし「ホーム画面に追加」を選択</li>
+                            <li>右上の「追加」を押し、ホーム画面のアイコンから起動！</li>
+                        </ol>
+                    </div>
+                    <div class="bg-pink-50 p-3 rounded border border-pink-100">
+                        <p class="text-xs font-bold text-gray-800 mb-1">🤖 Android (Chrome) の場合</p>
+                        <ol class="text-[11px] text-gray-700 list-decimal list-inside pl-1 space-y-1">
+                            <li>画面右上の「︙（メニュー）」をタップ</li>
+                            <li>「ホーム画面に追加」を選択</li>
+                            <li>「追加」を押し、ホーム画面のアイコンから起動！</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div>
                 <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">1. 学習の進め方</h3>
                 <p class="text-xs text-gray-600 leading-relaxed mb-2">
                     このアプリは「忘却曲線」に基づいて、あなたが忘れかけた絶妙なタイミングでカードを再出題するシステムです。
@@ -91,8 +122,8 @@
                 <ol class="text-xs text-gray-700 space-y-2 list-decimal list-inside pl-2">
                     <li>最初は <span class="bg-teal-100 text-teal-800 px-1 rounded font-bold">未学習のみ</span> を押して新しいカードを解きます。</li>
                     <li>学習が終わると、カードは「定着済み(Safe)」または「要復習(Wrong)」に振り分けられます。</li>
-                    <li>数時間〜数日経つと、Safeだったカードの記憶が薄れ <span class="bg-yellow-100 text-yellow-800 px-1 rounded font-bold">復習時期(Due)</span> に変わります。</li>
-                    <li>次回以降は、一番大きな <span class="bg-yellow-500 text-white px-1 rounded font-bold">忘却曲線モード</span> ボタンを押すだけで、今やるべきカードだけが自動で出題されます！</li>
+                    <li>時間が経つと、Safeだったカードの記憶が薄れ <span class="bg-yellow-100 text-yellow-800 px-1 rounded font-bold">復習時期(Due)</span> に変わります。</li>
+                    <li>次回以降は、一番大きな <span class="bg-yellow-500 text-white px-1 rounded font-bold">忘却曲線モード</span> を押すだけで、今やるべきカードだけが出題されます！</li>
                 </ol>
             </div>
 
@@ -121,7 +152,7 @@
             <div>
                 <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">3. オプション(⚙️)の活用</h3>
                 <ul class="text-xs text-gray-600 space-y-2 list-disc list-inside">
-                    <li><strong>出題範囲:</strong> 今週は「Score 600」だけ、来週は「Essential」を追加…など自由に絞り込めます。</li>
+                    <li><strong>出題範囲:</strong> 今週は「600 Level」だけ、来週は「Essential」を追加…など自由に絞り込めます。</li>
                     <li><strong>出題形式:</strong> 「英→日」に慣れたら「日→英」に切り替えてアウトプット力を鍛えましょう。</li>
                     <li><strong>忘却曲線の間隔:</strong> 連続正解した際に「次にいつDueになるか」をカスタマイズできます。</li>
                     <li><strong>100%正解の除外:</strong> 一度も間違えていないカードを復習から除外する機能です。</li>
@@ -132,7 +163,7 @@
             <div>
                 <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">4. 苦手カードのペナルティ</h3>
                 <p class="text-xs text-gray-600 leading-relaxed">
-                    累計の正答率が50%以下のカードは <span class="text-red-500 font-bold">⚠️苦手</span> と表示され、ペナルティとして**次回の復習までの時間が半分に短縮**されます。苦手な単語ほど何度も目に触れる仕組みです。
+                    累計の正答率が50%以下のカードは <span class="text-red-500 font-bold">⚠️苦手</span> と表示され、ペナルティとして**次回の復習までの時間が自動的に半分に短縮**されます。苦手な単語ほど何度も目に触れる仕組みです。
                 </p>
             </div>
 
@@ -519,7 +550,7 @@
         }
 
         // ==========================================
-        // ★ 使い方（チュートリアル）画面の表示/非表示
+        // ★ 使い方（チュートリアル）画面の制御
         // ==========================================
         function showTutorial() {
             document.getElementById('start-screen').classList.add('hidden');
