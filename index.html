@@ -10,6 +10,13 @@
 <body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden">
 
     <div id="start-screen" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md text-center max-h-[95vh] overflow-y-auto relative">
+        
+        <button onclick="showTutorial()" class="absolute top-6 left-6 text-gray-400 hover:text-blue-500 transition-colors" title="使い方ガイド">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </button>
+
         <button onclick="showOptions()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -62,6 +69,78 @@
             </button>
             <button onclick="openHistory()" class="w-full bg-gray-100 text-gray-600 py-3 rounded-xl text-sm font-bold active:bg-gray-200 transition-colors mt-2">
                 学習履歴と正答率を確認
+            </button>
+        </div>
+    </div>
+
+    <div id="tutorial-screen" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md hidden flex flex-col h-[85vh]">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-3 text-center flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            使い方ガイド
+        </h2>
+        
+        <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-6 text-left">
+            
+            <div>
+                <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">1. 学習の進め方</h3>
+                <p class="text-xs text-gray-600 leading-relaxed mb-2">
+                    このアプリは「忘却曲線」に基づいて、あなたが忘れかけた絶妙なタイミングでカードを再出題するシステムです。
+                </p>
+                <ol class="text-xs text-gray-700 space-y-2 list-decimal list-inside pl-2">
+                    <li>最初は <span class="bg-teal-100 text-teal-800 px-1 rounded font-bold">未学習のみ</span> を押して新しいカードを解きます。</li>
+                    <li>学習が終わると、カードは「定着済み(Safe)」または「要復習(Wrong)」に振り分けられます。</li>
+                    <li>数時間〜数日経つと、Safeだったカードの記憶が薄れ <span class="bg-yellow-100 text-yellow-800 px-1 rounded font-bold">復習時期(Due)</span> に変わります。</li>
+                    <li>次回以降は、一番大きな <span class="bg-yellow-500 text-white px-1 rounded font-bold">忘却曲線モード</span> ボタンを押すだけで、今やるべきカードだけが自動で出題されます！</li>
+                </ol>
+            </div>
+
+            <div>
+                <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">2. ダッシュボードの見方</h3>
+                <div class="space-y-2">
+                    <div class="flex items-start">
+                        <span class="w-16 flex-shrink-0 text-xs font-bold text-green-600">Safe:</span>
+                        <p class="text-xs text-gray-600">完全に覚えているカード。今は復習しなくてOKです。</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="w-16 flex-shrink-0 text-xs font-bold text-yellow-600">Due:</span>
+                        <p class="text-xs text-gray-600">記憶が薄れてきたカード。今すぐ復習して記憶を定着させましょう。</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="w-16 flex-shrink-0 text-xs font-bold text-red-500">Wrong:</span>
+                        <p class="text-xs text-gray-600">前回間違えたカード。しっかり復習が必要です。</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="w-16 flex-shrink-0 text-xs font-bold text-gray-500">New:</span>
+                        <p class="text-xs text-gray-600">まだ一度も開いていない新しいカードです。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">3. オプション(⚙️)の活用</h3>
+                <ul class="text-xs text-gray-600 space-y-2 list-disc list-inside">
+                    <li><strong>出題範囲:</strong> 今週は「Score 600」だけ、来週は「Essential」を追加…など自由に絞り込めます。</li>
+                    <li><strong>出題形式:</strong> 「英→日」に慣れたら「日→英」に切り替えてアウトプット力を鍛えましょう。</li>
+                    <li><strong>忘却曲線の間隔:</strong> 連続正解した際に「次にいつDueになるか」をカスタマイズできます。</li>
+                    <li><strong>100%正解の除外:</strong> 一度も間違えていないカードを復習から除外する機能です。</li>
+                    <li><strong>バックアップ:</strong> 学習データをJSONファイルとして保存し、別端末に引き継げます。</li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">4. 苦手カードのペナルティ</h3>
+                <p class="text-xs text-gray-600 leading-relaxed">
+                    累計の正答率が50%以下のカードは <span class="text-red-500 font-bold">⚠️苦手</span> と表示され、ペナルティとして**次回の復習までの時間が半分に短縮**されます。苦手な単語ほど何度も目に触れる仕組みです。
+                </p>
+            </div>
+
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-gray-200">
+            <button onclick="hideTutorial()" class="w-full bg-gray-800 text-white py-3 rounded-lg font-bold shadow-md active:bg-gray-900 transition-colors">
+                閉じる
             </button>
         </div>
     </div>
@@ -439,6 +518,19 @@
             }
         }
 
+        // ==========================================
+        // ★ 使い方（チュートリアル）画面の表示/非表示
+        // ==========================================
+        function showTutorial() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('tutorial-screen').classList.remove('hidden');
+        }
+
+        function hideTutorial() {
+            document.getElementById('tutorial-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
         function exportData() {
             const dataStr = localStorage.getItem('flashcard_progress_v2') || "{}";
             const blob = new Blob([dataStr], { type: "application/json" });
@@ -599,7 +691,6 @@
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('flashcard-screen').classList.remove('hidden');
             
-            // スクロール位置を一番上に戻す
             document.getElementById('card').scrollTop = 0;
             
             loadCard();
@@ -711,7 +802,6 @@
             document.getElementById('card-back').classList.remove('hidden');
             document.getElementById('buttons').classList.remove('hidden');
             isFlipped = true;
-            // 裏面を表示した際にスクロール位置を下に下げる
             setTimeout(() => {
                 const card = document.getElementById('card');
                 card.scrollTo({ top: card.scrollHeight, behavior: 'smooth' });
@@ -767,7 +857,7 @@
             localStorage.setItem('flashcard_progress_v2', JSON.stringify(userProgress));
 
             currentIndex++;
-            document.getElementById('card').scrollTop = 0; // 新しいカードをめくるたびにスクロールを上に戻す
+            document.getElementById('card').scrollTop = 0;
             loadCard();
         }
 
