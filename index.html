@@ -57,7 +57,7 @@
         </div>
 
         <div class="space-y-3">
-            <button onclick="startStudy('srs')" id="btn-srs" class="w-full bg-yellow-500 text-white py-3 rounded-xl font-bold shadow-md active:bg-yellow-600 transition-colors flex flex-col items-center justify-center">
+            <button onclick="startStudy('srs')" id="btn-srs" class="w-full bg-yellow-500 text-white py-3 rounded-xl font-bold shadow-md active:bg-yellow-600 transition-colors flex flex-col items-center justify-center disabled:opacity-50 disabled:bg-gray-300">
                 <span class="text-lg">忘却曲線モード</span>
                 <span class="text-[10px] font-normal opacity-90 mt-0.5">復習時期のカード ＋ 要復習カード</span>
             </button>
@@ -65,11 +65,11 @@
                 <button onclick="startStudy('all')" class="w-full bg-blue-600 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-blue-700 transition-colors">
                     新規を含む全件
                 </button>
-                <button onclick="startStudy('new')" id="btn-new" class="w-full bg-teal-500 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-teal-600 transition-colors">
+                <button onclick="startStudy('new')" id="btn-new" class="w-full bg-teal-500 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-teal-600 transition-colors disabled:opacity-50">
                     未学習のみ
                 </button>
             </div>
-            <button onclick="startStudy('wrong')" id="btn-wrong" class="w-full bg-red-500 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-red-600 transition-colors">
+            <button onclick="startStudy('wrong')" id="btn-wrong" class="w-full bg-red-500 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-red-600 transition-colors disabled:opacity-50">
                 要復習のみ
             </button>
             <button onclick="openHistory()" class="w-full bg-gray-100 text-gray-600 py-3 rounded-xl text-sm font-bold active:bg-gray-200 transition-colors mt-2">
@@ -87,37 +87,17 @@
         </h2>
         
         <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-6 text-left">
-            
             <div>
                 <h3 class="text-sm font-bold text-pink-500 mb-2 border-l-4 border-pink-500 pl-2">はじめに：スマホの「アプリ」にする</h3>
                 <p class="text-xs text-gray-600 leading-relaxed mb-2">
                     ホーム画面に追加すると、ブラウザの枠が消えて全画面のサクサク動く本物のアプリになります。<br>
                     <span class="text-red-500 font-bold">※Safari等のブラウザと「アプリ版」ではデータが別々に保存されるため、一番最初にこの設定を行ってください！</span>
                 </p>
-                <div class="space-y-2">
-                    <div class="bg-pink-50 p-3 rounded border border-pink-100">
-                        <p class="text-xs font-bold text-gray-800 mb-1">📱 iPhone (Safari) の場合</p>
-                        <ol class="text-[11px] text-gray-700 list-decimal list-inside pl-1 space-y-1">
-                            <li>画面下部の「共有アイコン（四角から上矢印）」をタップ</li>
-                            <li>少し下にスクロールし「ホーム画面に追加」を選択</li>
-                            <li>右上の「追加」を押し、ホーム画面のアイコンから起動！</li>
-                        </ol>
-                    </div>
-                    <div class="bg-pink-50 p-3 rounded border border-pink-100">
-                        <p class="text-xs font-bold text-gray-800 mb-1">🤖 Android (Chrome) の場合</p>
-                        <ol class="text-[11px] text-gray-700 list-decimal list-inside pl-1 space-y-1">
-                            <li>画面右上の「︙（メニュー）」をタップ</li>
-                            <li>「ホーム画面に追加」を選択</li>
-                            <li>「追加」を押し、ホーム画面のアイコンから起動！</li>
-                        </ol>
-                    </div>
-                </div>
             </div>
-
             <div>
                 <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">1. 学習の進め方</h3>
                 <p class="text-xs text-gray-600 leading-relaxed mb-2">
-                    このアプリは「忘却曲線」に基づいて、あなたが忘れかけた絶妙なタイミングでカードを再出題するシステムです。
+                    このアプリは「忘却曲線」に基づいて、あなたが忘れかけたタイミングでカードを再出題するシステムです。
                 </p>
                 <ol class="text-xs text-gray-700 space-y-2 list-decimal list-inside pl-2">
                     <li>最初は <span class="bg-teal-100 text-teal-800 px-1 rounded font-bold">未学習のみ</span> を押して新しいカードを解きます。</li>
@@ -126,47 +106,12 @@
                     <li>次回以降は、一番大きな <span class="bg-yellow-500 text-white px-1 rounded font-bold">忘却曲線モード</span> を押すだけで、今やるべきカードだけが出題されます！</li>
                 </ol>
             </div>
-
             <div>
-                <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">2. ダッシュボードの見方</h3>
-                <div class="space-y-2">
-                    <div class="flex items-start">
-                        <span class="w-16 flex-shrink-0 text-xs font-bold text-green-600">Safe:</span>
-                        <p class="text-xs text-gray-600">完全に覚えているカード。今は復習しなくてOKです。</p>
-                    </div>
-                    <div class="flex items-start">
-                        <span class="w-16 flex-shrink-0 text-xs font-bold text-yellow-600">Due:</span>
-                        <p class="text-xs text-gray-600">記憶が薄れてきたカード。今すぐ復習して記憶を定着させましょう。</p>
-                    </div>
-                    <div class="flex items-start">
-                        <span class="w-16 flex-shrink-0 text-xs font-bold text-red-500">Wrong:</span>
-                        <p class="text-xs text-gray-600">前回間違えたカード。しっかり復習が必要です。</p>
-                    </div>
-                    <div class="flex items-start">
-                        <span class="w-16 flex-shrink-0 text-xs font-bold text-gray-500">New:</span>
-                        <p class="text-xs text-gray-600">まだ一度も開いていない新しいカードです。</p>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">3. オプション(⚙️)の活用</h3>
-                <ul class="text-xs text-gray-600 space-y-2 list-disc list-inside">
-                    <li><strong>出題範囲:</strong> 今週は「600 Level」だけ、来週は「Essential」を追加…など自由に絞り込めます。</li>
-                    <li><strong>出題形式:</strong> 「英→日」に慣れたら「日→英」に切り替えてアウトプット力を鍛えましょう。</li>
-                    <li><strong>忘却曲線の間隔:</strong> 連続正解した際に「次にいつDueになるか」をカスタマイズできます。</li>
-                    <li><strong>100%正解の除外:</strong> 一度も間違えていないカードを復習から除外する機能です。</li>
-                    <li><strong>バックアップ:</strong> 学習データをJSONファイルとして保存し、別端末に引き継げます。</li>
-                </ul>
-            </div>
-
-            <div>
-                <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">4. 苦手カードのペナルティ</h3>
-                <p class="text-xs text-gray-600 leading-relaxed">
-                    累計の正答率が50%以下のカードは <span class="text-red-500 font-bold">⚠️苦手</span> と表示され、ペナルティとして**次回の復習までの時間が自動的に半分に短縮**されます。苦手な単語ほど何度も目に触れる仕組みです。
+                <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">2. Part 5 (穴埋め問題) モード</h3>
+                <p class="text-xs text-gray-600 leading-relaxed mb-2">
+                    オプションの出題形式で「Part 5 (4択問題)」を選ぶと、単語カードが本番さながらの穴埋め問題モードに切り替わります。間違えた過去問などを徹底的に反復できます。
                 </p>
             </div>
-
         </div>
 
         <div class="mt-4 pt-4 border-t border-gray-200">
@@ -240,11 +185,19 @@
                     </label>
                 </div>
 
-                <div>
+                <div class="mb-4">
                     <h4 class="text-xs font-bold text-gray-500 mb-2">Essential Words</h4>
                     <label class="flex items-center p-3 bg-blue-50 rounded-lg border cursor-pointer hover:bg-blue-100 transition-colors shadow-sm">
                         <input type="checkbox" name="range" value="5" class="w-4 h-4 text-blue-600 rounded">
                         <span class="ml-2 text-sm font-bold text-blue-800">Essential (E1 - E100)</span>
+                    </label>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-bold text-purple-500 mb-2">Grammar Practice</h4>
+                    <label class="flex items-center p-3 bg-purple-50 rounded-lg border border-purple-100 cursor-pointer hover:bg-purple-100 transition-colors shadow-sm">
+                        <input type="checkbox" name="range" value="11" class="w-4 h-4 text-purple-600 rounded">
+                        <span class="ml-2 text-sm font-bold text-purple-800">Part 5 実戦問題 (P1 - )</span>
                     </label>
                 </div>
             </div>
@@ -268,12 +221,15 @@
                         <input type="radio" name="format" value="JWd-EWd" class="w-4 h-4 text-blue-600">
                         <span class="ml-3 text-sm font-medium text-gray-700">日本語訳 → 英単語</span>
                     </label>
+                    <label class="flex items-center p-3 bg-purple-50 rounded-lg border border-purple-100 cursor-pointer hover:bg-purple-100 transition-colors">
+                        <input type="radio" name="format" value="Part5" class="w-4 h-4 text-purple-600">
+                        <span class="ml-3 text-sm font-bold text-purple-800">Part 5 (4択穴埋め問題)</span>
+                    </label>
                 </div>
             </div>
 
             <div class="mb-6 border-t pt-4 border-gray-100">
                 <h3 class="text-sm font-bold text-gray-700 mb-2 pl-2 border-l-4 border-yellow-500">忘却曲線の間隔設定</h3>
-                <p class="text-[10px] text-gray-500 mb-3 pl-1 leading-tight">連続で正解したカードが、次に復習(Due)になるまでの間隔を調整できます。<br>※累計正答率が50%以下の「苦手カード」は、自動的に間隔が半分に短縮されます。</p>
                 <div class="space-y-3 px-1">
                     <div class="flex items-center justify-between">
                         <span class="text-xs text-gray-600 font-medium w-16">1回正解:</span>
@@ -306,14 +262,12 @@
                         <span id="srs-val-5" class="text-[10px] font-bold text-gray-800 w-12 text-right"></span>
                     </div>
                 </div>
-
                 <div class="mt-4 pt-3 border-t border-yellow-100">
                     <label class="flex items-center p-2 bg-yellow-50 rounded-lg border border-yellow-100 cursor-pointer hover:bg-yellow-100 transition-colors">
                         <input type="checkbox" id="setting-exclude-100" class="w-4 h-4 text-yellow-600 rounded">
                         <span class="ml-2 text-[11px] font-bold text-yellow-800">正答率100%の単語は忘却曲線(Due)から除外する</span>
                     </label>
                 </div>
-
                 <div class="text-right mt-2">
                     <button onclick="resetSrsIntervals()" class="text-[10px] text-gray-400 hover:text-gray-600 underline">デフォルトに戻す</button>
                 </div>
@@ -335,7 +289,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="mb-2 pt-4 border-t border-gray-200 text-center">
                 <button onclick="resetData()" class="text-sm text-red-400 font-bold hover:text-red-600 transition-colors">すべての学習記録を消去する</button>
             </div>
@@ -356,23 +309,55 @@
         </div>
         
         <div id="card" class="bg-blue-50 cursor-pointer p-6 rounded-lg flex-1 flex flex-col overflow-y-auto custom-scrollbar transition-all duration-300 relative" onclick="flipCard()">
-            
-            <div class="w-full my-auto flex flex-col items-center justify-center py-2">
+            <div class="w-full my-auto flex flex-col items-center justify-center py-2 relative">
+                
                 <div id="card-front" class="w-full">
                     <p id="label-front" class="text-[10px] uppercase tracking-widest text-blue-400 mb-2 font-bold">FRONT</p>
                     <h1 id="text-front" class="text-2xl font-bold text-gray-800 break-words leading-relaxed">読み込み中...</h1>
                 </div>
                 
+                <div id="part5-front" class="w-full hidden text-left pb-2">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[10px] font-bold tracking-wider">PART 5</span>
+                        <span class="text-[10px] text-gray-400 font-bold" id="part5-id">ID: P1</span>
+                    </div>
+                    <p id="part5-q" class="text-base md:text-lg font-bold text-gray-800 mb-6 leading-relaxed"></p>
+                    <div class="flex flex-col gap-2 w-full">
+                        <button onclick="selectPart5Option('A', event)" id="btn-opt-A" class="w-full p-3 border-2 border-gray-200 bg-white rounded-lg text-left hover:bg-purple-50 transition-all text-sm font-medium text-gray-700 shadow-sm"></button>
+                        <button onclick="selectPart5Option('B', event)" id="btn-opt-B" class="w-full p-3 border-2 border-gray-200 bg-white rounded-lg text-left hover:bg-purple-50 transition-all text-sm font-medium text-gray-700 shadow-sm"></button>
+                        <button onclick="selectPart5Option('C', event)" id="btn-opt-C" class="w-full p-3 border-2 border-gray-200 bg-white rounded-lg text-left hover:bg-purple-50 transition-all text-sm font-medium text-gray-700 shadow-sm"></button>
+                        <button onclick="selectPart5Option('D', event)" id="btn-opt-D" class="w-full p-3 border-2 border-gray-200 bg-white rounded-lg text-left hover:bg-purple-50 transition-all text-sm font-medium text-gray-700 shadow-sm"></button>
+                    </div>
+                </div>
+
                 <div id="card-back" class="w-full mt-4 pt-4 border-t border-blue-100 hidden">
-                    <p id="label-back" class="text-[10px] uppercase tracking-widest text-green-400 mb-2 font-bold">BACK</p>
-                    <h1 id="text-back" class="text-xl font-bold text-blue-600 break-words leading-relaxed">意味</h1>
                     
-                    <div id="note-area" class="mt-4 p-3 bg-yellow-50 text-yellow-800 text-sm rounded-lg text-left w-full hidden border border-yellow-100 shadow-sm">
-                        <span class="font-bold text-yellow-600 text-[10px] uppercase tracking-wider block mb-1">💡 備考 / 派生語</span>
-                        <span id="note-text" class="leading-relaxed text-xs"></span>
+                    <div id="standard-back-content">
+                        <p id="label-back" class="text-[10px] uppercase tracking-widest text-green-400 mb-2 font-bold">BACK</p>
+                        <h1 id="text-back" class="text-xl font-bold text-blue-600 break-words leading-relaxed">意味</h1>
+                        
+                        <div id="note-area" class="mt-4 p-3 bg-yellow-50 text-yellow-800 text-sm rounded-lg text-left w-full hidden border border-yellow-100 shadow-sm">
+                            <span class="font-bold text-yellow-600 text-[10px] uppercase tracking-wider block mb-1">💡 備考 / 派生語</span>
+                            <span id="note-text" class="leading-relaxed text-xs"></span>
+                        </div>
+                        
+                        <div id="sub-info" class="mt-4 w-full"></div>
                     </div>
 
-                    <div id="sub-info" class="mt-4 w-full"></div>
+                    <div id="part5-back-content" class="hidden w-full text-left">
+                        <div id="part5-result-header" class="mb-4 flex items-center border-b border-gray-200 pb-3"></div>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-[10px] font-bold text-blue-500 uppercase tracking-wider mb-1">【和訳】</p>
+                                <p id="part5-translation" class="text-sm text-gray-700 leading-relaxed"></p>
+                            </div>
+                            <div class="bg-purple-50 p-3 rounded border border-purple-100 shadow-sm">
+                                <p class="text-[10px] font-bold text-purple-600 uppercase tracking-wider mb-1">【解説】</p>
+                                <p id="part5-explanation" class="text-xs text-gray-800 leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div id="session-clear-msg" class="w-full hidden flex-col items-center justify-center">
@@ -391,6 +376,10 @@
             <button onclick="recordAnswer(false)" class="bg-red-500 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg hover:bg-red-600 transition-colors">✕</button>
             <button onclick="recordAnswer(true)" class="bg-green-500 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg hover:bg-green-600 transition-colors">✓</button>
         </div>
+
+        <div id="part5-next-btn-container" class="mt-6 w-full hidden flex-shrink-0">
+            <button onclick="nextPart5Card()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg text-lg hover:bg-blue-700 transition-colors tracking-widest">次へ進む ➔</button>
+        </div>
         
         <button onclick="backToStart()" class="mt-4 text-sm text-gray-400 underline font-bold flex-shrink-0">← 中断して戻る</button>
     </div>
@@ -403,6 +392,7 @@
             <button onclick="switchHistoryTab('JPh-EPh')" id="tab-JPh-EPh" class="flex-1 py-2 text-[10px] font-bold border-b-2 border-transparent text-gray-400 transition-colors">日フ→英</button>
             <button onclick="switchHistoryTab('EWd-JWd')" id="tab-EWd-JWd" class="flex-1 py-2 text-[10px] font-bold border-b-2 border-transparent text-gray-400 transition-colors">英単→日</button>
             <button onclick="switchHistoryTab('JWd-EWd')" id="tab-JWd-EWd" class="flex-1 py-2 text-[10px] font-bold border-b-2 border-transparent text-gray-400 transition-colors">日単→英</button>
+            <button onclick="switchHistoryTab('Part5')" id="tab-Part5" class="flex-1 py-2 text-[10px] font-bold border-b-2 border-transparent text-gray-400 transition-colors">Part5</button>
         </div>
 
         <div id="history-list" class="overflow-y-auto flex-1 space-y-3 pr-1 custom-scrollbar"></div>
@@ -412,13 +402,17 @@
 
     <script>
         let vocabData = [];
+        let part5Data = [];
         let activeVocab = [];
         let currentIndex = 0;
         let sessionTotal = 0;
         let isFlipped = false;
         
+        let isPart5ModeActive = false;
+        let part5UserAnswerIsCorrect = false;
+
         let currentFormat = localStorage.getItem('flashcard_format') || "EPh-JPh";
-        let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
         let historyTab = currentFormat;
 
         let userProgress = JSON.parse(localStorage.getItem('flashcard_progress_v2')) || {};
@@ -432,12 +426,14 @@
             'EPh-JPh': '英語フレーズ → 日本語',
             'JPh-EPh': '日本語フレーズ → 英語',
             'EWd-JWd': '英単語 → 日本語訳',
-            'JWd-EWd': '日本語訳 → 英単語'
+            'JWd-EWd': '日本語訳 → 英単語',
+            'Part5': 'Part 5 (4択穴埋め問題)'
         };
 
         function getLevelName(idStr) {
             const str = String(idStr);
             if (str.startsWith('E') || str.startsWith('e')) return "Essential";
+            if (str.startsWith('P') || str.startsWith('p')) return "Part 5";
             const num = parseInt(str, 10);
             if (!isNaN(num)) {
                 if (num >= 1 && num <= 400) return "600 Level";
@@ -448,32 +444,53 @@
             return "Extra";
         }
 
-        Papa.parse("data.csv", {
-            download: true,
-            header: true,
-            skipEmptyLines: true,
-            complete: function(results) {
-                vocabData = results.data.filter(v => v['ID'] && v['文中の英単語'] && v['文中の日本語']);
-                updateStartScreen();
-            }
+        // ★ 2つのCSVファイルを非同期で読み込む
+        function loadCSV(url) {
+            return new Promise(resolve => {
+                Papa.parse(url, {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        resolve(results.data);
+                    },
+                    error: function() {
+                        resolve([]); // エラー時は空配列を返す
+                    }
+                });
+            });
+        }
+
+        Promise.all([loadCSV("data.csv"), loadCSV("part5.csv")]).then(results => {
+            vocabData = results[0].filter(v => v['ID'] && v['文中の英単語']);
+            part5Data = results[1].filter(v => v['ID'] && v['Question']);
+            updateStartScreen();
         });
 
-        function isVocabInRange(vocab) {
-            const rawId = String(vocab.ID);
-            if (rawId.startsWith('E') || rawId.startsWith('e')) return selectedRanges.includes(5);
-            
-            const id = parseInt(rawId, 10);
-            if (isNaN(id)) return false;
-            if (selectedRanges.includes(1) && id >= 1 && id <= 100) return true;
-            if (selectedRanges.includes(2) && id >= 101 && id <= 200) return true;
-            if (selectedRanges.includes(3) && id >= 201 && id <= 300) return true;
-            if (selectedRanges.includes(4) && id >= 301 && id <= 400) return true;
-            if (selectedRanges.includes(6) && id >= 401 && id <= 500) return true;
-            if (selectedRanges.includes(7) && id >= 501 && id <= 600) return true;
-            if (selectedRanges.includes(8) && id >= 601 && id <= 700) return true;
-            if (selectedRanges.includes(9) && id >= 701 && id <= 800) return true;
-            if (selectedRanges.includes(10) && id >= 801 && id <= 900) return true;
-            return false;
+        // 選択された範囲とモードに基づいて対象データを決定する
+        function getTargetData() {
+            if (currentFormat === 'Part5') {
+                // Part5モードの場合は part5Data を使用
+                return part5Data.filter(v => selectedRanges.includes(11));
+            } else {
+                // ボキャブラリーモードの場合は vocabData を使用
+                return vocabData.filter(v => {
+                    const rawId = String(v.ID);
+                    if (rawId.startsWith('E') || rawId.startsWith('e')) return selectedRanges.includes(5);
+                    const id = parseInt(rawId, 10);
+                    if (isNaN(id)) return false;
+                    if (selectedRanges.includes(1) && id >= 1 && id <= 100) return true;
+                    if (selectedRanges.includes(2) && id >= 101 && id <= 200) return true;
+                    if (selectedRanges.includes(3) && id >= 201 && id <= 300) return true;
+                    if (selectedRanges.includes(4) && id >= 301 && id <= 400) return true;
+                    if (selectedRanges.includes(6) && id >= 401 && id <= 500) return true;
+                    if (selectedRanges.includes(7) && id >= 501 && id <= 600) return true;
+                    if (selectedRanges.includes(8) && id >= 601 && id <= 700) return true;
+                    if (selectedRanges.includes(9) && id >= 701 && id <= 800) return true;
+                    if (selectedRanges.includes(10) && id >= 801 && id <= 900) return true;
+                    return false;
+                });
+            }
         }
 
         function updateStartScreen() {
@@ -482,14 +499,16 @@
             let wrongCount = 0;
             let newCount = 0;
             
-            const targetVocab = vocabData.filter(isVocabInRange);
+            const targetVocab = getTargetData();
             const total = targetVocab.length;
             const nowIso = new Date().toISOString();
 
             document.getElementById('dash-mode-title').innerText = modeNames[currentFormat];
             
             let rangeText = "";
-            if (selectedRanges.length === 10) {
+            if (currentFormat === 'Part5') {
+                rangeText = "Part 5 (実戦問題)";
+            } else if (selectedRanges.length >= 10) {
                 rangeText = "全範囲 (All Levels)";
             } else {
                 let parts = [];
@@ -549,9 +568,6 @@
             }
         }
 
-        // ==========================================
-        // ★ 使い方（チュートリアル）画面の制御
-        // ==========================================
         function showTutorial() {
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('tutorial-screen').classList.remove('hidden');
@@ -579,7 +595,6 @@
         function importData(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
@@ -681,7 +696,7 @@
         }
 
         function startStudy(mode) {
-            const targetVocab = vocabData.filter(isVocabInRange);
+            const targetVocab = getTargetData();
             const nowIso = new Date().toISOString();
 
             if (mode === 'wrong') {
@@ -746,90 +761,166 @@
 
         function loadCard() {
             if (currentIndex >= sessionTotal) {
+                document.getElementById('part5-front').classList.add('hidden');
                 document.getElementById('card-front').classList.add('hidden');
                 document.getElementById('card-back').classList.add('hidden');
                 document.getElementById('buttons').classList.add('hidden');
+                document.getElementById('part5-next-btn-container').classList.add('hidden');
                 document.getElementById('session-clear-msg').classList.remove('hidden');
                 document.getElementById('progress').innerText = `0 / ${sessionTotal}`;
                 return;
             }
 
             const v = activeVocab[currentIndex];
-            const frontEl = document.getElementById('text-front');
-            const backEl = document.getElementById('text-back');
-            const subEl = document.getElementById('sub-info');
+            isPart5ModeActive = (currentFormat === 'Part5');
+
+            const normalFrontEl = document.getElementById('card-front');
+            const part5FrontEl = document.getElementById('part5-front');
+            const standardBackEl = document.getElementById('standard-back-content');
+            const part5BackEl = document.getElementById('part5-back-content');
             const noteArea = document.getElementById('note-area');
             const noteText = document.getElementById('note-text');
+            const subInfoEl = document.getElementById('sub-info');
 
-            switch(currentFormat) {
-                case 'EPh-JPh':
-                    frontEl.innerHTML = highlightExact(v['フレーズ(英語)'], v['文中の英単語']);
-                    backEl.innerHTML = highlightExact(v['フレーズ(日本語)'], v['文中の日本語']);
-                    break;
-                case 'JPh-EPh':
-                    const hintPhrase = getHintPhrase(v['フレーズ(英語)'], v['文中の英単語']);
-                    frontEl.innerHTML = `${v['フレーズ(日本語)']}<br><span class="text-lg text-gray-400 font-normal mt-4 block tracking-widest">${hintPhrase}</span>`;
-                    backEl.innerHTML = highlightExact(v['フレーズ(英語)'], v['文中の英単語']);
-                    break;
-                case 'EWd-JWd':
-                    frontEl.innerText = v['英単語'];
-                    backEl.innerText = v['日本語訳'];
-                    break;
-                case 'JWd-EWd':
-                    frontEl.innerText = v['日本語訳'];
-                    backEl.innerText = v['英単語'];
-                    break;
-            }
-
-            if (v['備考']) {
-                noteText.innerText = v['備考'];
-                noteArea.classList.remove('hidden');
+            // --- 表面のセットアップ ---
+            if (isPart5ModeActive) {
+                normalFrontEl.classList.add('hidden');
+                part5FrontEl.classList.remove('hidden');
+                
+                document.getElementById('part5-id').innerText = `ID: ${v['ID']}`;
+                document.getElementById('part5-q').innerText = v['Question'];
+                
+                ['A','B','C','D'].forEach(opt => {
+                    const btn = document.getElementById(`btn-opt-${opt}`);
+                    btn.innerHTML = `<span class="font-bold text-purple-500 mr-2">(${opt})</span> ${v[`Option${opt}`]}`;
+                    btn.className = "w-full p-3 border-2 border-gray-200 bg-white rounded-lg text-left hover:bg-purple-50 transition-all text-sm font-medium text-gray-700 shadow-sm";
+                    btn.disabled = false;
+                });
             } else {
-                noteArea.classList.add('hidden');
+                part5FrontEl.classList.add('hidden');
+                normalFrontEl.classList.remove('hidden');
+                
+                const textFrontEl = document.getElementById('text-front');
+                switch(currentFormat) {
+                    case 'EPh-JPh': textFrontEl.innerHTML = highlightExact(v['フレーズ(英語)'], v['文中の英単語']); break;
+                    case 'JPh-EPh': 
+                        const hintPhrase = getHintPhrase(v['フレーズ(英語)'], v['文中の英単語']);
+                        textFrontEl.innerHTML = `${v['フレーズ(日本語)']}<br><span class="text-lg text-gray-400 font-normal mt-4 block tracking-widest">${hintPhrase}</span>`;
+                        break;
+                    case 'EWd-JWd': textFrontEl.innerText = v['英単語']; break;
+                    case 'JWd-EWd': textFrontEl.innerText = v['日本語訳']; break;
+                }
             }
 
-            const levelLabel = getLevelName(v['ID']);
-            const record = userProgress[v.ID]?.[currentFormat];
-            
-            let streakInfo = "";
-            let weaknessAlert = "";
-            
-            if (record) {
-                if (record.consecutive_correct > 0) {
-                    streakInfo = `<span class="ml-2 text-green-500 font-bold text-[10px]">🔥 連続: ${record.consecutive_correct}回</span>`;
+            // --- 裏面のデータ準備 ---
+            if (isPart5ModeActive) {
+                standardBackEl.classList.add('hidden');
+                part5BackEl.classList.remove('hidden');
+                document.getElementById('part5-translation').innerText = v['Translation'];
+                document.getElementById('part5-explanation').innerText = v['Explanation'];
+                noteArea.classList.add('hidden'); // Part5では備考枠は非表示
+            } else {
+                part5BackEl.classList.add('hidden');
+                standardBackEl.classList.remove('hidden');
+
+                const textBackEl = document.getElementById('text-back');
+                switch(currentFormat) {
+                    case 'EPh-JPh': textBackEl.innerHTML = highlightExact(v['フレーズ(日本語)'], v['文中の日本語']); break;
+                    case 'JPh-EPh': textBackEl.innerHTML = highlightExact(v['フレーズ(英語)'], v['文中の英単語']); break;
+                    case 'EWd-JWd': textBackEl.innerText = v['日本語訳']; break;
+                    case 'JWd-EWd': textBackEl.innerText = v['英単語']; break;
                 }
-                if (record.total_count > 0) {
-                    const accRate = record.correct_count / record.total_count;
-                    if (accRate <= 0.5) {
-                        weaknessAlert = `<span class="ml-2 text-red-500 font-bold text-[10px] animate-pulse">⚠️苦手(正答率${Math.round(accRate*100)}%)</span>`;
+
+                if (v['備考']) {
+                    noteText.innerText = v['備考'];
+                    noteArea.classList.remove('hidden');
+                } else {
+                    noteArea.classList.add('hidden');
+                }
+
+                // 補助情報のセット
+                const levelLabel = getLevelName(v['ID']);
+                const record = userProgress[v.ID]?.[currentFormat];
+                let streakInfo = "";
+                let weaknessAlert = "";
+                if (record) {
+                    if (record.consecutive_correct > 0) {
+                        streakInfo = `<span class="ml-2 text-green-500 font-bold text-[10px]">🔥 連続: ${record.consecutive_correct}回</span>`;
+                    }
+                    if (record.total_count > 0) {
+                        const accRate = record.correct_count / record.total_count;
+                        if (accRate <= 0.5) {
+                            weaknessAlert = `<span class="ml-2 text-red-500 font-bold text-[10px] animate-pulse">⚠️苦手(正答率${Math.round(accRate*100)}%)</span>`;
+                        }
                     }
                 }
+                subInfoEl.innerHTML = `
+                    <div class="flex flex-wrap justify-center items-center gap-1 text-[10px] text-gray-400 mb-2">
+                        <span class="bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded">${levelLabel}</span>
+                        <span>ID: ${v['ID']}</span>
+                        ${streakInfo}
+                        ${weaknessAlert}
+                    </div>
+                    <div class="text-sm font-bold text-gray-700 bg-gray-50/50 py-2 px-3 rounded border border-gray-100 shadow-sm w-full">
+                        <span class="text-blue-600">${v['英単語']}</span> 
+                        <span class="text-gray-300 font-normal mx-1">|</span> 
+                        <span>${v['日本語訳']}</span>
+                    </div>
+                `;
             }
 
-            subEl.innerHTML = `
-                <div class="flex flex-wrap justify-center items-center gap-1 text-[10px] text-gray-400 mb-2">
-                    <span class="bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded">${levelLabel}</span>
-                    <span>ID: ${v['ID']}</span>
-                    ${streakInfo}
-                    ${weaknessAlert}
-                </div>
-                <div class="text-sm font-bold text-gray-700 bg-gray-50/50 py-2 px-3 rounded border border-gray-100 shadow-sm w-full">
-                    <span class="text-blue-600">${v['英単語']}</span> 
-                    <span class="text-gray-300 font-normal mx-1">|</span> 
-                    <span>${v['日本語訳']}</span>
-                </div>
-            `;
-            
             const remaining = sessionTotal - currentIndex;
             document.getElementById('progress').innerHTML = `<span class="text-blue-600 font-extrabold text-base">${remaining}</span> <span class="text-gray-400 mx-1">/</span> <span class="text-gray-500">${sessionTotal}</span>`;
             
             document.getElementById('card-back').classList.add('hidden');
             document.getElementById('buttons').classList.add('hidden');
+            document.getElementById('part5-next-btn-container').classList.add('hidden');
             isFlipped = false;
         }
 
+        function selectPart5Option(selected, event) {
+            if (isFlipped) return;
+            event.stopPropagation(); // 親要素のflipCard発火を防ぐ
+
+            const v = activeVocab[currentIndex];
+            part5UserAnswerIsCorrect = (selected === v['Answer']);
+
+            ['A','B','C','D'].forEach(opt => {
+                const btn = document.getElementById(`btn-opt-${opt}`);
+                btn.disabled = true;
+                if (opt === v['Answer']) {
+                    btn.classList.replace('border-gray-200', 'border-green-400');
+                    btn.classList.add('bg-green-50');
+                } else if (opt === selected && !part5UserAnswerIsCorrect) {
+                    btn.classList.replace('border-gray-200', 'border-red-400');
+                    btn.classList.add('bg-red-50', 'opacity-50');
+                } else {
+                    btn.classList.add('opacity-50');
+                }
+            });
+
+            const resultHtml = part5UserAnswerIsCorrect
+                ? `<span class="text-green-600 font-extrabold text-lg mr-2">⭕ 正解！</span>`
+                : `<span class="text-red-500 font-extrabold text-lg mr-2">❌ 不正解...</span>`;
+            
+            document.getElementById('part5-result-header').innerHTML = `${resultHtml} <span class="text-sm text-gray-500 font-bold ml-2">正解は (${v['Answer']})</span>`;
+
+            document.getElementById('card-back').classList.remove('hidden');
+            document.getElementById('part5-next-btn-container').classList.remove('hidden');
+            
+            isFlipped = true;
+            setTimeout(() => {
+                const card = document.getElementById('card');
+                card.scrollTo({ top: card.scrollHeight, behavior: 'smooth' });
+            }, 50);
+        }
+
+        function nextPart5Card() {
+            recordAnswer(part5UserAnswerIsCorrect);
+        }
+
         function flipCard() {
-            if (isFlipped || currentIndex >= sessionTotal) return;
+            if (isFlipped || currentIndex >= sessionTotal || isPart5ModeActive) return;
             document.getElementById('card-back').classList.remove('hidden');
             document.getElementById('buttons').classList.remove('hidden');
             isFlipped = true;
@@ -907,15 +998,17 @@
 
         function switchHistoryTab(tabName) {
             historyTab = tabName;
-            const tabs = ['EPh-JPh', 'JPh-EPh', 'EWd-JWd', 'JWd-EWd'];
+            const tabs = ['EPh-JPh', 'JPh-EPh', 'EWd-JWd', 'JWd-EWd', 'Part5'];
             tabs.forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
-                if (t === tabName) {
-                    el.classList.remove('border-transparent', 'text-gray-400');
-                    el.classList.add('border-blue-600', 'text-blue-600');
-                } else {
-                    el.classList.add('border-transparent', 'text-gray-400');
-                    el.classList.remove('border-blue-600', 'text-blue-600');
+                if (el) {
+                    if (t === tabName) {
+                        el.classList.remove('border-transparent', 'text-gray-400');
+                        el.classList.add('border-blue-600', 'text-blue-600');
+                    } else {
+                        el.classList.add('border-transparent', 'text-gray-400');
+                        el.classList.remove('border-blue-600', 'text-blue-600');
+                    }
                 }
             });
             renderHistoryList();
@@ -925,7 +1018,7 @@
             const list = document.getElementById('history-list');
             list.innerHTML = '';
             
-            const targetVocab = vocabData.filter(isVocabInRange);
+            const targetVocab = getTargetData();
             const history = targetVocab
                 .filter(v => userProgress[v.ID] && userProgress[v.ID][historyTab])
                 .sort((a,b) => new Date(userProgress[b.ID][historyTab].last_date) - new Date(userProgress[a.ID][historyTab].last_date));
@@ -945,6 +1038,7 @@
                     case 'JPh-EPh': frontText = v['フレーズ(日本語)']; backText = highlightExact(v['フレーズ(英語)'], v['文中の英単語']); break;
                     case 'EWd-JWd': frontText = v['英単語']; backText = v['日本語訳']; break;
                     case 'JWd-EWd': frontText = v['日本語訳']; backText = v['英単語']; break;
+                    case 'Part5': frontText = v['Question']; backText = v['Explanation']; break;
                 }
 
                 const accRate = Math.round((record.correct_count / record.total_count) * 100);
@@ -964,7 +1058,7 @@
                             </div>
                         </div>
                         <p class="text-sm font-bold text-gray-800 leading-tight mb-1">${frontText}</p>
-                        <p class="text-xs text-gray-500">${backText}</p>
+                        <p class="text-xs text-gray-500 line-clamp-2">${backText}</p>
                     </div>`;
             });
         }
