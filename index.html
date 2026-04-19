@@ -93,7 +93,26 @@
                     ホーム画面に追加すると、ブラウザの枠が消えて全画面のサクサク動く本物のアプリになります。<br>
                     <span class="text-red-500 font-bold">※Safari等のブラウザと「アプリ版」ではデータが別々に保存されるため、一番最初にこの設定を行ってください！</span>
                 </p>
+                <div class="space-y-2">
+                    <div class="bg-pink-50 p-3 rounded border border-pink-100">
+                        <p class="text-xs font-bold text-gray-800 mb-1">📱 iPhone (Safari) の場合</p>
+                        <ol class="text-[11px] text-gray-700 list-decimal list-inside pl-1 space-y-1">
+                            <li>画面下部の「共有アイコン（四角から上矢印）」をタップ</li>
+                            <li>少し下にスクロールし「ホーム画面に追加」を選択</li>
+                            <li>右上の「追加」を押し、ホーム画面のアイコンから起動！</li>
+                        </ol>
+                    </div>
+                    <div class="bg-pink-50 p-3 rounded border border-pink-100">
+                        <p class="text-xs font-bold text-gray-800 mb-1">🤖 Android (Chrome) の場合</p>
+                        <ol class="text-[11px] text-gray-700 list-decimal list-inside pl-1 space-y-1">
+                            <li>画面右上の「︙（メニュー）」をタップ</li>
+                            <li>「ホーム画面に追加」を選択</li>
+                            <li>「追加」を押し、ホーム画面のアイコンから起動！</li>
+                        </ol>
+                    </div>
+                </div>
             </div>
+
             <div>
                 <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">1. 学習の進め方</h3>
                 <p class="text-xs text-gray-600 leading-relaxed mb-2">
@@ -106,10 +125,12 @@
                     <li>次回以降は、一番大きな <span class="bg-yellow-500 text-white px-1 rounded font-bold">忘却曲線モード</span> を押すだけで、今やるべきカードだけが出題されます！</li>
                 </ol>
             </div>
+
             <div>
                 <h3 class="text-sm font-bold text-blue-600 mb-2 border-l-4 border-blue-500 pl-2">2. Part 5 (穴埋め問題) モード</h3>
                 <p class="text-xs text-gray-600 leading-relaxed mb-2">
-                    オプションの出題形式で「Part 5 (4択問題)」を選ぶと、単語カードが本番さながらの穴埋め問題モードに切り替わります。間違えた過去問などを徹底的に反復できます。
+                    オプションで「Part 5 実戦問題」を選ぶと、本番さながらの穴埋め問題モードに切り替わります。過去問などで間違えた問題を徹底的に反復できます。<br>
+                    ※単語モードとPart 5は同時に出題できないため、選択時に自動で切り替わります。
                 </p>
             </div>
         </div>
@@ -133,19 +154,19 @@
                     <h4 class="text-xs font-bold text-gray-500 mb-2">Score 600 Level</h4>
                     <div class="grid grid-cols-2 gap-2">
                         <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
-                            <input type="checkbox" name="range" value="1" class="w-4 h-4 text-green-600 rounded">
+                            <input type="checkbox" name="range" value="1" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
                             <span class="ml-2 text-sm font-medium text-gray-700">ID 1 - 100</span>
                         </label>
                         <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
-                            <input type="checkbox" name="range" value="2" class="w-4 h-4 text-green-600 rounded">
+                            <input type="checkbox" name="range" value="2" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
                             <span class="ml-2 text-sm font-medium text-gray-700">ID 101 - 200</span>
                         </label>
                         <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
-                            <input type="checkbox" name="range" value="3" class="w-4 h-4 text-green-600 rounded">
+                            <input type="checkbox" name="range" value="3" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
                             <span class="ml-2 text-sm font-medium text-gray-700">ID 201 - 300</span>
                         </label>
                         <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
-                            <input type="checkbox" name="range" value="4" class="w-4 h-4 text-green-600 rounded">
+                            <input type="checkbox" name="range" value="4" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
                             <span class="ml-2 text-sm font-medium text-gray-700">ID 301 - 400</span>
                         </label>
                     </div>
@@ -155,15 +176,15 @@
                     <h4 class="text-xs font-bold text-gray-500 mb-2">Score 730 Level</h4>
                     <div class="grid grid-cols-2 gap-2">
                         <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
-                            <input type="checkbox" name="range" value="6" class="w-4 h-4 text-green-600 rounded">
+                            <input type="checkbox" name="range" value="6" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
                             <span class="ml-2 text-sm font-medium text-gray-700">ID 401 - 500</span>
                         </label>
                         <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
-                            <input type="checkbox" name="range" value="7" class="w-4 h-4 text-green-600 rounded">
+                            <input type="checkbox" name="range" value="7" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
                             <span class="ml-2 text-sm font-medium text-gray-700">ID 501 - 600</span>
                         </label>
                         <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors">
-                            <input type="checkbox" name="range" value="8" class="w-4 h-4 text-green-600 rounded">
+                            <input type="checkbox" name="range" value="8" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
                             <span class="ml-2 text-sm font-medium text-gray-700">ID 601 - 700</span>
                         </label>
                     </div>
@@ -172,7 +193,7 @@
                 <div class="mb-4">
                     <h4 class="text-xs font-bold text-gray-500 mb-2">Score 860 Level</h4>
                     <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors shadow-sm">
-                        <input type="checkbox" name="range" value="9" class="w-4 h-4 text-green-600 rounded">
+                        <input type="checkbox" name="range" value="9" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
                         <span class="ml-2 text-sm font-medium text-gray-700">ID 701 - 800</span>
                     </label>
                 </div>
@@ -180,7 +201,7 @@
                 <div class="mb-4">
                     <h4 class="text-xs font-bold text-gray-500 mb-2">Score 990 Level</h4>
                     <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-green-50 transition-colors shadow-sm">
-                        <input type="checkbox" name="range" value="10" class="w-4 h-4 text-green-600 rounded">
+                        <input type="checkbox" name="range" value="10" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
                         <span class="ml-2 text-sm font-medium text-gray-700">ID 801 - 900</span>
                     </label>
                 </div>
@@ -188,7 +209,7 @@
                 <div class="mb-4">
                     <h4 class="text-xs font-bold text-gray-500 mb-2">Essential Words</h4>
                     <label class="flex items-center p-3 bg-blue-50 rounded-lg border cursor-pointer hover:bg-blue-100 transition-colors shadow-sm">
-                        <input type="checkbox" name="range" value="5" class="w-4 h-4 text-blue-600 rounded">
+                        <input type="checkbox" name="range" value="5" onchange="syncOptions(this)" class="w-4 h-4 text-blue-600 rounded">
                         <span class="ml-2 text-sm font-bold text-blue-800">Essential (E1 - E100)</span>
                     </label>
                 </div>
@@ -196,7 +217,7 @@
                 <div>
                     <h4 class="text-xs font-bold text-purple-500 mb-2">Grammar Practice</h4>
                     <label class="flex items-center p-3 bg-purple-50 rounded-lg border border-purple-100 cursor-pointer hover:bg-purple-100 transition-colors shadow-sm">
-                        <input type="checkbox" name="range" value="11" class="w-4 h-4 text-purple-600 rounded">
+                        <input type="checkbox" name="range" value="11" onchange="syncOptions(this)" class="w-4 h-4 text-purple-600 rounded">
                         <span class="ml-2 text-sm font-bold text-purple-800">Part 5 実戦問題 (P1 - )</span>
                     </label>
                 </div>
@@ -206,23 +227,24 @@
                 <h3 class="text-sm font-bold text-gray-700 mb-3 pl-2 border-l-4 border-blue-500">出題形式</h3>
                 <div class="grid grid-cols-1 gap-2">
                     <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
-                        <input type="radio" name="format" value="EPh-JPh" class="w-4 h-4 text-blue-600">
+                        <input type="radio" name="format" value="EPh-JPh" onchange="syncOptions(this)" class="w-4 h-4 text-blue-600">
                         <span class="ml-3 text-sm font-medium text-gray-700">英語フレーズ → 日本語</span>
                     </label>
                     <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
-                        <input type="radio" name="format" value="JPh-EPh" class="w-4 h-4 text-blue-600">
+                        <input type="radio" name="format" value="JPh-EPh" onchange="syncOptions(this)" class="w-4 h-4 text-blue-600">
                         <span class="ml-3 text-sm font-medium text-gray-700">日本語フレーズ → 英語</span>
                     </label>
                     <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
-                        <input type="radio" name="format" value="EWd-JWd" class="w-4 h-4 text-blue-600">
+                        <input type="radio" name="format" value="EWd-JWd" onchange="syncOptions(this)" class="w-4 h-4 text-blue-600">
                         <span class="ml-3 text-sm font-medium text-gray-700">英単語 → 日本語訳</span>
                     </label>
                     <label class="flex items-center p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-blue-50 transition-colors">
-                        <input type="radio" name="format" value="JWd-EWd" class="w-4 h-4 text-blue-600">
+                        <input type="radio" name="format" value="JWd-EWd" onchange="syncOptions(this)" class="w-4 h-4 text-blue-600">
                         <span class="ml-3 text-sm font-medium text-gray-700">日本語訳 → 英単語</span>
                     </label>
+                    
                     <label class="flex items-center p-3 bg-purple-50 rounded-lg border border-purple-100 cursor-pointer hover:bg-purple-100 transition-colors">
-                        <input type="radio" name="format" value="Part5" class="w-4 h-4 text-purple-600">
+                        <input type="radio" name="format" value="Part5" onchange="syncOptions(this)" class="w-4 h-4 text-purple-600">
                         <span class="ml-3 text-sm font-bold text-purple-800">Part 5 (4択穴埋め問題)</span>
                     </label>
                 </div>
@@ -230,6 +252,7 @@
 
             <div class="mb-6 border-t pt-4 border-gray-100">
                 <h3 class="text-sm font-bold text-gray-700 mb-2 pl-2 border-l-4 border-yellow-500">忘却曲線の間隔設定</h3>
+                <p class="text-[10px] text-gray-500 mb-3 pl-1 leading-tight">連続で正解したカードが、次に復習(Due)になるまでの間隔を調整できます。<br>※累計正答率が50%以下の「苦手カード」は、自動的に間隔が半分に短縮されます。</p>
                 <div class="space-y-3 px-1">
                     <div class="flex items-center justify-between">
                         <span class="text-xs text-gray-600 font-medium w-16">1回正解:</span>
@@ -262,12 +285,14 @@
                         <span id="srs-val-5" class="text-[10px] font-bold text-gray-800 w-12 text-right"></span>
                     </div>
                 </div>
+
                 <div class="mt-4 pt-3 border-t border-yellow-100">
                     <label class="flex items-center p-2 bg-yellow-50 rounded-lg border border-yellow-100 cursor-pointer hover:bg-yellow-100 transition-colors">
                         <input type="checkbox" id="setting-exclude-100" class="w-4 h-4 text-yellow-600 rounded">
                         <span class="ml-2 text-[11px] font-bold text-yellow-800">正答率100%の単語は忘却曲線(Due)から除外する</span>
                     </label>
                 </div>
+
                 <div class="text-right mt-2">
                     <button onclick="resetSrsIntervals()" class="text-[10px] text-gray-400 hover:text-gray-600 underline">デフォルトに戻す</button>
                 </div>
@@ -289,6 +314,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="mb-2 pt-4 border-t border-gray-200 text-center">
                 <button onclick="resetData()" class="text-sm text-red-400 font-bold hover:text-red-600 transition-colors">すべての学習記録を消去する</button>
             </div>
@@ -309,6 +335,7 @@
         </div>
         
         <div id="card" class="bg-blue-50 cursor-pointer p-6 rounded-lg flex-1 flex flex-col overflow-y-auto custom-scrollbar transition-all duration-300 relative" onclick="flipCard()">
+            
             <div class="w-full my-auto flex flex-col items-center justify-center py-2 relative">
                 
                 <div id="card-front" class="w-full">
@@ -412,7 +439,7 @@
         let part5UserAnswerIsCorrect = false;
 
         let currentFormat = localStorage.getItem('flashcard_format') || "EPh-JPh";
-        let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+        let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         let historyTab = currentFormat;
 
         let userProgress = JSON.parse(localStorage.getItem('flashcard_progress_v2')) || {};
@@ -444,7 +471,6 @@
             return "Extra";
         }
 
-        // ★ 2つのCSVファイルを非同期で読み込む
         function loadCSV(url) {
             return new Promise(resolve => {
                 Papa.parse(url, {
@@ -455,7 +481,7 @@
                         resolve(results.data);
                     },
                     error: function() {
-                        resolve([]); // エラー時は空配列を返す
+                        resolve([]); 
                     }
                 });
             });
@@ -467,13 +493,10 @@
             updateStartScreen();
         });
 
-        // 選択された範囲とモードに基づいて対象データを決定する
         function getTargetData() {
             if (currentFormat === 'Part5') {
-                // Part5モードの場合は part5Data を使用
                 return part5Data.filter(v => selectedRanges.includes(11));
             } else {
-                // ボキャブラリーモードの場合は vocabData を使用
                 return vocabData.filter(v => {
                     const rawId = String(v.ID);
                     if (rawId.startsWith('E') || rawId.startsWith('e')) return selectedRanges.includes(5);
@@ -508,7 +531,7 @@
             let rangeText = "";
             if (currentFormat === 'Part5') {
                 rangeText = "Part 5 (実戦問題)";
-            } else if (selectedRanges.length >= 10) {
+            } else if (selectedRanges.length >= 10 && !selectedRanges.includes(11)) {
                 rangeText = "全範囲 (All Levels)";
             } else {
                 let parts = [];
@@ -566,6 +589,80 @@
                 btnNew.disabled = (newCount === 0);
                 btnNew.style.opacity = (newCount === 0) ? "0.5" : "1";
             }
+        }
+
+        // ★ 新設：オプションの相互排他ロジック
+        function syncOptions(changedElement) {
+            if (!changedElement) return;
+            const val = changedElement.value;
+            const name = changedElement.name;
+
+            if (name === 'range') {
+                if (val === '11' && changedElement.checked) {
+                    // Part 5 の範囲が選ばれたら、単語の範囲を全て外し、フォーマットをPart5に固定する
+                    document.querySelectorAll('input[name="range"]').forEach(cb => {
+                        if (cb.value !== '11') cb.checked = false;
+                    });
+                    const part5FormatRadio = document.querySelector('input[name="format"][value="Part5"]');
+                    if (part5FormatRadio) part5FormatRadio.checked = true;
+                } else if (val !== '11' && changedElement.checked) {
+                    // 単語の範囲が選ばれたら、Part 5の範囲を外し、フォーマットがPart5になっていたら単語用に戻す
+                    const part5RangeCb = document.querySelector('input[name="range"][value="11"]');
+                    if (part5RangeCb) part5RangeCb.checked = false;
+                    const part5FormatRadio = document.querySelector('input[name="format"][value="Part5"]');
+                    if (part5FormatRadio && part5FormatRadio.checked) {
+                        document.querySelector('input[name="format"][value="EPh-JPh"]').checked = true;
+                    }
+                }
+            } else if (name === 'format') {
+                if (val === 'Part5' && changedElement.checked) {
+                    document.querySelectorAll('input[name="range"]').forEach(cb => {
+                        if (cb.value !== '11') cb.checked = false;
+                    });
+                    const part5RangeCb = document.querySelector('input[name="range"][value="11"]');
+                    if (part5RangeCb) part5RangeCb.checked = true;
+                } else if (val !== 'Part5' && changedElement.checked) {
+                    const part5RangeCb = document.querySelector('input[name="range"][value="11"]');
+                    if (part5RangeCb) part5RangeCb.checked = false;
+                    const anyVocab = Array.from(document.querySelectorAll('input[name="range"]')).some(cb => cb.value !== '11' && cb.checked);
+                    if (!anyVocab) {
+                        const range1Cb = document.querySelector('input[name="range"][value="1"]');
+                        if (range1Cb) range1Cb.checked = true;
+                    }
+                }
+            }
+            applyOptionConstraints();
+        }
+
+        // ★ 新設：オプションの視覚的な無効化（グレーアウト）
+        function applyOptionConstraints() {
+            const part5RangeCb = document.querySelector('input[name="range"][value="11"]');
+            const isPart5 = part5RangeCb ? part5RangeCb.checked : false;
+
+            document.querySelectorAll('input[name="format"]').forEach(radio => {
+                const label = radio.closest('label');
+                if (isPart5) {
+                    if (radio.value !== 'Part5') {
+                        radio.disabled = true;
+                        label.classList.add('opacity-40', 'cursor-not-allowed');
+                        label.classList.remove('cursor-pointer', 'hover:bg-blue-50');
+                    } else {
+                        radio.disabled = false;
+                        label.classList.remove('opacity-40', 'cursor-not-allowed');
+                        label.classList.add('cursor-pointer', 'hover:bg-purple-100');
+                    }
+                } else {
+                    if (radio.value === 'Part5') {
+                        radio.disabled = true;
+                        label.classList.add('opacity-40', 'cursor-not-allowed');
+                        label.classList.remove('cursor-pointer', 'hover:bg-purple-100');
+                    } else {
+                        radio.disabled = false;
+                        label.classList.remove('opacity-40', 'cursor-not-allowed');
+                        label.classList.add('cursor-pointer', 'hover:bg-blue-50');
+                    }
+                }
+            });
         }
 
         function showTutorial() {
@@ -634,6 +731,15 @@
             for(let i = 0; i < checkboxes.length; i++) {
                 checkboxes[i].checked = selectedRanges.includes(parseInt(checkboxes[i].value, 10));
             }
+            // 安全策：読み込み時に整合性を取る
+            const part5Range = document.querySelector('input[name="range"][value="11"]');
+            if (part5Range && part5Range.checked) {
+                 const p5Format = document.querySelector('input[name="format"][value="Part5"]');
+                 if (p5Format) p5Format.checked = true;
+            }
+
+            applyOptionConstraints();
+
             for(let i = 0; i < 6; i++) {
                 const slider = document.getElementById(`srs-${i}`);
                 if (slider) {
@@ -818,7 +924,7 @@
                 part5BackEl.classList.remove('hidden');
                 document.getElementById('part5-translation').innerText = v['Translation'];
                 document.getElementById('part5-explanation').innerText = v['Explanation'];
-                noteArea.classList.add('hidden'); // Part5では備考枠は非表示
+                noteArea.classList.add('hidden');
             } else {
                 part5BackEl.classList.add('hidden');
                 standardBackEl.classList.remove('hidden');
@@ -838,7 +944,6 @@
                     noteArea.classList.add('hidden');
                 }
 
-                // 補助情報のセット
                 const levelLabel = getLevelName(v['ID']);
                 const record = userProgress[v.ID]?.[currentFormat];
                 let streakInfo = "";
@@ -880,7 +985,7 @@
 
         function selectPart5Option(selected, event) {
             if (isFlipped) return;
-            event.stopPropagation(); // 親要素のflipCard発火を防ぐ
+            event.stopPropagation();
 
             const v = activeVocab[currentIndex];
             part5UserAnswerIsCorrect = (selected === v['Answer']);
