@@ -11,7 +11,6 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // ダークモードをクラスで切り替えるためのTailwind設定
         tailwind.config = {
             darkMode: 'class',
         }
@@ -607,7 +606,6 @@
             }
         }
 
-        // オプションの相互排他ロジック
         function syncOptions(changedElement) {
             if (!changedElement) return;
             const val = changedElement.value;
@@ -724,7 +722,6 @@
             reader.readAsText(file);
         }
 
-        // ★ ダークモードトグル
         function toggleDarkModePreview(checked) {
             if (checked) {
                 document.documentElement.classList.add('dark');
@@ -920,7 +917,6 @@
             const noteText = document.getElementById('note-text');
             const subInfoEl = document.getElementById('sub-info');
 
-            // --- 表面のセットアップ ---
             if (isPart5ModeActive) {
                 normalFrontEl.classList.add('hidden');
                 part5FrontEl.classList.remove('hidden');
@@ -950,7 +946,6 @@
                 }
             }
 
-            // --- 裏面のデータ準備 ---
             if (isPart5ModeActive) {
                 standardBackEl.classList.add('hidden');
                 part5BackEl.classList.remove('hidden');
@@ -1157,7 +1152,7 @@
             const list = document.getElementById('history-list');
             list.innerHTML = '';
             
-            // 履歴タブを開いた際、そのタブ(フォーマット)に該当するデータ群を取得
+            // ★ 改修：履歴タブを開いた際、そのタブ(フォーマット)に該当するデータ群を取得
             let targetVocab = [];
             if (historyTab === 'Part5') {
                 targetVocab = part5Data;
@@ -1174,6 +1169,9 @@
                 return;
             }
             
+            // ★ 改修：HTML文字列を一度に組み立てて最後に書き込む（パフォーマンス最適化）
+            let htmlContent = '';
+
             history.forEach(v => {
                 const record = userProgress[v.ID][historyTab];
                 const isWrong = record.status === 'wrong';
@@ -1191,7 +1189,7 @@
                 const accColor = accRate >= 80 ? 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30' : (accRate < 50 ? 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30' : 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30');
                 const levelLabel = getLevelName(v['ID']);
 
-                list.innerHTML += `
+                htmlContent += `
                     <div class="p-3 bg-white dark:bg-gray-800 border shadow-sm rounded-lg text-left ${isWrong ? 'border-red-300 dark:border-red-800' : 'border-gray-200 dark:border-gray-700'}">
                         <div class="flex justify-between items-center mb-2 border-b border-gray-100 dark:border-gray-700 pb-1">
                             <div class="flex space-x-1 items-center">
@@ -1207,6 +1205,9 @@
                         <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">${backText}</p>
                     </div>`;
             });
+
+            // 最後に一気に書き込む
+            list.innerHTML = htmlContent;
         }
 
         function backToStartFromHistory() {
