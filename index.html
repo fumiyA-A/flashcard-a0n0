@@ -1,1231 +1,568 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>My Flashcard</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#f3f4f6">
-    <link rel="apple-touch-icon" href="https://via.placeholder.com/192x192.png?text=Flashcard">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    
-    <script>
-        if (JSON.parse(localStorage.getItem('flashcard_dark_mode'))) {
-            document.documentElement.classList.add('dark');
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#f3f4f6">
+  <title>My Flashcard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' };</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script>
+    try { if (JSON.parse(localStorage.getItem('flashcard_dark_mode'))) document.documentElement.classList.add('dark'); } catch (_) {}
+  </script>
+  <style>
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    button:disabled { cursor: not-allowed; }
+    @keyframes soundPulse { 0%,100%{transform:scale(1);opacity:.75} 50%{transform:scale(1.12);opacity:1} }
+    .sound-playing { animation: soundPulse .65s ease-in-out infinite; }
+    .hide-before-answer { filter: none; }
+  </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden select-none transition-colors duration-300">
 
-    <div id="start-screen" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md text-center max-h-[95vh] overflow-y-auto relative transition-colors duration-300">
-        
-        <button onclick="showTutorial()" class="absolute top-6 left-6 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors" title="使い方ガイド">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-        </button>
+  <div id="start-screen" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md text-center max-h-[95vh] overflow-y-auto relative transition-colors duration-300">
+    <button onclick="showTutorial()" class="absolute top-6 left-6 text-gray-400 hover:text-blue-500 text-2xl" title="使い方ガイド" aria-label="使い方">ⓘ</button>
+    <button onclick="showOptions()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl" title="オプション" aria-label="オプション">⚙</button>
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-1 mt-2">TOEIC 900 Master</h1>
+    <p class="text-xs text-gray-500 dark:text-gray-400 mb-6">Spaced Repetition System</p>
 
-        <button onclick="showOptions()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-        </button>
-
-        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-1 mt-2">TOEIC 900 Master</h1>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mb-6">Spaced Repetition System</p>
-
-        <div class="mb-6 text-left bg-blue-50 dark:bg-slate-700/50 p-4 rounded-lg shadow-inner">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="text-[10px] font-bold text-blue-500 dark:text-blue-400 uppercase tracking-wider" id="dash-mode-title">モード</h3>
-                <span id="dash-range-title" class="text-[9px] font-bold bg-blue-200 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full">範囲: 選択中</span>
-            </div>
-            
-            <div class="flex justify-between items-end mb-2 border-b border-blue-100 dark:border-slate-600 pb-1.5">
-                <span class="text-xs text-gray-600 dark:text-gray-300 font-bold mb-0.5">定着済み (Safe):</span>
-                <span id="stat-safe" class="font-bold text-green-600 dark:text-green-400 text-xl leading-none">-</span>
-            </div>
-            <div class="flex justify-between items-end mb-2 border-b border-blue-100 dark:border-slate-600 pb-1.5">
-                <span class="text-xs text-gray-600 dark:text-gray-300 font-bold mb-0.5">復習時期 (Due):</span>
-                <span id="stat-due" class="font-bold text-yellow-600 dark:text-yellow-400 text-xl leading-none">-</span>
-            </div>
-            <div class="flex justify-between items-end mb-2 border-b border-blue-100 dark:border-slate-600 pb-1.5">
-                <span class="text-xs text-gray-600 dark:text-gray-300 font-bold mb-0.5">要復習 (Wrong):</span>
-                <span id="stat-wrong" class="font-bold text-red-500 dark:text-red-400 text-xl leading-none">-</span>
-            </div>
-            <div class="flex justify-between items-end">
-                <span class="text-xs text-gray-600 dark:text-gray-300 font-bold mb-0.5">未学習 (New):</span>
-                <span id="stat-new" class="font-bold text-gray-400 dark:text-gray-500 text-xl leading-none">-</span>
-            </div>
-        </div>
-
-        <div class="space-y-3">
-            <button onclick="startStudy('srs')" id="btn-srs" class="w-full bg-yellow-500 text-white py-3 rounded-xl font-bold shadow-md active:bg-yellow-600 transition-colors flex flex-col items-center justify-center disabled:opacity-50 disabled:bg-gray-300 dark:disabled:bg-gray-600">
-                <span class="text-lg">忘却曲線モード</span>
-                <span class="text-[10px] font-normal opacity-90 mt-0.5">復習時期のカード ＋ 要復習カード</span>
-            </button>
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="startStudy('all')" class="w-full bg-blue-600 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-blue-700 transition-colors">
-                    新規を含む全件
-                </button>
-                <button onclick="startStudy('new')" id="btn-new" class="w-full bg-teal-500 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-teal-600 transition-colors disabled:opacity-50">
-                    未学習のみ
-                </button>
-            </div>
-            <button onclick="startStudy('wrong')" id="btn-wrong" class="w-full bg-red-500 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-red-600 transition-colors disabled:opacity-50">
-                要復習のみ
-            </button>
-            <button onclick="openHistory()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-200 py-3 rounded-xl text-sm font-bold active:bg-gray-200 dark:active:bg-gray-600 transition-colors mt-2">
-                学習履歴と正答率を確認
-            </button>
-        </div>
+    <div class="mb-5 text-left bg-blue-50 dark:bg-slate-700/50 p-4 rounded-lg shadow-inner">
+      <div class="flex justify-between items-center mb-3 gap-2">
+        <h3 id="dash-mode-title" class="text-[10px] font-bold text-blue-500 dark:text-blue-400 uppercase tracking-wider">モード</h3>
+        <span id="dash-range-title" class="text-[9px] font-bold bg-blue-200 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full">範囲: 選択中</span>
+      </div>
+      <div class="flex justify-between items-end mb-2 border-b border-blue-100 dark:border-slate-600 pb-1.5"><span class="text-xs text-gray-600 dark:text-gray-300 font-bold">定着済み (Safe):</span><span id="stat-safe" class="font-bold text-green-600 dark:text-green-400 text-xl leading-none">-</span></div>
+      <div class="flex justify-between items-end mb-2 border-b border-blue-100 dark:border-slate-600 pb-1.5"><span class="text-xs text-gray-600 dark:text-gray-300 font-bold">復習時期 (Due):</span><span id="stat-due" class="font-bold text-yellow-600 dark:text-yellow-400 text-xl leading-none">-</span></div>
+      <div class="flex justify-between items-end mb-2 border-b border-blue-100 dark:border-slate-600 pb-1.5"><span class="text-xs text-gray-600 dark:text-gray-300 font-bold">要復習 (Wrong):</span><span id="stat-wrong" class="font-bold text-red-500 dark:text-red-400 text-xl leading-none">-</span></div>
+      <div class="flex justify-between items-end"><span class="text-xs text-gray-600 dark:text-gray-300 font-bold">未学習 (New):</span><span id="stat-new" class="font-bold text-gray-400 dark:text-gray-500 text-xl leading-none">-</span></div>
     </div>
 
-    <div id="tutorial-screen" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md hidden flex flex-col h-[85vh] transition-colors duration-300">
-        <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 border-b dark:border-gray-700 pb-3 text-center flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-500 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            使い方ガイド
-        </h2>
-        
-        <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-6 text-left">
-            <div>
-                <h3 class="text-sm font-bold text-pink-500 dark:text-pink-400 mb-2 border-l-4 border-pink-500 dark:border-pink-400 pl-2">はじめに：スマホの「アプリ」にする</h3>
-                <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed mb-2">
-                    ホーム画面に追加すると、ブラウザの枠が消えて全画面のサクサク動く本物のアプリになります。<br>
-                    <span class="text-red-500 dark:text-red-400 font-bold">※Safari等のブラウザと「アプリ版」ではデータが別々に保存されるため、一番最初にこの設定を行ってください！</span>
-                </p>
-                <div class="space-y-2">
-                    <div class="bg-pink-50 dark:bg-pink-900/20 p-3 rounded border border-pink-100 dark:border-pink-800">
-                        <p class="text-xs font-bold text-gray-800 dark:text-gray-100 mb-1">📱 iPhone (Safari) の場合</p>
-                        <ol class="text-[11px] text-gray-700 dark:text-gray-300 list-decimal list-inside pl-1 space-y-1">
-                            <li>画面下部の「共有アイコン（四角から上矢印）」をタップ</li>
-                            <li>少し下にスクロールし「ホーム画面に追加」を選択</li>
-                            <li>右上の「追加」を押し、ホーム画面のアイコンから起動！</li>
-                        </ol>
-                    </div>
-                    <div class="bg-pink-50 dark:bg-pink-900/20 p-3 rounded border border-pink-100 dark:border-pink-800">
-                        <p class="text-xs font-bold text-gray-800 dark:text-gray-100 mb-1">🤖 Android (Chrome) の場合</p>
-                        <ol class="text-[11px] text-gray-700 dark:text-gray-300 list-decimal list-inside pl-1 space-y-1">
-                            <li>画面右上の「︙（メニュー）」をタップ</li>
-                            <li>「ホーム画面に追加」を選択</li>
-                            <li>「追加」を押し、ホーム画面のアイコンから起動！</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="text-sm font-bold text-blue-600 dark:text-blue-400 mb-2 border-l-4 border-blue-500 dark:border-blue-400 pl-2">1. 学習の進め方</h3>
-                <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed mb-2">
-                    このアプリは「忘却曲線」に基づいて、あなたが忘れかけたタイミングでカードを再出題するシステムです。
-                </p>
-                <ol class="text-xs text-gray-700 dark:text-gray-300 space-y-2 list-decimal list-inside pl-2">
-                    <li>最初は <span class="bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 px-1 rounded font-bold">未学習のみ</span> を押して新しいカードを解きます。</li>
-                    <li>学習が終わると、カードは「定着済み(Safe)」または「要復習(Wrong)」に振り分けられます。</li>
-                    <li>時間が経つと、Safeだったカードの記憶が薄れ <span class="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-1 rounded font-bold">復習時期(Due)</span> に変わります。</li>
-                    <li>次回以降は、一番大きな <span class="bg-yellow-500 text-white px-1 rounded font-bold">忘却曲線モード</span> を押すだけで、今やるべきカードだけが出題されます！</li>
-                </ol>
-            </div>
-
-            <div>
-                <h3 class="text-sm font-bold text-blue-600 dark:text-blue-400 mb-2 border-l-4 border-blue-500 dark:border-blue-400 pl-2">2. Part 5 (穴埋め問題) モード</h3>
-                <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed mb-2">
-                    オプションで「Part 5 実戦問題」を選ぶと、本番さながらの穴埋め問題モードに切り替わります。過去問などで間違えた問題を徹底的に反復できます。<br>
-                    ※単語モードとPart 5は同時に出題できないため、選択時に自動で切り替わります。
-                </p>
-            </div>
-        </div>
-
-        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <button onclick="hideTutorial()" class="w-full bg-gray-800 dark:bg-gray-600 text-white py-3 rounded-lg font-bold shadow-md active:bg-gray-900 dark:active:bg-gray-700 transition-colors">
-                閉じる
-            </button>
-        </div>
+    <div id="load-message" class="hidden text-xs text-red-600 dark:text-red-400 mb-3 text-left"></div>
+    <div class="space-y-3">
+      <button onclick="startStudy('srs')" id="btn-srs" class="w-full bg-yellow-500 text-white py-3 rounded-xl font-bold shadow-md active:bg-yellow-600 flex flex-col items-center justify-center disabled:opacity-50 disabled:bg-gray-300 dark:disabled:bg-gray-600">
+        <span class="text-lg">忘却曲線モード</span><span class="text-[10px] font-normal opacity-90 mt-0.5">復習時期のカード ＋ 要復習カード</span>
+      </button>
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="startStudy('all')" id="btn-all" class="w-full bg-blue-600 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-blue-700 disabled:opacity-50">新規を含む全件</button>
+        <button onclick="startStudy('new')" id="btn-new" class="w-full bg-teal-500 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-teal-600 disabled:opacity-50">未学習のみ</button>
+      </div>
+      <button onclick="startStudy('wrong')" id="btn-wrong" class="w-full bg-red-500 text-white py-3 rounded-xl text-sm font-bold shadow-md active:bg-red-600 disabled:opacity-50">要復習のみ</button>
+      <button onclick="openHistory()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-200 py-3 rounded-xl text-sm font-bold active:bg-gray-200 dark:active:bg-gray-600 mt-2">学習履歴と正答率を確認</button>
     </div>
+  </div>
 
-    <div id="options-screen" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md hidden flex flex-col h-[85vh] transition-colors duration-300">
-        <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 border-b dark:border-gray-700 pb-3 text-center">オプション設定</h2>
-        
-        <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-            
-            <div class="mb-6">
-                <h3 class="text-sm font-bold text-gray-700 dark:text-gray-200 mb-3 pl-2 border-l-4 border-gray-500 dark:border-gray-400">外観</h3>
-                <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors shadow-sm">
-                    <input type="checkbox" id="setting-dark-mode" onchange="toggleDarkModePreview(this.checked)" class="w-4 h-4 text-gray-600 rounded accent-gray-600">
-                    <span class="ml-3 text-sm font-bold text-gray-800 dark:text-gray-200">ダークモード</span>
-                </label>
-            </div>
-
-            <div class="mb-6 border-t pt-4 border-gray-100 dark:border-gray-700">
-                <h3 class="text-sm font-bold text-gray-700 dark:text-gray-200 mb-3 pl-2 border-l-4 border-green-500 dark:border-green-400">出題範囲（複数選択可）</h3>
-                
-                <div class="mb-4">
-                    <h4 class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2">Score 600 Level</h4>
-                    <div class="grid grid-cols-2 gap-2">
-                        <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-green-50 dark:hover:bg-gray-600 transition-colors">
-                            <input type="checkbox" name="range" value="1" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
-                            <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-200">ID 1 - 100</span>
-                        </label>
-                        <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-green-50 dark:hover:bg-gray-600 transition-colors">
-                            <input type="checkbox" name="range" value="2" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
-                            <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-200">ID 101 - 200</span>
-                        </label>
-                        <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-green-50 dark:hover:bg-gray-600 transition-colors">
-                            <input type="checkbox" name="range" value="3" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
-                            <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-200">ID 201 - 300</span>
-                        </label>
-                        <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-green-50 dark:hover:bg-gray-600 transition-colors">
-                            <input type="checkbox" name="range" value="4" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
-                            <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-200">ID 301 - 400</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2">Score 730 Level</h4>
-                    <div class="grid grid-cols-2 gap-2">
-                        <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-green-50 dark:hover:bg-gray-600 transition-colors">
-                            <input type="checkbox" name="range" value="6" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
-                            <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-200">ID 401 - 500</span>
-                        </label>
-                        <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-green-50 dark:hover:bg-gray-600 transition-colors">
-                            <input type="checkbox" name="range" value="7" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
-                            <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-200">ID 501 - 600</span>
-                        </label>
-                        <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-green-50 dark:hover:bg-gray-600 transition-colors">
-                            <input type="checkbox" name="range" value="8" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
-                            <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-200">ID 601 - 700</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2">Score 860 Level</h4>
-                    <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-green-50 dark:hover:bg-gray-600 transition-colors shadow-sm">
-                        <input type="checkbox" name="range" value="9" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
-                        <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-200">ID 701 - 800</span>
-                    </label>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2">Score 990 Level</h4>
-                    <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-green-50 dark:hover:bg-gray-600 transition-colors shadow-sm">
-                        <input type="checkbox" name="range" value="10" onchange="syncOptions(this)" class="w-4 h-4 text-green-600 rounded">
-                        <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-200">ID 801 - 900</span>
-                    </label>
-                </div>
-
-                <div>
-                    <h4 class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2">Essential Words</h4>
-                    <label class="flex items-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors shadow-sm">
-                        <input type="checkbox" name="range" value="5" onchange="syncOptions(this)" class="w-4 h-4 text-blue-600 rounded">
-                        <span class="ml-2 text-sm font-bold text-blue-800 dark:text-blue-300">Essential (E1 - E100)</span>
-                    </label>
-                </div>
-
-                <div class="mt-4">
-                    <h4 class="text-xs font-bold text-purple-500 dark:text-purple-400 mb-2">Grammar Practice</h4>
-                    <label class="flex items-center p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-100 dark:border-purple-800 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors shadow-sm">
-                        <input type="checkbox" name="range" value="11" onchange="syncOptions(this)" class="w-4 h-4 text-purple-600 rounded">
-                        <span class="ml-2 text-sm font-bold text-purple-800 dark:text-purple-300">Part 5 実戦問題 (P1 - )</span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="mb-6 border-t pt-4 border-gray-100 dark:border-gray-700">
-                <h3 class="text-sm font-bold text-gray-700 dark:text-gray-200 mb-3 pl-2 border-l-4 border-blue-500 dark:border-blue-400">出題形式</h3>
-                <div class="grid grid-cols-1 gap-2">
-                    <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-blue-50 dark:hover:bg-gray-600 transition-colors">
-                        <input type="radio" name="format" value="EPh-JPh" onchange="syncOptions(this)" class="w-4 h-4 text-blue-600">
-                        <span class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-200">英語フレーズ → 日本語</span>
-                    </label>
-                    <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-blue-50 dark:hover:bg-gray-600 transition-colors">
-                        <input type="radio" name="format" value="JPh-EPh" onchange="syncOptions(this)" class="w-4 h-4 text-blue-600">
-                        <span class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-200">日本語フレーズ → 英語</span>
-                    </label>
-                    <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-blue-50 dark:hover:bg-gray-600 transition-colors">
-                        <input type="radio" name="format" value="EWd-JWd" onchange="syncOptions(this)" class="w-4 h-4 text-blue-600">
-                        <span class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-200">英単語 → 日本語訳</span>
-                    </label>
-                    <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-blue-50 dark:hover:bg-gray-600 transition-colors">
-                        <input type="radio" name="format" value="JWd-EWd" onchange="syncOptions(this)" class="w-4 h-4 text-blue-600">
-                        <span class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-200">日本語訳 → 英単語</span>
-                    </label>
-                    
-                    <label class="flex items-center p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-100 dark:border-purple-800 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors">
-                        <input type="radio" name="format" value="Part5" onchange="syncOptions(this)" class="w-4 h-4 text-purple-600">
-                        <span class="ml-3 text-sm font-bold text-purple-800 dark:text-purple-300">Part 5 (4択穴埋め問題)</span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="mb-6 border-t pt-4 border-gray-100 dark:border-gray-700">
-                <h3 class="text-sm font-bold text-gray-700 dark:text-gray-200 mb-2 pl-2 border-l-4 border-yellow-500 dark:border-yellow-400">忘却曲線の間隔設定</h3>
-                <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-3 pl-1 leading-tight">連続で正解したカードが、次に復習(Due)になるまでの間隔を調整できます。<br>※累計正答率が50%以下の「苦手カード」は、自動的に間隔が半分に短縮されます。</p>
-                <div class="space-y-3 px-1">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-gray-600 dark:text-gray-300 font-medium w-16">1回正解:</span>
-                        <input type="range" id="srs-0" min="1" max="24" step="1" class="w-3/5 accent-yellow-500" oninput="updateSrsLabel(0, this.value)">
-                        <span id="srs-val-0" class="text-[10px] font-bold text-gray-800 dark:text-gray-200 w-12 text-right"></span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-gray-600 dark:text-gray-300 font-medium w-16">2回連続:</span>
-                        <input type="range" id="srs-1" min="2" max="48" step="2" class="w-3/5 accent-yellow-500" oninput="updateSrsLabel(1, this.value)">
-                        <span id="srs-val-1" class="text-[10px] font-bold text-gray-800 dark:text-gray-200 w-12 text-right"></span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-gray-600 dark:text-gray-300 font-medium w-16">3回連続:</span>
-                        <input type="range" id="srs-2" min="6" max="96" step="6" class="w-3/5 accent-yellow-500" oninput="updateSrsLabel(2, this.value)">
-                        <span id="srs-val-2" class="text-[10px] font-bold text-gray-800 dark:text-gray-200 w-12 text-right"></span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-gray-600 dark:text-gray-300 font-medium w-16">4回連続:</span>
-                        <input type="range" id="srs-3" min="12" max="168" step="12" class="w-3/5 accent-yellow-500" oninput="updateSrsLabel(3, this.value)">
-                        <span id="srs-val-3" class="text-[10px] font-bold text-gray-800 dark:text-gray-200 w-12 text-right"></span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-gray-600 dark:text-gray-300 font-medium w-16">5回連続:</span>
-                        <input type="range" id="srs-4" min="24" max="336" step="24" class="w-3/5 accent-yellow-500" oninput="updateSrsLabel(4, this.value)">
-                        <span id="srs-val-4" class="text-[10px] font-bold text-gray-800 dark:text-gray-200 w-12 text-right"></span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-gray-600 dark:text-gray-300 font-medium w-16">6回以上:</span>
-                        <input type="range" id="srs-5" min="24" max="720" step="24" class="w-3/5 accent-yellow-500" oninput="updateSrsLabel(5, this.value)">
-                        <span id="srs-val-5" class="text-[10px] font-bold text-gray-800 dark:text-gray-200 w-12 text-right"></span>
-                    </div>
-                </div>
-
-                <div class="mt-4 pt-3 border-t border-yellow-100 dark:border-yellow-900">
-                    <label class="flex items-center p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-100 dark:border-yellow-800 cursor-pointer hover:bg-yellow-100 dark:hover:bg-yellow-900/40 transition-colors">
-                        <input type="checkbox" id="setting-exclude-100" class="w-4 h-4 text-yellow-600 rounded">
-                        <span class="ml-2 text-[11px] font-bold text-yellow-800 dark:text-yellow-200">正答率100%の単語は忘却曲線(Due)から除外する</span>
-                    </label>
-                </div>
-
-                <div class="text-right mt-2">
-                    <button onclick="resetSrsIntervals()" class="text-[10px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 underline">デフォルトに戻す</button>
-                </div>
-            </div>
-
-            <div class="mb-6 border-t pt-4 border-gray-100 dark:border-gray-700">
-                <h3 class="text-sm font-bold text-gray-700 dark:text-gray-200 mb-3 pl-2 border-l-4 border-purple-500 dark:border-purple-400">データ移行・バックアップ</h3>
-                <div class="space-y-2">
-                    <button onclick="exportData()" class="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2.5 rounded-lg text-sm font-bold shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors flex justify-center items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-purple-500 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                        履歴をバックアップ (JSON)
-                    </button>
-                    <div class="relative">
-                        <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
-                        <button onclick="document.getElementById('import-file').click()" class="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2.5 rounded-lg text-sm font-bold shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors flex justify-center items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-purple-500 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-                            履歴を復元する (JSON)
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-2 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
-                <button onclick="resetData()" class="text-sm text-red-400 font-bold hover:text-red-600 transition-colors">すべての学習記録を消去する</button>
-            </div>
-        </div>
-
-        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <button onclick="saveOptionsAndClose()" class="w-full bg-gray-800 dark:bg-gray-600 text-white py-3 rounded-lg font-bold shadow-md active:bg-gray-900 dark:active:bg-gray-700 transition-colors">
-                保存して戻る
-            </button>
-        </div>
+  <div id="tutorial-screen" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md hidden flex-col h-[85vh] transition-colors duration-300">
+    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 border-b dark:border-gray-700 pb-3 text-center">ⓘ 使い方ガイド</h2>
+    <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-6 text-left">
+      <section><h3 class="text-sm font-bold text-pink-500 mb-2 border-l-4 border-pink-500 pl-2">はじめに：スマホの「アプリ」にする</h3>
+        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">Safariの「共有」→「ホーム画面に追加」でアプリのように使えます。<strong class="text-red-500">Safariとホーム画面追加版では学習履歴が別々になることがあります。</strong></p>
+      </section>
+      <section><h3 class="text-sm font-bold text-blue-600 dark:text-blue-400 mb-2 border-l-4 border-blue-500 pl-2">1. 学習の進め方</h3>
+        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">「未学習のみ」で新しいカードを学び、「忘却曲線モード」で復習時期のカードを復習します。解答を見たあとに × / ✓ で記憶状態を記録します。</p>
+      </section>
+      <section><h3 class="text-sm font-bold text-indigo-600 dark:text-indigo-400 mb-2 border-l-4 border-indigo-500 pl-2">2. 🔊 リスニング → 英単語・意味</h3>
+        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">オプションの「出題形式」でリスニングを選びます。カードに文字は表示されず、英単語の音声だけが出題されます。聞き直し・速度調整ができます。カードをタップすると英単語・意味・例文を確認できます。学習履歴と忘却曲線は他モードから独立しています。</p>
+        <p class="text-[11px] text-amber-600 dark:text-amber-400 mt-2">iPhoneでは最初の再生に画面操作が必要なことがあります。音声が出ない場合は「▶ 再生」ボタンを押してください。</p>
+      </section>
+      <section><h3 class="text-sm font-bold text-purple-600 dark:text-purple-400 mb-2 border-l-4 border-purple-500 pl-2">3. Part 5 (穴埋め問題)</h3>
+        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">オプションで「Part 5 実戦問題」を選ぶと、4択の穴埋め問題モードになります。単語学習とは同時に出題されません。</p>
+      </section>
     </div>
+    <button onclick="hideTutorial()" class="mt-4 w-full bg-gray-800 dark:bg-gray-600 text-white py-3 rounded-lg font-bold shadow-md">閉じる</button>
+  </div>
 
-    <div id="flashcard-screen" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md text-center hidden flex flex-col h-[85vh] transition-colors duration-300">
-        
-        <div class="flex justify-center items-center mb-4 space-x-2 flex-shrink-0">
-            <span class="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Remaining</span>
-            <div id="progress" class="text-sm font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 px-4 py-1 rounded-full shadow-inner">- / -</div>
+  <div id="options-screen" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md hidden flex-col h-[85vh] transition-colors duration-300">
+    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 border-b dark:border-gray-700 pb-3 text-center">オプション設定</h2>
+    <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+      <section class="mb-6">
+        <h3 class="text-sm font-bold text-gray-700 dark:text-gray-200 mb-3 pl-2 border-l-4 border-gray-500">外観</h3>
+        <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer">
+          <input type="checkbox" id="setting-dark-mode" onchange="toggleDarkModePreview(this.checked)" class="w-4 h-4 accent-gray-600"><span class="ml-3 text-sm font-bold text-gray-800 dark:text-gray-200">ダークモード</span>
+        </label>
+      </section>
+      <section class="mb-6 border-t pt-4 border-gray-100 dark:border-gray-700">
+        <h3 class="text-sm font-bold text-gray-700 dark:text-gray-200 mb-3 pl-2 border-l-4 border-green-500">出題範囲（複数選択可）</h3>
+        <div id="range-options"></div>
+      </section>
+      <section class="mb-6 border-t pt-4 border-gray-100 dark:border-gray-700">
+        <h3 class="text-sm font-bold text-gray-700 dark:text-gray-200 mb-3 pl-2 border-l-4 border-blue-500">出題形式</h3>
+        <div id="format-options" class="grid grid-cols-1 gap-2"></div>
+      </section>
+      <section class="mb-6 border-t pt-4 border-gray-100 dark:border-gray-700">
+        <h3 class="text-sm font-bold text-gray-700 dark:text-gray-200 mb-2 pl-2 border-l-4 border-indigo-500">🔊 リスニングの設定</h3>
+        <p class="text-[11px] text-gray-500 dark:text-gray-400 mb-3">読み上げには端末に搭載された英語音声を使用します。通信や音声ファイルの準備は不要ですが、利用可能な声は端末に依存します。</p>
+        <label class="flex items-center justify-between gap-2 text-xs font-bold text-gray-700 dark:text-gray-200 mb-3">読み上げ速度
+          <select id="setting-listening-rate" class="p-2 rounded border dark:bg-gray-700 dark:border-gray-600">
+            <option value="0.75">0.75倍（ゆっくり）</option><option value="0.9">0.9倍</option><option value="1">1.0倍（標準）</option><option value="1.25">1.25倍（速い）</option>
+          </select>
+        </label>
+        <label class="flex items-center p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg border border-indigo-100 dark:border-indigo-800 cursor-pointer">
+          <input type="checkbox" id="setting-listening-autoplay" class="w-4 h-4 accent-indigo-600"><span class="ml-3 text-xs font-bold text-indigo-800 dark:text-indigo-200">カード表示時に自動再生を試す</span>
+        </label>
+        <p class="text-[10px] mt-1 text-gray-500 dark:text-gray-400">※ iPhoneでは自動再生が制限される場合があります。その場合も手動再生はできます。</p>
+      </section>
+      <section class="mb-6 border-t pt-4 border-gray-100 dark:border-gray-700">
+        <h3 class="text-sm font-bold text-gray-700 dark:text-gray-200 mb-2 pl-2 border-l-4 border-yellow-500">忘却曲線の間隔設定</h3>
+        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-3 leading-tight">連続正解したカードが次にDueになるまでの間隔を調整。累計正答率50%以下のカードは間隔が半分になります。</p>
+        <div id="srs-options" class="space-y-3 px-1"></div>
+        <label class="flex items-center p-2 mt-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-100 dark:border-yellow-800 cursor-pointer">
+          <input type="checkbox" id="setting-exclude-100" class="w-4 h-4 accent-yellow-600"><span class="ml-2 text-[11px] font-bold text-yellow-800 dark:text-yellow-200">正答率100%の単語は忘却曲線(Due)から除外する</span>
+        </label>
+        <div class="text-right mt-2"><button onclick="resetSrsIntervals()" class="text-[10px] text-gray-400 underline">デフォルトに戻す</button></div>
+      </section>
+      <section class="mb-6 border-t pt-4 border-gray-100 dark:border-gray-700">
+        <h3 class="text-sm font-bold text-gray-700 dark:text-gray-200 mb-3 pl-2 border-l-4 border-purple-500">データ移行・バックアップ</h3>
+        <button onclick="exportData()" class="w-full mb-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2.5 rounded-lg text-sm font-bold">↓ 履歴をバックアップ (JSON)</button>
+        <input type="file" id="import-file" accept=".json,application/json" class="hidden" onchange="importData(event)">
+        <button onclick="document.getElementById('import-file').click()" class="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2.5 rounded-lg text-sm font-bold">↑ 履歴を復元する (JSON)</button>
+      </section>
+      <section class="mb-2 pt-4 border-t border-gray-200 dark:border-gray-700 text-center"><button onclick="resetData()" class="text-sm text-red-400 font-bold hover:text-red-600">すべての学習記録を消去する</button></section>
+    </div>
+    <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"><button onclick="saveOptionsAndClose()" class="w-full bg-gray-800 dark:bg-gray-600 text-white py-3 rounded-lg font-bold shadow-md">保存して戻る</button></div>
+  </div>
+
+  <div id="flashcard-screen" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md text-center hidden flex-col h-[85vh] transition-colors duration-300">
+    <div class="flex justify-center items-center mb-4 space-x-2 flex-shrink-0"><span class="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Remaining</span><div id="progress" class="text-sm font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 px-4 py-1 rounded-full shadow-inner">- / -</div></div>
+    <div id="card" class="bg-blue-50 dark:bg-slate-700/50 cursor-pointer p-6 rounded-lg flex-1 flex flex-col overflow-y-auto custom-scrollbar transition-all duration-300 relative" onclick="flipCard()" role="button" tabindex="0" aria-label="解答を表示" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard()}">
+      <div class="w-full my-auto flex flex-col items-center justify-center py-2 relative">
+        <div id="card-front" class="w-full"><p id="label-front" class="text-[10px] uppercase tracking-widest text-blue-400 dark:text-blue-300 mb-2 font-bold">FRONT</p><h1 id="text-front" class="text-2xl font-bold text-gray-800 dark:text-gray-100 break-words leading-relaxed">読み込み中...</h1></div>
+        <div id="listening-front" class="w-full hidden flex-col items-center py-3" aria-label="リスニング問題">
+          <p class="text-[10px] uppercase tracking-widest text-indigo-500 dark:text-indigo-300 font-bold mb-4">LISTENING</p>
+          <div id="listening-icon" class="text-6xl mb-3" aria-hidden="true">🎧</div>
+          <p class="text-sm font-bold text-gray-700 dark:text-gray-200 mb-5">聞こえた英単語と意味は？</p>
+          <button type="button" id="listening-play" onclick="replayListening(event)" class="px-7 py-3 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-full font-bold text-base shadow-md" aria-label="英単語を再生">▶ 再生・リピート</button>
+          <p id="listening-status" class="text-[11px] text-gray-400 dark:text-gray-400 mt-3 min-h-4" role="status">音声を聞いて考えてください</p>
+          <label class="text-[11px] text-gray-500 dark:text-gray-400 mt-5 flex gap-2 items-center">再生速度
+            <select id="listening-rate" onclick="event.stopPropagation()" onchange="changeListeningRate(this.value, event)" class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg px-2 py-2">
+              <option value="0.75">0.75×</option><option value="0.9">0.9×</option><option value="1">1.0×</option><option value="1.25">1.25×</option>
+            </select>
+          </label>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-6">わかったらカードをタップして答えを見る</p>
         </div>
-        
-        <div id="card" class="bg-blue-50 dark:bg-slate-700/50 cursor-pointer p-6 rounded-lg flex-1 flex flex-col overflow-y-auto custom-scrollbar transition-all duration-300 relative" onclick="flipCard()">
-            <div class="w-full my-auto flex flex-col items-center justify-center py-2 relative">
-                
-                <div id="card-front" class="w-full">
-                    <p id="label-front" class="text-[10px] uppercase tracking-widest text-blue-400 dark:text-blue-300 mb-2 font-bold">FRONT</p>
-                    <h1 id="text-front" class="text-2xl font-bold text-gray-800 dark:text-gray-100 break-words leading-relaxed">読み込み中...</h1>
-                </div>
-                
-                <div id="part5-front" class="w-full hidden text-left pb-2">
-                    <div class="flex items-center gap-2 mb-4">
-                        <span class="bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded text-[10px] font-bold tracking-wider">PART 5</span>
-                        <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold" id="part5-id">ID: P1</span>
-                    </div>
-                    <p id="part5-q" class="text-base md:text-lg font-bold text-gray-800 dark:text-gray-100 mb-6 leading-relaxed"></p>
-                    <div class="flex flex-col gap-2 w-full">
-                        <button onclick="selectPart5Option('A', event)" id="btn-opt-A" class="w-full p-3 border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg text-left hover:bg-purple-50 dark:hover:bg-gray-700 transition-all text-sm font-medium text-gray-700 dark:text-gray-200 shadow-sm"></button>
-                        <button onclick="selectPart5Option('B', event)" id="btn-opt-B" class="w-full p-3 border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg text-left hover:bg-purple-50 dark:hover:bg-gray-700 transition-all text-sm font-medium text-gray-700 dark:text-gray-200 shadow-sm"></button>
-                        <button onclick="selectPart5Option('C', event)" id="btn-opt-C" class="w-full p-3 border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg text-left hover:bg-purple-50 dark:hover:bg-gray-700 transition-all text-sm font-medium text-gray-700 dark:text-gray-200 shadow-sm"></button>
-                        <button onclick="selectPart5Option('D', event)" id="btn-opt-D" class="w-full p-3 border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg text-left hover:bg-purple-50 dark:hover:bg-gray-700 transition-all text-sm font-medium text-gray-700 dark:text-gray-200 shadow-sm"></button>
-                    </div>
-                </div>
-
-                <div id="card-back" class="w-full mt-4 pt-4 border-t border-blue-100 dark:border-slate-600 hidden">
-                    
-                    <div id="standard-back-content">
-                        <p id="label-back" class="text-[10px] uppercase tracking-widest text-green-400 dark:text-green-500 mb-2 font-bold">BACK</p>
-                        <h1 id="text-back" class="text-xl font-bold text-blue-600 dark:text-blue-400 break-words leading-relaxed">意味</h1>
-                        
-                        <div id="note-area" class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 text-sm rounded-lg text-left w-full hidden border border-yellow-100 dark:border-yellow-800 shadow-sm">
-                            <span class="font-bold text-yellow-600 dark:text-yellow-500 text-[10px] uppercase tracking-wider block mb-1">💡 備考 / 派生語</span>
-                            <span id="note-text" class="leading-relaxed text-xs"></span>
-                        </div>
-                        
-                        <div id="sub-info" class="mt-4 w-full"></div>
-                    </div>
-
-                    <div id="part5-back-content" class="hidden w-full text-left">
-                        <div id="part5-result-header" class="mb-4 flex items-center border-b border-gray-200 dark:border-slate-600 pb-3"></div>
-                        <div class="space-y-4">
-                            <div>
-                                <p class="text-[10px] font-bold text-blue-500 dark:text-blue-400 uppercase tracking-wider mb-1">【和訳】</p>
-                                <p id="part5-translation" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed"></p>
-                            </div>
-                            <div class="bg-purple-50 dark:bg-purple-900/30 p-3 rounded border border-purple-100 dark:border-purple-800 shadow-sm">
-                                <p class="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-1">【解説】</p>
-                                <p id="part5-explanation" class="text-xs text-gray-800 dark:text-gray-200 leading-relaxed"></p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div id="session-clear-msg" class="w-full hidden flex-col items-center justify-center">
-                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900/50 text-green-500 dark:text-green-400 rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                    </div>
-                    <h1 class="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">Session Clear!</h1>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium leading-relaxed">お疲れ様でした。<br>スタート画面に戻って進捗を確認しましょう。</p>
-                </div>
+        <div id="part5-front" class="w-full hidden text-left pb-2">
+          <div class="flex items-center gap-2 mb-4"><span class="bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded text-[10px] font-bold">PART 5</span><span class="text-[10px] text-gray-400 font-bold" id="part5-id"></span></div>
+          <p id="part5-q" class="text-base md:text-lg font-bold text-gray-800 dark:text-gray-100 mb-6 leading-relaxed"></p>
+          <div class="flex flex-col gap-2 w-full">
+            <button onclick="selectPart5Option('A', event)" id="btn-opt-A" class="part5-choice"></button>
+            <button onclick="selectPart5Option('B', event)" id="btn-opt-B" class="part5-choice"></button>
+            <button onclick="selectPart5Option('C', event)" id="btn-opt-C" class="part5-choice"></button>
+            <button onclick="selectPart5Option('D', event)" id="btn-opt-D" class="part5-choice"></button>
+          </div>
+        </div>
+        <div id="card-back" class="w-full mt-4 pt-4 border-t border-blue-100 dark:border-slate-600 hidden">
+          <div id="standard-back-content">
+            <p id="label-back" class="text-[10px] uppercase tracking-widest text-green-400 dark:text-green-500 mb-2 font-bold">BACK</p>
+            <h1 id="text-back" class="text-xl font-bold text-blue-600 dark:text-blue-400 break-words leading-relaxed">意味</h1>
+            <div id="listening-answer" class="hidden mt-4 bg-white/80 dark:bg-gray-800/80 border border-blue-100 dark:border-gray-600 p-3 rounded-lg text-left">
+              <p class="text-[10px] font-bold text-indigo-500 dark:text-indigo-400 mb-1">例文（英語）</p><p id="listening-phrase-en" class="text-sm text-gray-800 dark:text-gray-100 leading-relaxed"></p>
+              <p class="text-[10px] font-bold text-indigo-500 dark:text-indigo-400 mt-3 mb-1">例文（日本語）</p><p id="listening-phrase-ja" class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed"></p>
             </div>
+            <div id="note-area" class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 text-sm rounded-lg text-left w-full hidden border border-yellow-100 dark:border-yellow-800 shadow-sm"><span class="font-bold text-yellow-600 dark:text-yellow-500 text-[10px] block mb-1">💡 備考 / 派生語</span><span id="note-text" class="leading-relaxed text-xs"></span></div>
+            <div id="sub-info" class="mt-4 w-full"></div>
+          </div>
+          <div id="part5-back-content" class="hidden w-full text-left">
+            <div id="part5-result-header" class="mb-4 flex items-center border-b border-gray-200 dark:border-slate-600 pb-3"></div>
+            <div class="space-y-4"><div><p class="text-[10px] font-bold text-blue-500 dark:text-blue-400 mb-1">【和訳】</p><p id="part5-translation" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed"></p></div><div class="bg-purple-50 dark:bg-purple-900/30 p-3 rounded border border-purple-100 dark:border-purple-800 shadow-sm"><p class="text-[10px] font-bold text-purple-600 dark:text-purple-400 mb-1">【解説】</p><p id="part5-explanation" class="text-xs text-gray-800 dark:text-gray-200 leading-relaxed"></p></div></div>
+          </div>
         </div>
-
-        <div id="buttons" class="mt-6 flex justify-between gap-4 hidden flex-shrink-0">
-            <button onclick="recordAnswer(false)" class="bg-red-500 dark:bg-red-600 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg hover:bg-red-600 dark:hover:bg-red-700 transition-colors">✕</button>
-            <button onclick="recordAnswer(true)" class="bg-green-500 dark:bg-green-600 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg hover:bg-green-600 dark:hover:bg-green-700 transition-colors">✓</button>
-        </div>
-
-        <div id="part5-next-btn-container" class="mt-6 w-full hidden flex-shrink-0">
-            <button onclick="nextPart5Card()" class="w-full bg-blue-600 dark:bg-blue-700 text-white py-4 rounded-xl font-bold shadow-lg text-lg hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors tracking-widest">次へ進む ➔</button>
-        </div>
-        
-        <button onclick="backToStart()" class="mt-4 text-sm text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 underline font-bold flex-shrink-0">← 中断して戻る</button>
+        <div id="session-clear-msg" class="w-full hidden flex-col items-center justify-center"><div class="w-16 h-16 bg-green-100 dark:bg-green-900/50 text-green-500 dark:text-green-400 rounded-full flex items-center justify-center mb-4 text-4xl">✓</div><h1 class="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">Session Clear!</h1><p class="text-gray-500 dark:text-gray-400 text-sm font-medium leading-relaxed">お疲れ様でした。<br>スタート画面に戻って進捗を確認しましょう。</p></div>
+      </div>
     </div>
-
-    <div id="history-screen" class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg w-full max-w-md hidden flex flex-col h-[90vh] transition-colors duration-300">
-        <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-3 text-center">学習履歴と正答率</h2>
-        
-        <div class="flex border-b border-gray-200 dark:border-gray-700 mb-4 bg-gray-50 dark:bg-gray-900 rounded-t-lg">
-            <button onclick="switchHistoryTab('EPh-JPh')" id="tab-EPh-JPh" class="flex-1 py-2 text-[10px] font-bold border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 transition-colors">英フ→日</button>
-            <button onclick="switchHistoryTab('JPh-EPh')" id="tab-JPh-EPh" class="flex-1 py-2 text-[10px] font-bold border-b-2 border-transparent text-gray-400 transition-colors">日フ→英</button>
-            <button onclick="switchHistoryTab('EWd-JWd')" id="tab-EWd-JWd" class="flex-1 py-2 text-[10px] font-bold border-b-2 border-transparent text-gray-400 transition-colors">英単→日</button>
-            <button onclick="switchHistoryTab('JWd-EWd')" id="tab-JWd-EWd" class="flex-1 py-2 text-[10px] font-bold border-b-2 border-transparent text-gray-400 transition-colors">日単→英</button>
-            <button onclick="switchHistoryTab('Part5')" id="tab-Part5" class="flex-1 py-2 text-[10px] font-bold border-b-2 border-transparent text-gray-400 transition-colors">Part5</button>
-        </div>
-
-        <div id="history-list" class="overflow-y-auto flex-1 space-y-3 pr-1 custom-scrollbar"></div>
-        
-        <button onclick="backToStartFromHistory()" class="mt-4 pt-3 border-t dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 underline font-bold text-center">← 戻る</button>
-    </div>
-
-    <script>
-        let vocabData = [];
-        let part5Data = [];
-        let activeVocab = [];
-        let currentIndex = 0;
-        let sessionTotal = 0;
-        let isFlipped = false;
-        
-        let isPart5ModeActive = false;
-        let part5UserAnswerIsCorrect = false;
-
-        let currentFormat = localStorage.getItem('flashcard_format') || "EPh-JPh";
-        let selectedRanges = JSON.parse(localStorage.getItem('flashcard_ranges')) || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        let historyTab = currentFormat;
-
-        let userProgress = JSON.parse(localStorage.getItem('flashcard_progress_v2')) || {};
-
-        const DEFAULT_SRS_INTERVALS = [4, 12, 24, 48, 96, 168];
-        let srsIntervals = JSON.parse(localStorage.getItem('flashcard_srs_intervals')) || DEFAULT_SRS_INTERVALS.slice();
-
-        let exclude100Srs = JSON.parse(localStorage.getItem('flashcard_exclude_100_srs')) || false;
-        let isDarkMode = JSON.parse(localStorage.getItem('flashcard_dark_mode')) || false;
-
-        const modeNames = {
-            'EPh-JPh': '英語フレーズ → 日本語',
-            'JPh-EPh': '日本語フレーズ → 英語',
-            'EWd-JWd': '英単語 → 日本語訳',
-            'JWd-EWd': '日本語訳 → 英単語',
-            'Part5': 'Part 5 (4択穴埋め問題)'
-        };
-
-        function getLevelName(idStr) {
-            const str = String(idStr);
-            if (str.startsWith('E') || str.startsWith('e')) return "Essential";
-            if (str.startsWith('P') || str.startsWith('p')) return "Part 5";
-            const num = parseInt(str, 10);
-            if (!isNaN(num)) {
-                if (num >= 1 && num <= 400) return "600 Level";
-                if (num >= 401 && num <= 700) return "730 Level";
-                if (num >= 701 && num <= 800) return "860 Level";
-                if (num >= 801 && num <= 900) return "990 Level";
-            }
-            return "Extra";
-        }
-
-        function loadCSV(url) {
-            return new Promise(resolve => {
-                Papa.parse(url, {
-                    download: true,
-                    header: true,
-                    skipEmptyLines: true,
-                    complete: function(results) {
-                        resolve(results.data);
-                    },
-                    error: function() {
-                        resolve([]); 
-                    }
-                });
-            });
-        }
-
-        Promise.all([loadCSV("data.csv"), loadCSV("part5.csv")]).then(results => {
-            vocabData = results[0].filter(v => v['ID'] && v['文中の英単語']);
-            part5Data = results[1].filter(v => v['ID'] && v['Question']);
-            updateStartScreen();
-        });
-
-        function getTargetData() {
-            if (currentFormat === 'Part5') {
-                return part5Data.filter(v => selectedRanges.includes(11));
-            } else {
-                return vocabData.filter(v => {
-                    const rawId = String(v.ID);
-                    if (rawId.startsWith('E') || rawId.startsWith('e')) return selectedRanges.includes(5);
-                    const id = parseInt(rawId, 10);
-                    if (isNaN(id)) return false;
-                    if (selectedRanges.includes(1) && id >= 1 && id <= 100) return true;
-                    if (selectedRanges.includes(2) && id >= 101 && id <= 200) return true;
-                    if (selectedRanges.includes(3) && id >= 201 && id <= 300) return true;
-                    if (selectedRanges.includes(4) && id >= 301 && id <= 400) return true;
-                    if (selectedRanges.includes(6) && id >= 401 && id <= 500) return true;
-                    if (selectedRanges.includes(7) && id >= 501 && id <= 600) return true;
-                    if (selectedRanges.includes(8) && id >= 601 && id <= 700) return true;
-                    if (selectedRanges.includes(9) && id >= 701 && id <= 800) return true;
-                    if (selectedRanges.includes(10) && id >= 801 && id <= 900) return true;
-                    return false;
-                });
-            }
-        }
-
-        function updateStartScreen() {
-            let safeCount = 0;
-            let dueCount = 0;
-            let wrongCount = 0;
-            let newCount = 0;
-            
-            const targetVocab = getTargetData();
-            const total = targetVocab.length;
-            const nowIso = new Date().toISOString();
-
-            document.getElementById('dash-mode-title').innerText = modeNames[currentFormat];
-            
-            let rangeText = "";
-            if (currentFormat === 'Part5') {
-                rangeText = "Part 5 (実戦問題)";
-            } else if (selectedRanges.length >= 10 && !selectedRanges.includes(11)) {
-                rangeText = "全範囲 (All Levels)";
-            } else {
-                let parts = [];
-                if (selectedRanges.some(r => r >= 1 && r <= 4)) parts.push("600L");
-                if (selectedRanges.some(r => r >= 6 && r <= 8)) parts.push("730L");
-                if (selectedRanges.includes(9)) parts.push("860L");
-                if (selectedRanges.includes(10)) parts.push("990L");
-                if (selectedRanges.includes(5)) parts.push("Ess");
-                rangeText = parts.join(" & ") + " 選択中";
-            }
-            document.getElementById('dash-range-title').innerText = rangeText;
-
-            targetVocab.forEach(v => {
-                const record = userProgress[v.ID]?.[currentFormat];
-                if (!record) {
-                    newCount++;
-                } else if (record.status === 'wrong') {
-                    wrongCount++;
-                } else {
-                    if (!record.next_review || record.next_review <= nowIso) {
-                        if (exclude100Srs && record.total_count > 0 && record.correct_count === record.total_count) {
-                            safeCount++;
-                        } else {
-                            dueCount++;
-                        }
-                    } else {
-                        safeCount++;
-                    }
-                }
-            });
-            
-            document.getElementById('stat-safe').innerHTML = `${safeCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
-            document.getElementById('stat-due').innerHTML = `${dueCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
-            document.getElementById('stat-wrong').innerHTML = `${wrongCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
-            document.getElementById('stat-new').innerHTML = `${newCount} <span class="text-sm font-normal text-gray-400 ml-1">/ ${total}</span>`;
-            
-            const btnSrs = document.getElementById('btn-srs');
-            const totalDue = dueCount + wrongCount;
-            if (totalDue === 0) {
-                btnSrs.disabled = true;
-            } else {
-                btnSrs.disabled = false;
-            }
-
-            const btnWrong = document.getElementById('btn-wrong');
-            btnWrong.disabled = (wrongCount === 0);
-            btnWrong.style.opacity = (wrongCount === 0) ? "0.5" : "1";
-
-            const btnNew = document.getElementById('btn-new');
-            if (btnNew) {
-                btnNew.disabled = (newCount === 0);
-                btnNew.style.opacity = (newCount === 0) ? "0.5" : "1";
-            }
-        }
-
-        function syncOptions(changedElement) {
-            if (!changedElement) return;
-            const val = changedElement.value;
-            const name = changedElement.name;
-
-            if (name === 'range') {
-                if (val === '11' && changedElement.checked) {
-                    document.querySelectorAll('input[name="range"]').forEach(cb => {
-                        if (cb.value !== '11') cb.checked = false;
-                    });
-                    const part5FormatRadio = document.querySelector('input[name="format"][value="Part5"]');
-                    if (part5FormatRadio) part5FormatRadio.checked = true;
-                } else if (val !== '11' && changedElement.checked) {
-                    const part5RangeCb = document.querySelector('input[name="range"][value="11"]');
-                    if (part5RangeCb) part5RangeCb.checked = false;
-                    const part5FormatRadio = document.querySelector('input[name="format"][value="Part5"]');
-                    if (part5FormatRadio && part5FormatRadio.checked) {
-                        document.querySelector('input[name="format"][value="EPh-JPh"]').checked = true;
-                    }
-                }
-            } else if (name === 'format') {
-                if (val === 'Part5' && changedElement.checked) {
-                    document.querySelectorAll('input[name="range"]').forEach(cb => {
-                        if (cb.value !== '11') cb.checked = false;
-                    });
-                    const part5RangeCb = document.querySelector('input[name="range"][value="11"]');
-                    if (part5RangeCb) part5RangeCb.checked = true;
-                } else if (val !== 'Part5' && changedElement.checked) {
-                    const part5RangeCb = document.querySelector('input[name="range"][value="11"]');
-                    if (part5RangeCb) part5RangeCb.checked = false;
-                    const anyVocab = Array.from(document.querySelectorAll('input[name="range"]')).some(cb => cb.value !== '11' && cb.checked);
-                    if (!anyVocab) {
-                        const range1Cb = document.querySelector('input[name="range"][value="1"]');
-                        if (range1Cb) range1Cb.checked = true;
-                    }
-                }
-            }
-            applyOptionConstraints();
-        }
-
-        function applyOptionConstraints() {
-            const part5RangeCb = document.querySelector('input[name="range"][value="11"]');
-            const isPart5 = part5RangeCb ? part5RangeCb.checked : false;
-
-            document.querySelectorAll('input[name="format"]').forEach(radio => {
-                const label = radio.closest('label');
-                if (isPart5) {
-                    if (radio.value !== 'Part5') {
-                        radio.disabled = true;
-                        label.classList.add('opacity-40', 'cursor-not-allowed');
-                        label.classList.remove('cursor-pointer', 'hover:bg-blue-50', 'dark:hover:bg-gray-600');
-                    } else {
-                        radio.disabled = false;
-                        label.classList.remove('opacity-40', 'cursor-not-allowed');
-                        label.classList.add('cursor-pointer', 'hover:bg-purple-100', 'dark:hover:bg-purple-900/40');
-                    }
-                } else {
-                    if (radio.value === 'Part5') {
-                        radio.disabled = true;
-                        label.classList.add('opacity-40', 'cursor-not-allowed');
-                        label.classList.remove('cursor-pointer', 'hover:bg-purple-100', 'dark:hover:bg-purple-900/40');
-                    } else {
-                        radio.disabled = false;
-                        label.classList.remove('opacity-40', 'cursor-not-allowed');
-                        label.classList.add('cursor-pointer', 'hover:bg-blue-50', 'dark:hover:bg-gray-600');
-                    }
-                }
-            });
-        }
-
-        function showTutorial() {
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('tutorial-screen').classList.remove('hidden');
-        }
-
-        function hideTutorial() {
-            document.getElementById('tutorial-screen').classList.add('hidden');
-            document.getElementById('start-screen').classList.remove('hidden');
-        }
-
-        function exportData() {
-            const dataStr = localStorage.getItem('flashcard_progress_v2') || "{}";
-            const blob = new Blob([dataStr], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            const dateStr = new Date().toISOString().split('T')[0];
-            a.download = `toeic_progress_backup_${dateStr}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    if (importedData && typeof importedData === 'object') {
-                        localStorage.setItem('flashcard_progress_v2', JSON.stringify(importedData));
-                        alert("データの復元が完了しました。最新の状態でページを再読み込みします。");
-                        location.reload();
-                    } else {
-                        alert("不正なファイル形式です。");
-                    }
-                } catch (err) {
-                    alert("ファイルの読み込みに失敗しました。正しいJSONファイルを選択してください。");
-                }
-            };
-            event.target.value = '';
-            reader.readAsText(file);
-        }
-
-        function toggleDarkModePreview(checked) {
-            if (checked) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        }
-
-        function updateSrsLabel(index, val) {
-            const el = document.getElementById(`srs-val-${index}`);
-            const hours = parseInt(val, 10);
-            if (hours >= 24) {
-                const days = hours / 24;
-                el.innerText = Number.isInteger(days) ? `${days}日後` : `${days.toFixed(1)}日後`;
-            } else {
-                el.innerText = `${hours}時間後`;
-            }
-        }
-
-        function loadOptionSettings() {
-            const radios = document.getElementsByName('format');
-            for(let i = 0; i < radios.length; i++) {
-                if(radios[i].value === currentFormat) radios[i].checked = true;
-            }
-            const checkboxes = document.getElementsByName('range');
-            for(let i = 0; i < checkboxes.length; i++) {
-                checkboxes[i].checked = selectedRanges.includes(parseInt(checkboxes[i].value, 10));
-            }
-            
-            const part5Range = document.querySelector('input[name="range"][value="11"]');
-            if (part5Range && part5Range.checked) {
-                 const p5Format = document.querySelector('input[name="format"][value="Part5"]');
-                 if (p5Format) p5Format.checked = true;
-            }
-
-            applyOptionConstraints();
-
-            for(let i = 0; i < 6; i++) {
-                const slider = document.getElementById(`srs-${i}`);
-                if (slider) {
-                    slider.value = srsIntervals[i];
-                    updateSrsLabel(i, slider.value);
-                }
-            }
-            const excludeCheck = document.getElementById('setting-exclude-100');
-            if(excludeCheck) excludeCheck.checked = exclude100Srs;
-
-            const darkCheck = document.getElementById('setting-dark-mode');
-            if (darkCheck) darkCheck.checked = isDarkMode;
-        }
-
-        function resetSrsIntervals() {
-            srsIntervals = DEFAULT_SRS_INTERVALS.slice();
-            for(let i = 0; i < 6; i++) {
-                const slider = document.getElementById(`srs-${i}`);
-                if (slider) {
-                    slider.value = srsIntervals[i];
-                    updateSrsLabel(i, slider.value);
-                }
-            }
-            alert("忘却曲線の間隔をデフォルトに戻しました。");
-        }
-
-        function showOptions() {
-            loadOptionSettings();
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('options-screen').classList.remove('hidden');
-        }
-
-        function saveOptionsAndClose() {
-            const checkboxes = document.getElementsByName('range');
-            let newRanges = [];
-            for(let i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) newRanges.push(parseInt(checkboxes[i].value, 10));
-            }
-            if (newRanges.length === 0) return alert("出題範囲を少なくとも1つ選択してください。");
-            
-            selectedRanges = newRanges;
-            localStorage.setItem('flashcard_ranges', JSON.stringify(selectedRanges));
-            currentFormat = document.querySelector('input[name="format"]:checked').value;
-            localStorage.setItem('flashcard_format', currentFormat);
-            
-            for(let i = 0; i < 6; i++) {
-                const slider = document.getElementById(`srs-${i}`);
-                if (slider) {
-                    srsIntervals[i] = parseInt(slider.value, 10);
-                }
-            }
-            localStorage.setItem('flashcard_srs_intervals', JSON.stringify(srsIntervals));
-
-            const excludeCheck = document.getElementById('setting-exclude-100');
-            if (excludeCheck) {
-                exclude100Srs = excludeCheck.checked;
-                localStorage.setItem('flashcard_exclude_100_srs', JSON.stringify(exclude100Srs));
-            }
-
-            const darkCheck = document.getElementById('setting-dark-mode');
-            if (darkCheck) {
-                isDarkMode = darkCheck.checked;
-                localStorage.setItem('flashcard_dark_mode', JSON.stringify(isDarkMode));
-                toggleDarkModePreview(isDarkMode);
-            }
-
-            updateStartScreen();
-            document.getElementById('options-screen').classList.add('hidden');
-            document.getElementById('start-screen').classList.remove('hidden');
-        }
-
-        function startStudy(mode) {
-            const targetVocab = getTargetData();
-            const nowIso = new Date().toISOString();
-
-            if (mode === 'wrong') {
-                activeVocab = targetVocab.filter(v => userProgress[v.ID]?.[currentFormat]?.status === 'wrong');
-            } else if (mode === 'srs') {
-                activeVocab = targetVocab.filter(v => {
-                    const record = userProgress[v.ID]?.[currentFormat];
-                    if (!record) return false;
-                    if (record.status === 'wrong') return true;
-                    if (record.status === 'memorized' && (!record.next_review || record.next_review <= nowIso)) {
-                        if (exclude100Srs && record.total_count > 0 && record.correct_count === record.total_count) {
-                            return false;
-                        }
-                        return true;
-                    }
-                    return false;
-                });
-            } else if (mode === 'new') {
-                activeVocab = targetVocab.filter(v => !userProgress[v.ID]?.[currentFormat]);
-            } else {
-                activeVocab = targetVocab.filter(v => {
-                    const record = userProgress[v.ID]?.[currentFormat];
-                    if (!record) return true;
-                    if (record.status === 'wrong') return true;
-                    if (record.status === 'memorized' && (!record.next_review || record.next_review <= nowIso)) return true;
-                    return false;
-                });
-            }
-
-            if (activeVocab.length === 0) return alert("このモード/範囲には学習するカードがありません。");
-
-            activeVocab.sort(() => Math.random() - 0.5);
-            sessionTotal = activeVocab.length;
-            currentIndex = 0;
-            
-            document.getElementById('card-front').classList.remove('hidden');
-            document.getElementById('session-clear-msg').classList.add('hidden');
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('flashcard-screen').classList.remove('hidden');
-            
-            document.getElementById('card').scrollTop = 0;
-            
-            loadCard();
-        }
-
-        function highlightExact(fullText, exactTargetWord) {
-            if (!fullText || !exactTargetWord) return fullText;
-            const escaped = exactTargetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const regex = new RegExp(`(${escaped})`, 'gi');
-            return fullText.replace(regex, `<span class="underline decoration-2 decoration-blue-400 dark:text-blue-300">$1</span>`);
-        }
-
-        function getHintPhrase(fullText, targetWord) {
-            if (!fullText || !targetWord) return fullText;
-            const escaped = targetWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const regex = new RegExp(`(${escaped})`, 'gi');
-            return fullText.replace(regex, (match) => {
-                if (match.length <= 1) return match;
-                return match.charAt(0) + '-'.repeat(match.length - 1);
-            });
-        }
-
-        function loadCard() {
-            if (currentIndex >= sessionTotal) {
-                document.getElementById('part5-front').classList.add('hidden');
-                document.getElementById('card-front').classList.add('hidden');
-                document.getElementById('card-back').classList.add('hidden');
-                document.getElementById('buttons').classList.add('hidden');
-                document.getElementById('part5-next-btn-container').classList.add('hidden');
-                document.getElementById('session-clear-msg').classList.remove('hidden');
-                document.getElementById('progress').innerText = `0 / ${sessionTotal}`;
-                return;
-            }
-
-            const v = activeVocab[currentIndex];
-            isPart5ModeActive = (currentFormat === 'Part5');
-
-            const normalFrontEl = document.getElementById('card-front');
-            const part5FrontEl = document.getElementById('part5-front');
-            const standardBackEl = document.getElementById('standard-back-content');
-            const part5BackEl = document.getElementById('part5-back-content');
-            const noteArea = document.getElementById('note-area');
-            const noteText = document.getElementById('note-text');
-            const subInfoEl = document.getElementById('sub-info');
-
-            if (isPart5ModeActive) {
-                normalFrontEl.classList.add('hidden');
-                part5FrontEl.classList.remove('hidden');
-                
-                document.getElementById('part5-id').innerText = `ID: ${v['ID']}`;
-                document.getElementById('part5-q').innerText = v['Question'];
-                
-                ['A','B','C','D'].forEach(opt => {
-                    const btn = document.getElementById(`btn-opt-${opt}`);
-                    btn.innerHTML = `<span class="font-bold text-purple-500 dark:text-purple-400 mr-2">(${opt})</span> ${v[`Option${opt}`]}`;
-                    btn.className = "w-full p-3 border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg text-left hover:bg-purple-50 dark:hover:bg-gray-700 transition-all text-sm font-medium text-gray-700 dark:text-gray-200 shadow-sm";
-                    btn.disabled = false;
-                });
-            } else {
-                part5FrontEl.classList.add('hidden');
-                normalFrontEl.classList.remove('hidden');
-                
-                const textFrontEl = document.getElementById('text-front');
-                switch(currentFormat) {
-                    case 'EPh-JPh': textFrontEl.innerHTML = highlightExact(v['フレーズ(英語)'], v['文中の英単語']); break;
-                    case 'JPh-EPh': 
-                        const hintPhrase = getHintPhrase(v['フレーズ(英語)'], v['文中の英単語']);
-                        textFrontEl.innerHTML = `${v['フレーズ(日本語)']}<br><span class="text-lg text-gray-400 dark:text-gray-500 font-normal mt-4 block tracking-widest">${hintPhrase}</span>`;
-                        break;
-                    case 'EWd-JWd': textFrontEl.innerText = v['英単語']; break;
-                    case 'JWd-EWd': textFrontEl.innerText = v['日本語訳']; break;
-                }
-            }
-
-            if (isPart5ModeActive) {
-                standardBackEl.classList.add('hidden');
-                part5BackEl.classList.remove('hidden');
-                document.getElementById('part5-translation').innerText = v['Translation'];
-                document.getElementById('part5-explanation').innerText = v['Explanation'];
-                noteArea.classList.add('hidden');
-            } else {
-                part5BackEl.classList.add('hidden');
-                standardBackEl.classList.remove('hidden');
-
-                const textBackEl = document.getElementById('text-back');
-                switch(currentFormat) {
-                    case 'EPh-JPh': textBackEl.innerHTML = highlightExact(v['フレーズ(日本語)'], v['文中の日本語']); break;
-                    case 'JPh-EPh': textBackEl.innerHTML = highlightExact(v['フレーズ(英語)'], v['文中の英単語']); break;
-                    case 'EWd-JWd': textBackEl.innerText = v['日本語訳']; break;
-                    case 'JWd-EWd': textBackEl.innerText = v['英単語']; break;
-                }
-
-                if (v['備考']) {
-                    noteText.innerText = v['備考'];
-                    noteArea.classList.remove('hidden');
-                } else {
-                    noteArea.classList.add('hidden');
-                }
-
-                const levelLabel = getLevelName(v['ID']);
-                const record = userProgress[v.ID]?.[currentFormat];
-                let streakInfo = "";
-                let weaknessAlert = "";
-                if (record) {
-                    if (record.consecutive_correct > 0) {
-                        streakInfo = `<span class="ml-2 text-green-500 dark:text-green-400 font-bold text-[10px]">🔥 連続: ${record.consecutive_correct}回</span>`;
-                    }
-                    if (record.total_count > 0) {
-                        const accRate = record.correct_count / record.total_count;
-                        if (accRate <= 0.5) {
-                            weaknessAlert = `<span class="ml-2 text-red-500 dark:text-red-400 font-bold text-[10px] animate-pulse">⚠️苦手(正答率${Math.round(accRate*100)}%)</span>`;
-                        }
-                    }
-                }
-                subInfoEl.innerHTML = `
-                    <div class="flex flex-wrap justify-center items-center gap-1 text-[10px] text-gray-400 dark:text-gray-500 mb-2">
-                        <span class="bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 px-1.5 py-0.5 rounded">${levelLabel}</span>
-                        <span>ID: ${v['ID']}</span>
-                        ${streakInfo}
-                        ${weaknessAlert}
-                    </div>
-                    <div class="text-sm font-bold text-gray-700 dark:text-gray-200 bg-gray-50/50 dark:bg-slate-800 py-2 px-3 rounded border border-gray-100 dark:border-slate-600 shadow-sm w-full">
-                        <span class="text-blue-600 dark:text-blue-400">${v['英単語']}</span> 
-                        <span class="text-gray-300 dark:text-gray-500 font-normal mx-1">|</span> 
-                        <span>${v['日本語訳']}</span>
-                    </div>
-                `;
-            }
-
-            const remaining = sessionTotal - currentIndex;
-            document.getElementById('progress').innerHTML = `<span class="text-blue-600 dark:text-blue-400 font-extrabold text-base">${remaining}</span> <span class="text-gray-400 dark:text-gray-500 mx-1">/</span> <span class="text-gray-500 dark:text-gray-400">${sessionTotal}</span>`;
-            
-            document.getElementById('card-back').classList.add('hidden');
-            document.getElementById('buttons').classList.add('hidden');
-            document.getElementById('part5-next-btn-container').classList.add('hidden');
-            isFlipped = false;
-        }
-
-        function selectPart5Option(selected, event) {
-            if (isFlipped) return;
-            event.stopPropagation();
-
-            const v = activeVocab[currentIndex];
-            part5UserAnswerIsCorrect = (selected === v['Answer']);
-
-            ['A','B','C','D'].forEach(opt => {
-                const btn = document.getElementById(`btn-opt-${opt}`);
-                btn.disabled = true;
-                if (opt === v['Answer']) {
-                    btn.classList.replace('border-gray-200', 'border-green-400');
-                    btn.classList.replace('dark:border-gray-600', 'dark:border-green-500');
-                    btn.classList.add('bg-green-50', 'dark:bg-green-900/30');
-                } else if (opt === selected && !part5UserAnswerIsCorrect) {
-                    btn.classList.replace('border-gray-200', 'border-red-400');
-                    btn.classList.replace('dark:border-gray-600', 'dark:border-red-500');
-                    btn.classList.add('bg-red-50', 'dark:bg-red-900/30', 'opacity-50');
-                } else {
-                    btn.classList.add('opacity-50');
-                }
-            });
-
-            const resultHtml = part5UserAnswerIsCorrect
-                ? `<span class="text-green-600 dark:text-green-400 font-extrabold text-lg mr-2">⭕ 正解！</span>`
-                : `<span class="text-red-500 dark:text-red-400 font-extrabold text-lg mr-2">❌ 不正解...</span>`;
-            
-            document.getElementById('part5-result-header').innerHTML = `${resultHtml} <span class="text-sm text-gray-500 dark:text-gray-400 font-bold ml-2">正解は (${v['Answer']})</span>`;
-
-            document.getElementById('card-back').classList.remove('hidden');
-            document.getElementById('part5-next-btn-container').classList.remove('hidden');
-            
-            isFlipped = true;
-            setTimeout(() => {
-                const card = document.getElementById('card');
-                card.scrollTo({ top: card.scrollHeight, behavior: 'smooth' });
-            }, 50);
-        }
-
-        function nextPart5Card() {
-            recordAnswer(part5UserAnswerIsCorrect);
-        }
-
-        function flipCard() {
-            if (isFlipped || currentIndex >= sessionTotal || isPart5ModeActive) return;
-            document.getElementById('card-back').classList.remove('hidden');
-            document.getElementById('buttons').classList.remove('hidden');
-            isFlipped = true;
-            setTimeout(() => {
-                const card = document.getElementById('card');
-                card.scrollTo({ top: card.scrollHeight, behavior: 'smooth' });
-            }, 50);
-        }
-
-        function getNextReviewDate(consecutive_correct, correct_count, total_count) {
-            const now = new Date();
-            let hours = 0;
-            
-            if (consecutive_correct === 0) {
-                hours = 0;
-            } else {
-                const index = Math.min(consecutive_correct - 1, 5); 
-                hours = srsIntervals[index];
-            }
-            
-            if (total_count > 0) {
-                const accuracy = correct_count / total_count;
-                if (accuracy <= 0.5 && hours > 0) {
-                    hours = Math.floor(hours / 2);
-                    if (hours < 1) hours = 1;
-                }
-            }
-            
-            return new Date(now.getTime() + hours * 60 * 60 * 1000).toISOString();
-        }
-
-        function recordAnswer(isCorrect) {
-            const v = activeVocab[currentIndex];
-            const now = new Date().toISOString();
-            
-            if (!userProgress[v.ID]) userProgress[v.ID] = {};
-            const prevData = userProgress[v.ID][currentFormat] || { correct_count: 0, total_count: 0, consecutive_correct: 0 };
-            
-            const currentStreak = prevData.consecutive_correct || 0;
-            const newStreak = isCorrect ? currentStreak + 1 : 0;
-            
-            const newCorrectCount = prevData.correct_count + (isCorrect ? 1 : 0);
-            const newTotalCount = prevData.total_count + 1;
-
-            const nextReview = getNextReviewDate(newStreak, newCorrectCount, newTotalCount);
-
-            userProgress[v.ID][currentFormat] = { 
-                status: isCorrect ? 'memorized' : 'wrong', 
-                correct_count: newCorrectCount,
-                total_count: newTotalCount,
-                consecutive_correct: newStreak,
-                next_review: nextReview,
-                last_date: now 
-            };
-            
-            localStorage.setItem('flashcard_progress_v2', JSON.stringify(userProgress));
-
-            currentIndex++;
-            document.getElementById('card').scrollTop = 0;
-            loadCard();
-        }
-
-        function backToStart() {
-            updateStartScreen();
-            document.getElementById('flashcard-screen').classList.add('hidden');
-            document.getElementById('start-screen').classList.remove('hidden');
-        }
-
-        function openHistory() {
-            historyTab = currentFormat; 
-            switchHistoryTab(historyTab);
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('history-screen').classList.remove('hidden');
-        }
-
-        function switchHistoryTab(tabName) {
-            historyTab = tabName;
-            const tabs = ['EPh-JPh', 'JPh-EPh', 'EWd-JWd', 'JWd-EWd', 'Part5'];
-            tabs.forEach(t => {
-                const el = document.getElementById(`tab-${t}`);
-                if (el) {
-                    if (t === tabName) {
-                        el.classList.remove('border-transparent', 'text-gray-400', 'dark:text-gray-400');
-                        el.classList.add('border-blue-600', 'text-blue-600', 'dark:text-blue-400');
-                    } else {
-                        el.classList.add('border-transparent', 'text-gray-400', 'dark:text-gray-400');
-                        el.classList.remove('border-blue-600', 'text-blue-600', 'dark:text-blue-400');
-                    }
-                }
-            });
-            renderHistoryList();
-        }
-
-        function renderHistoryList() {
-            const list = document.getElementById('history-list');
-            list.innerHTML = '';
-            
-            // ★ 改修：履歴タブを開いた際、そのタブ(フォーマット)に該当するデータ群を取得
-            let targetVocab = [];
-            if (historyTab === 'Part5') {
-                targetVocab = part5Data;
-            } else {
-                targetVocab = vocabData;
-            }
-
-            const history = targetVocab
-                .filter(v => userProgress[v.ID] && userProgress[v.ID][historyTab])
-                .sort((a,b) => new Date(userProgress[b.ID][historyTab].last_date) - new Date(userProgress[a.ID][historyTab].last_date));
-            
-            if(history.length === 0) {
-                list.innerHTML = '<p class="text-center text-gray-400 dark:text-gray-500 mt-10 text-sm">この範囲・モードの履歴はありません</p>';
-                return;
-            }
-            
-            // ★ 改修：HTML文字列を一度に組み立てて最後に書き込む（パフォーマンス最適化）
-            let htmlContent = '';
-
-            history.forEach(v => {
-                const record = userProgress[v.ID][historyTab];
-                const isWrong = record.status === 'wrong';
-                
-                let frontText = "", backText = "";
-                switch(historyTab) {
-                    case 'EPh-JPh': frontText = highlightExact(v['フレーズ(英語)'], v['文中の英単語']); backText = v['フレーズ(日本語)']; break;
-                    case 'JPh-EPh': frontText = v['フレーズ(日本語)']; backText = highlightExact(v['フレーズ(英語)'], v['文中の英単語']); break;
-                    case 'EWd-JWd': frontText = v['英単語']; backText = v['日本語訳']; break;
-                    case 'JWd-EWd': frontText = v['日本語訳']; backText = v['英単語']; break;
-                    case 'Part5': frontText = v['Question']; backText = v['Explanation']; break;
-                }
-
-                const accRate = Math.round((record.correct_count / record.total_count) * 100);
-                const accColor = accRate >= 80 ? 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30' : (accRate < 50 ? 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30' : 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30');
-                const levelLabel = getLevelName(v['ID']);
-
-                htmlContent += `
-                    <div class="p-3 bg-white dark:bg-gray-800 border shadow-sm rounded-lg text-left ${isWrong ? 'border-red-300 dark:border-red-800' : 'border-gray-200 dark:border-gray-700'}">
-                        <div class="flex justify-between items-center mb-2 border-b border-gray-100 dark:border-gray-700 pb-1">
-                            <div class="flex space-x-1 items-center">
-                                <span class="text-[10px] font-bold ${isWrong ? 'text-red-500 dark:text-red-400' : 'text-green-600 dark:text-green-400'}">${isWrong ? '要復習' : '習得'}</span>
-                                <span class="text-[8px] bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-1 rounded">${levelLabel}</span>
-                            </div>
-                            <div class="flex flex-col items-end">
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${accColor}">正答率: ${record.correct_count}/${record.total_count}回 (${accRate}%)</span>
-                                <span class="text-[9px] text-gray-400 dark:text-gray-500 mt-0.5 mr-1">連続: ${record.consecutive_correct || 0}回</span>
-                            </div>
-                        </div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 leading-tight mb-1">${frontText}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">${backText}</p>
-                    </div>`;
-            });
-
-            // 最後に一気に書き込む
-            list.innerHTML = htmlContent;
-        }
-
-        function backToStartFromHistory() {
-            document.getElementById('history-screen').classList.add('hidden');
-            document.getElementById('start-screen').classList.remove('hidden');
-        }
-
-        function resetData() {
-            if(confirm("全記録を消去しますか？")) { 
-                localStorage.removeItem('flashcard_progress_v2'); 
-                location.reload(); 
-            }
-        }
-    </script>
-    <style>
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    </style>
+    <div id="buttons" class="mt-6 flex justify-between gap-4 hidden flex-shrink-0"><button onclick="recordAnswer(false)" class="bg-red-500 dark:bg-red-600 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg active:bg-red-600">✕</button><button onclick="recordAnswer(true)" class="bg-green-500 dark:bg-green-600 text-white flex-1 py-4 rounded-xl font-bold shadow-lg text-lg active:bg-green-600">✓</button></div>
+    <div id="part5-next-btn-container" class="mt-6 w-full hidden flex-shrink-0"><button onclick="nextPart5Card()" class="w-full bg-blue-600 dark:bg-blue-700 text-white py-4 rounded-xl font-bold shadow-lg text-lg">次へ進む ➔</button></div>
+    <button onclick="backToStart()" class="mt-4 text-sm text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 underline font-bold flex-shrink-0">← 中断して戻る</button>
+  </div>
+
+  <div id="history-screen" class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg w-full max-w-md hidden flex-col h-[90vh] transition-colors duration-300">
+    <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-3 text-center">学習履歴と正答率</h2>
+    <div id="history-tabs" class="flex border-b border-gray-200 dark:border-gray-700 mb-4 bg-gray-50 dark:bg-gray-900 rounded-t-lg overflow-x-auto"></div>
+    <div id="history-list" class="overflow-y-auto flex-1 space-y-3 pr-1 custom-scrollbar"></div>
+    <button onclick="backToStartFromHistory()" class="mt-4 pt-3 border-t dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400 underline font-bold text-center">← 戻る</button>
+  </div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const show = (id, visible) => { $(id).classList.toggle('hidden', !visible); };
+const storageJSON = (key, fallback) => { try { const v=JSON.parse(localStorage.getItem(key)); return v===null ? fallback : v; } catch (_) {return fallback;} };
+const safeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DEFAULT_SRS_INTERVALS = [4,12,24,48,96,168];
+const FORMAT_LIST = [
+    ['EPh-JPh','英語フレーズ → 日本語','英フ→日'],
+    ['JPh-EPh','日本語フレーズ → 英語','日フ→英'],
+    ['EWd-JWd','英単語 → 日本語訳','英単→日'],
+    ['JWd-EWd','日本語訳 → 英単語','日単→英'],
+    ['Listen-EWd-JWd','🔊 リスニング → 英単語・意味','🔊 聞く'],
+    ['Part5','Part 5 (4択穴埋め問題)','Part5']
+];
+const modeNames = Object.fromEntries(FORMAT_LIST.map(([id,label])=>[id,label]));
+const RANGE_SECTIONS = [
+  ['Score 600 Level',[[1,'ID 1 - 100'],[2,'ID 101 - 200'],[3,'ID 201 - 300'],[4,'ID 301 - 400']]],
+  ['Score 730 Level',[[6,'ID 401 - 500'],[7,'ID 501 - 600'],[8,'ID 601 - 700']]],
+  ['Score 860 Level',[[9,'ID 701 - 800']]],
+  ['Score 990 Level',[[10,'ID 801 - 900']]],
+  ['Essential Words',[[5,'Essential (E1 - E100)']]],
+  ['Grammar Practice',[[11,'Part 5 実戦問題 (P1 - )']]]
+];
+let vocabData = [], part5Data = [], activeVocab = [];
+let currentIndex = 0, sessionTotal = 0, isFlipped = false;
+let isPart5ModeActive = false, part5UserAnswerIsCorrect = false;
+let currentFormat = localStorage.getItem('flashcard_format') || 'EPh-JPh';
+if (!modeNames[currentFormat]) currentFormat = 'EPh-JPh';
+let selectedRanges = storageJSON('flashcard_ranges',[1,2,3,4,5,6,7,8,9,10]);
+if (!Array.isArray(selectedRanges)) selectedRanges = [1,2,3,4,5,6,7,8,9,10];
+let historyTab = currentFormat;
+let userProgress = storageJSON('flashcard_progress_v2',{});
+if (!userProgress || typeof userProgress !== 'object' || Array.isArray(userProgress)) userProgress = {};
+let srsIntervals = storageJSON('flashcard_srs_intervals',DEFAULT_SRS_INTERVALS.slice());
+if (!Array.isArray(srsIntervals)||srsIntervals.length!==6) srsIntervals=DEFAULT_SRS_INTERVALS.slice();
+let exclude100Srs = Boolean(storageJSON('flashcard_exclude_100_srs',false));
+let isDarkMode = Boolean(storageJSON('flashcard_dark_mode',false));
+let listeningRate = Number(storageJSON('flashcard_listening_rate',1));
+if (![.75,.9,1,1.25].includes(listeningRate)) listeningRate=1;
+let listeningAutoplay = Boolean(storageJSON('flashcard_listening_autoplay',true));
+let utterance = null, currentSpeechSerial = 0;
+const listeningMode = () => currentFormat === 'Listen-EWd-JWd';
+
+function buildOptionUI() {
+  $('range-options').innerHTML = RANGE_SECTIONS.map(([section, ranges]) => `
+    <div class="mb-4"><h4 class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2">${section}</h4>
+    <div class="grid grid-cols-2 gap-2">${ranges.map(([id,label])=>`
+      <label class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-green-50 dark:hover:bg-gray-600">
+      <input type="checkbox" name="range" value="${id}" onchange="syncOptions(this)" class="w-4 h-4 accent-green-600"><span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-200">${label}</span></label>`).join('')}</div></div>`).join('');
+  $('format-options').innerHTML = FORMAT_LIST.map(([id,label])=>`
+    <label class="flex items-center p-3 ${id==='Part5'?'bg-purple-50 dark:bg-purple-900/20':id==='Listen-EWd-JWd'?'bg-indigo-50 dark:bg-indigo-900/20':'bg-gray-50 dark:bg-gray-700'} rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-blue-50 dark:hover:bg-gray-600">
+    <input type="radio" name="format" value="${id}" onchange="syncOptions(this)" class="w-4 h-4 accent-blue-600"><span class="ml-3 text-sm font-medium text-gray-700 dark:text-gray-200">${label}</span></label>`).join('');
+  const limits = [[1,24,1],[2,48,2],[6,96,6],[12,168,12],[24,336,24],[24,720,24]];
+  $('srs-options').innerHTML = limits.map(([min,max,step],i)=>`
+    <div class="flex items-center justify-between gap-2">
+      <span class="text-xs text-gray-600 dark:text-gray-300 font-medium w-20">${['1回正解:','2回連続:','3回連続:','4回連続:','5回連続:','6回以上:'][i]}</span>
+      <input type="range" id="srs-${i}" min="${min}" max="${max}" step="${step}" class="w-3/5 accent-yellow-500" oninput="updateSrsLabel(${i},this.value)">
+      <span id="srs-val-${i}" class="text-[10px] font-bold text-gray-800 dark:text-gray-200 w-14 text-right"></span></div>`).join('');
+  $('history-tabs').innerHTML = FORMAT_LIST.map(([id,,short]) => `<button onclick="switchHistoryTab('${id}')" id="tab-${id}" class="flex-1 shrink-0 py-2 px-1 text-[10px] font-bold border-b-2 border-transparent text-gray-400 transition-colors">${short}</button>`).join('');
+}
+
+function getLevelName(idStr) {
+  const str=String(idStr);
+  if (/^[Ee]/.test(str)) return 'Essential';
+  if (/^[Pp]/.test(str)) return 'Part 5';
+  const n=parseInt(str,10);
+  if(n>=1&&n<=400) return '600 Level';
+  if(n>=401&&n<=700) return '730 Level';
+  if(n>=701&&n<=800) return '860 Level';
+  if(n>=801&&n<=900) return '990 Level';
+  return 'Extra';
+}
+function loadCSV(url) {
+  return new Promise(resolve=> {
+    if (typeof Papa === 'undefined') { resolve([]); return; }
+    Papa.parse(url,{download:true,header:true,skipEmptyLines:true,
+      complete: results => resolve(Array.isArray(results.data)?results.data:[]),
+      error: () => resolve([])});
+  });
+}
+function getTargetData() {
+  if(currentFormat==='Part5') return part5Data.filter(v=>selectedRanges.includes(11));
+  return vocabData.filter(v=>{
+    const raw=String(v.ID);
+    if(/^[Ee]/.test(raw)) return selectedRanges.includes(5);
+    const id=parseInt(raw,10);
+    if(Number.isNaN(id)) return false;
+    return [[1,1,100],[2,101,200],[3,201,300],[4,301,400],[6,401,500],[7,501,600],[8,601,700],[9,701,800],[10,801,900]]
+        .some(([range,first,last])=>selectedRanges.includes(range)&&id>=first&&id<=last);
+  });
+}
+function currentRecord(v, format=currentFormat) { return userProgress[String(v.ID)]?.[format]; }
+function dueForReview(record, nowIso) {
+  if (!record || record.status==='wrong') return Boolean(record);
+  if (record.next_review && record.next_review>nowIso) return false;
+  return !(exclude100Srs && record.total_count>0 && record.correct_count===record.total_count);
+}
+function updateStartScreen() {
+  const counts = {safe:0,due:0,wrong:0,new:0};
+  const target=getTargetData(), now=new Date().toISOString();
+  $('dash-mode-title').textContent=modeNames[currentFormat];
+  let rangeText='';
+  if(currentFormat==='Part5') rangeText='Part 5 (実戦問題)';
+  else if([1,2,3,4,5,6,7,8,9,10].every(n=>selectedRanges.includes(n)) && !selectedRanges.includes(11)) rangeText='全範囲 (All Levels)';
+  else {const parts=[];if(selectedRanges.some(n=>n>=1&&n<=4))parts.push('600L');if(selectedRanges.some(n=>n>=6&&n<=8))parts.push('730L');if(selectedRanges.includes(9))parts.push('860L');if(selectedRanges.includes(10))parts.push('990L');if(selectedRanges.includes(5))parts.push('Ess');rangeText=parts.join(' & ')+' 選択中';}
+  $('dash-range-title').textContent=rangeText;
+  target.forEach(v=>{const r=currentRecord(v); if(!r)counts.new++;else if(r.status==='wrong')counts.wrong++;else if(dueForReview(r,now))counts.due++;else counts.safe++;});
+  for (const key of ['safe','due','wrong','new']) $( `stat-${key}`).innerHTML=`${counts[key]} <span class="text-sm font-normal text-gray-400 ml-1">/ ${target.length}</span>`;
+  $('btn-srs').disabled=(counts.due+counts.wrong===0);
+  $('btn-wrong').disabled=(counts.wrong===0);
+  $('btn-new').disabled=(counts.new===0);
+  $('btn-all').disabled=target.length===0;
+}
+function syncOptions(changed) {
+  if(!changed)return;
+  const part5Range=document.querySelector('input[name="range"][value="11"]');
+  const part5Format=document.querySelector('input[name="format"][value="Part5"]');
+  if(changed.name==='range') {
+    if(changed.value==='11' && changed.checked){ document.querySelectorAll('input[name="range"]').forEach(el=>{if(el.value!=='11')el.checked=false;}); part5Format.checked=true; }
+    else if(changed.value!=='11' && changed.checked){part5Range.checked=false;if(part5Format.checked)document.querySelector('input[name="format"][value="EPh-JPh"]').checked=true;}
+    else if(changed.value==='11' && !changed.checked && part5Format.checked)document.querySelector('input[name="format"][value="EPh-JPh"]').checked=true;
+  } else if(changed.name==='format') {
+    if(changed.value==='Part5'&&changed.checked){document.querySelectorAll('input[name="range"]').forEach(el=>{el.checked=el.value==='11';});}
+    else if(changed.checked){part5Range.checked=false;
+      if(!Array.from(document.querySelectorAll('input[name="range"]')).some(el=>el.value!=='11'&&el.checked))document.querySelector('input[name="range"][value="1"]').checked=true;
+    }
+  }
+  applyOptionConstraints();
+}
+function applyOptionConstraints(){
+  const isPart5=Boolean(document.querySelector('input[name="range"][value="11"]')?.checked);
+  document.querySelectorAll('input[name="format"]').forEach(r=>{
+    r.disabled=isPart5 ? r.value!=='Part5' : r.value==='Part5';
+    r.closest('label').classList.toggle('opacity-40',r.disabled);
+    r.closest('label').classList.toggle('cursor-not-allowed',r.disabled);
+  });
+}
+function switchScreen(from,to){$(from).classList.add('hidden');$(from).classList.remove('flex');$(to).classList.remove('hidden');if(to!=='start-screen')$(to).classList.add('flex');}
+function showTutorial(){switchScreen('start-screen','tutorial-screen');}
+function hideTutorial(){switchScreen('tutorial-screen','start-screen');}
+function showOptions(){loadOptionSettings();switchScreen('start-screen','options-screen');}
+function toggleDarkModePreview(checked){document.documentElement.classList.toggle('dark',checked);}
+function updateSrsLabel(index,val) {
+  const hours=parseInt(val,10);
+  $('srs-val-'+index).textContent=hours>=24 ? (Number.isInteger(hours/24)?hours/24:(hours/24).toFixed(1))+'日後' : hours+'時間後';
+}
+function loadOptionSettings(){
+  document.querySelectorAll('input[name="format"]').forEach(r=>{r.checked=r.value===currentFormat;});
+  document.querySelectorAll('input[name="range"]').forEach(c=>{c.checked=selectedRanges.includes(parseInt(c.value,10));});
+  if(selectedRanges.includes(11))document.querySelector('input[name="format"][value="Part5"]').checked=true;
+  else if(currentFormat==='Part5')document.querySelector('input[name="format"][value="EPh-JPh"]').checked=true;
+  applyOptionConstraints();
+  srsIntervals.forEach((val,i)=>{const sl=$('srs-'+i);sl.value=val;updateSrsLabel(i,val);});
+  $('setting-exclude-100').checked=exclude100Srs;
+  $('setting-dark-mode').checked=isDarkMode;
+  $('setting-listening-rate').value=String(listeningRate);
+  $('setting-listening-autoplay').checked=listeningAutoplay;
+}
+function resetSrsIntervals(){srsIntervals=DEFAULT_SRS_INTERVALS.slice();srsIntervals.forEach((val,i)=>{$('srs-'+i).value=val;updateSrsLabel(i,val);});alert('忘却曲線の間隔をデフォルトに戻しました。');}
+function saveOptionsAndClose(){
+  const ranges=Array.from(document.querySelectorAll('input[name="range"]:checked')).map(c=>Number(c.value));
+  if(ranges.length===0)return alert('出題範囲を少なくとも1つ選択してください。');
+  selectedRanges=ranges;localStorage.setItem('flashcard_ranges',JSON.stringify(selectedRanges));
+  currentFormat=document.querySelector('input[name="format"]:checked').value;
+  localStorage.setItem('flashcard_format',currentFormat);
+  srsIntervals=srsIntervals.map((_,i)=>parseInt($('srs-'+i).value,10));localStorage.setItem('flashcard_srs_intervals',JSON.stringify(srsIntervals));
+  exclude100Srs=$('setting-exclude-100').checked;localStorage.setItem('flashcard_exclude_100_srs',JSON.stringify(exclude100Srs));
+  isDarkMode=$('setting-dark-mode').checked;localStorage.setItem('flashcard_dark_mode',JSON.stringify(isDarkMode));toggleDarkModePreview(isDarkMode);
+  listeningRate=Number($('setting-listening-rate').value);localStorage.setItem('flashcard_listening_rate',JSON.stringify(listeningRate));
+  listeningAutoplay=$('setting-listening-autoplay').checked;localStorage.setItem('flashcard_listening_autoplay',JSON.stringify(listeningAutoplay));
+  updateStartScreen();switchScreen('options-screen','start-screen');
+}
+function exportData(){
+  const blob=new Blob([localStorage.getItem('flashcard_progress_v2')||'{}'],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`toeic_progress_backup_${new Date().toISOString().split('T')[0]}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function importData(event){
+  const file=event.target.files?.[0];if(!file)return;
+  const reader=new FileReader();reader.onload=e=>{
+    try {const data=JSON.parse(e.target.result);if(!data||typeof data!=='object'||Array.isArray(data))throw Error('Invalid JSON');
+      localStorage.setItem('flashcard_progress_v2',JSON.stringify(data));alert('データの復元が完了しました。ページを再読み込みします。');location.reload();}
+    catch(_){alert('ファイルの読み込みに失敗しました。正しいJSONファイルを選択してください。');}
+  };reader.readAsText(file);event.target.value='';
+}
+function resetData(){if(confirm('全記録を消去しますか？')){localStorage.removeItem('flashcard_progress_v2');location.reload();}}
+function startStudy(mode){
+  stopSpeech();
+  const target=getTargetData(),now=new Date().toISOString();
+  if(mode==='wrong')activeVocab=target.filter(v=>currentRecord(v)?.status==='wrong');
+  else if(mode==='srs')activeVocab=target.filter(v=>{const r=currentRecord(v);return r&&(r.status==='wrong'||(r.status==='memorized'&&dueForReview(r,now)));});
+  else if(mode==='new')activeVocab=target.filter(v=>!currentRecord(v));
+  else activeVocab=target.filter(v=>{const r=currentRecord(v);return !r||r.status==='wrong'||(r.status==='memorized'&&(!r.next_review||r.next_review<=now));});
+  if(!activeVocab.length)return alert('このモード/範囲には学習するカードがありません。');
+  // Fisher–Yates shuffle (avoids non-transitive random comparator)
+  for(let i=activeVocab.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[activeVocab[i],activeVocab[j]]=[activeVocab[j],activeVocab[i]];}
+  sessionTotal=activeVocab.length;currentIndex=0;isFlipped=false;
+  $('card-front').classList.remove('hidden');$('session-clear-msg').classList.add('hidden');
+  switchScreen('start-screen','flashcard-screen');$('card').scrollTop=0;loadCard();
+}
+function highlightExact(fullText,exactTarget){
+  const text=safeHTML(fullText),target=safeHTML(exactTarget);
+  if(!text||!target)return text;
+  const esc=target.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return text.replace(new RegExp('('+esc+')','gi'),'<span class="underline decoration-2 decoration-blue-400 dark:text-blue-300">$1</span>');
+}
+function getHintPhrase(fullText,targetWord){
+  const text=String(fullText??''),word=String(targetWord??'');if(!text||!word)return safeHTML(text);
+  const esc=word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return safeHTML(text.replace(new RegExp('('+esc+')','gi'),m=>m.length>1?m.charAt(0)+'-'.repeat(m.length-1):m));
+}
+function stopSpeech(){
+  currentSpeechSerial++;
+  if ('speechSynthesis' in window) {try{window.speechSynthesis.cancel();}catch(_){}}
+  utterance=null;
+  $('listening-icon').classList.remove('sound-playing');
+}
+function currentEnglishWord(){
+  if(currentIndex>=sessionTotal)return '';
+  return String(activeVocab[currentIndex]?.['英単語']||activeVocab[currentIndex]?.['文中の英単語']||'').trim();
+}
+function speakCurrentWord(){
+  if(!listeningMode()||currentIndex>=sessionTotal)return;
+  stopSpeech();
+  const word=currentEnglishWord();
+  if(!word){$('listening-status').textContent='このカードには読み上げ対象の英単語がありません';return;}
+  if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined'){$('listening-status').textContent='このブラウザは音声再生に対応していません';return;}
+  const serial=currentSpeechSerial;
+  const speech=new SpeechSynthesisUtterance(word);
+  speech.lang='en-US';speech.rate=listeningRate;speech.pitch=1;speech.volume=1;
+  try {
+    const voices=window.speechSynthesis.getVoices();
+    const preferred=voices.find(v=>/^en-US$/i.test(v.lang)&&v.localService)||voices.find(v=>/^en-US$/i.test(v.lang))||voices.find(v=>/^en/i.test(v.lang));
+    if(preferred)speech.voice=preferred;
+  } catch(_){/* voice availability varies by device */}
+  speech.onstart=()=>{if(serial!==currentSpeechSerial)return;$('listening-status').textContent='再生中…';$('listening-icon').classList.add('sound-playing');};
+  speech.onend=()=>{if(serial!==currentSpeechSerial)return;$('listening-status').textContent='もう一度聞く場合は再生ボタンを押してください';$('listening-icon').classList.remove('sound-playing');};
+  speech.onerror=e=>{if(serial!==currentSpeechSerial)return;$('listening-status').textContent=e.error==='canceled'?'':'再生できませんでした。再生ボタンを押して再試行してください';$('listening-icon').classList.remove('sound-playing');};
+  utterance=speech; // retain object, especially on Safari
+  $('listening-status').textContent='音声を準備しています…';
+  try{window.speechSynthesis.speak(speech);}catch(_){$('listening-status').textContent='再生できませんでした。画面をタップして再試行してください';}
+}
+function replayListening(event){if(event)event.stopPropagation();speakCurrentWord();}
+function changeListeningRate(value,event){if(event)event.stopPropagation();listeningRate=Number(value);localStorage.setItem('flashcard_listening_rate',JSON.stringify(listeningRate));if(listeningMode())speakCurrentWord();}
+function loadCard(){
+  stopSpeech();
+  if(currentIndex>=sessionTotal){
+    ['part5-front','card-front','listening-front','card-back','buttons','part5-next-btn-container'].forEach(id=>show(id,false));
+    show('session-clear-msg',true);$('progress').textContent=`0 / ${sessionTotal}`;return;
+  }
+  show('session-clear-msg',false);
+  const v=activeVocab[currentIndex];isPart5ModeActive=currentFormat==='Part5';
+  const isListening=listeningMode();
+  show('card-front',!isPart5ModeActive&&!isListening);
+  show('part5-front',isPart5ModeActive);
+  show('listening-front',isListening);
+  $('listening-front').classList.toggle('flex',isListening);
+  show('standard-back-content',!isPart5ModeActive);
+  show('part5-back-content',isPart5ModeActive);
+  show('listening-answer',isListening);
+  if(isListening){
+    $('listening-rate').value=String(listeningRate);
+    $('listening-status').textContent='音声を聞いて考えてください';
+    $('label-back').textContent='英単語・意味';
+    $('text-back').innerHTML=`<span class="block text-2xl mb-2">${safeHTML(v['英単語']||v['文中の英単語'])}</span><span class="block text-base text-gray-700 dark:text-gray-200">${safeHTML(v['日本語訳'])}</span>`;
+    $('listening-phrase-en').innerHTML=highlightExact(v['フレーズ(英語)'],v['文中の英単語']);
+    $('listening-phrase-ja').innerHTML=highlightExact(v['フレーズ(日本語)'],v['文中の日本語']);
+  } else if(isPart5ModeActive){
+    $('part5-id').textContent=`ID: ${v.ID}`;
+    $('part5-q').textContent=v['Question']||'';
+    for(const opt of ['A','B','C','D']){
+      const btn=$('btn-opt-'+opt);btn.innerHTML=`<span class="font-bold text-purple-500 dark:text-purple-400 mr-2">(${opt})</span> ${safeHTML(v['Option'+opt])}`;
+      btn.className='w-full p-3 border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg text-left hover:bg-purple-50 dark:hover:bg-gray-700 transition-all text-sm font-medium text-gray-700 dark:text-gray-200 shadow-sm';btn.disabled=false;
+    }
+    $('part5-translation').textContent=v['Translation']||'';
+    $('part5-explanation').textContent=v['Explanation']||'';
+  } else {
+    $('label-back').textContent='BACK';
+    const front=$('text-front'),back=$('text-back');
+    switch(currentFormat){
+      case 'EPh-JPh':front.innerHTML=highlightExact(v['フレーズ(英語)'],v['文中の英単語']);break;
+      case 'JPh-EPh':front.innerHTML=`${safeHTML(v['フレーズ(日本語)'])}<span class="text-lg text-gray-400 dark:text-gray-500 font-normal mt-4 block tracking-widest">${getHintPhrase(v['フレーズ(英語)'],v['文中の英単語'])}</span>`;break;
+      case 'EWd-JWd':front.textContent=v['英単語']||'';break;
+      case 'JWd-EWd':front.textContent=v['日本語訳']||'';break;
+    }
+    switch(currentFormat){
+      case 'EPh-JPh':back.innerHTML=highlightExact(v['フレーズ(日本語)'],v['文中の日本語']);break;
+      case 'JPh-EPh':back.innerHTML=highlightExact(v['フレーズ(英語)'],v['文中の英単語']);break;
+      case 'EWd-JWd':back.textContent=v['日本語訳']||'';break;
+      case 'JWd-EWd':back.textContent=v['英単語']||'';break;
+    }
+  }
+  if(!isPart5ModeActive){
+    show('note-area',Boolean(v['備考']));$('note-text').textContent=v['備考']||'';
+    const record=currentRecord(v);
+    let streakInfo='',weaknessAlert='';
+    if(record){
+      if(record.consecutive_correct>0)streakInfo=`<span class="ml-2 text-green-500 dark:text-green-400 font-bold text-[10px]">🔥 連続: ${record.consecutive_correct}回</span>`;
+      if(record.total_count>0&&record.correct_count/record.total_count<=.5)weaknessAlert=`<span class="ml-2 text-red-500 dark:text-red-400 font-bold text-[10px]">⚠️苦手(正答率${Math.round(record.correct_count/record.total_count*100)}%)</span>`;
+    }
+    $('sub-info').innerHTML=`<div class="flex flex-wrap justify-center items-center gap-1 text-[10px] text-gray-400 dark:text-gray-500 mb-2"><span class="bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 px-1.5 py-0.5 rounded">${getLevelName(v.ID)}</span><span>ID: ${safeHTML(v.ID)}</span>${streakInfo}${weaknessAlert}</div><div class="text-sm font-bold text-gray-700 dark:text-gray-200 bg-gray-50/50 dark:bg-slate-800 py-2 px-3 rounded border border-gray-100 dark:border-slate-600 shadow-sm w-full"><span class="text-blue-600 dark:text-blue-400">${safeHTML(v['英単語'])}</span> <span class="text-gray-300 dark:text-gray-500 font-normal mx-1">|</span> <span>${safeHTML(v['日本語訳'])}</span></div>`;
+  }
+  const remaining=sessionTotal-currentIndex;
+  $('progress').innerHTML=`<span class="text-blue-600 dark:text-blue-400 font-extrabold text-base">${remaining}</span> <span class="text-gray-400 dark:text-gray-500 mx-1">/</span> <span class="text-gray-500 dark:text-gray-400">${sessionTotal}</span>`;
+  show('card-back',false);show('buttons',false);show('part5-next-btn-container',false);isFlipped=false;
+  if(isListening&&listeningAutoplay)speakCurrentWord();
+}
+function selectPart5Option(selected,event){
+  if(event)event.stopPropagation();if(isFlipped||!isPart5ModeActive||currentIndex>=sessionTotal)return;
+  const v=activeVocab[currentIndex],answer=String(v['Answer']||'').trim().toUpperCase();
+  part5UserAnswerIsCorrect=selected===answer;
+  for(const opt of ['A','B','C','D']){
+    const btn=$('btn-opt-'+opt);btn.disabled=true;
+    if(opt===answer)btn.classList.add('border-green-400','dark:border-green-500','bg-green-50','dark:bg-green-900/30');
+    else if(opt===selected&&!part5UserAnswerIsCorrect)btn.classList.add('border-red-400','dark:border-red-500','bg-red-50','dark:bg-red-900/30','opacity-50');
+    else btn.classList.add('opacity-50');
+  }
+  $('part5-result-header').innerHTML=(part5UserAnswerIsCorrect?'<span class="text-green-600 dark:text-green-400 font-extrabold text-lg mr-2">⭕ 正解！</span>':'<span class="text-red-500 dark:text-red-400 font-extrabold text-lg mr-2">❌ 不正解...</span>')+`<span class="text-sm text-gray-500 dark:text-gray-400 font-bold ml-2">正解は (${safeHTML(answer)})</span>`;
+  show('card-back',true);show('part5-next-btn-container',true);isFlipped=true;scrollCardDown();
+}
+function scrollCardDown(){setTimeout(()=>{if($('flashcard-screen').classList.contains('hidden'))return;$('card').scrollTo({top:$('card').scrollHeight,behavior:'smooth'});},50);}
+function flipCard(){
+  if(isFlipped||currentIndex>=sessionTotal||isPart5ModeActive)return;
+  if(listeningMode())stopSpeech();
+  show('card-back',true);show('buttons',true);isFlipped=true;scrollCardDown();
+}
+function nextPart5Card(){if(isPart5ModeActive&&isFlipped)recordAnswer(part5UserAnswerIsCorrect);}
+function getNextReviewDate(streak,correct,total){
+  let hours=streak===0?0:srsIntervals[Math.min(streak-1,5)];
+  if(total>0&&correct/total<=.5&&hours>0)hours=Math.max(1,Math.floor(hours/2));
+  return new Date(Date.now()+hours*3600000).toISOString();
+}
+function recordAnswer(isCorrect){
+  if(currentIndex>=sessionTotal||!isFlipped)return;
+  const v=activeVocab[currentIndex],now=new Date().toISOString();
+  if(!userProgress[v.ID])userProgress[v.ID]={};
+  const p=userProgress[v.ID][currentFormat]||{correct_count:0,total_count:0,consecutive_correct:0};
+  const total=(p.total_count||0)+1,correct=(p.correct_count||0)+(isCorrect?1:0),streak=isCorrect?(p.consecutive_correct||0)+1:0;
+  userProgress[v.ID][currentFormat]={status:isCorrect?'memorized':'wrong',correct_count:correct,total_count:total,consecutive_correct:streak,next_review:getNextReviewDate(streak,correct,total),last_date:now};
+  localStorage.setItem('flashcard_progress_v2',JSON.stringify(userProgress));
+  currentIndex++;$('card').scrollTop=0;loadCard();
+}
+function backToStart(){stopSpeech();updateStartScreen();switchScreen('flashcard-screen','start-screen');}
+function openHistory(){historyTab=currentFormat;switchHistoryTab(historyTab);switchScreen('start-screen','history-screen');}
+function switchHistoryTab(name){historyTab=name;FORMAT_LIST.forEach(([id])=>{const e=$('tab-'+id);e.classList.toggle('border-blue-600',id===name);e.classList.toggle('text-blue-600',id===name);e.classList.toggle('dark:text-blue-400',id===name);e.classList.toggle('border-transparent',id!==name);e.classList.toggle('text-gray-400',id!==name);});renderHistoryList();}
+function renderHistoryList(){
+  const data=(historyTab==='Part5'?part5Data:vocabData).filter(v=>currentRecord(v,historyTab))
+    .sort((a,b)=>new Date(currentRecord(b,historyTab).last_date||0)-new Date(currentRecord(a,historyTab).last_date||0));
+  if(!data.length){$('history-list').innerHTML='<p class="text-center text-gray-400 dark:text-gray-500 mt-10 text-sm">このモードの履歴はありません</p>';return;}
+  $('history-list').innerHTML=data.map(v=>{
+    const r=currentRecord(v,historyTab),isWrong=r.status==='wrong',rate=Math.round((r.total_count? r.correct_count/r.total_count:0)*100);
+    const accColor=rate>=80?'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30':rate<50?'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30':'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30';
+    let front='',back='';
+    switch(historyTab){
+      case 'EPh-JPh':front=highlightExact(v['フレーズ(英語)'],v['文中の英単語']);back=safeHTML(v['フレーズ(日本語)']);break;
+      case 'JPh-EPh':front=safeHTML(v['フレーズ(日本語)']);back=highlightExact(v['フレーズ(英語)'],v['文中の英単語']);break;
+      case 'EWd-JWd':front=safeHTML(v['英単語']);back=safeHTML(v['日本語訳']);break;
+      case 'JWd-EWd':front=safeHTML(v['日本語訳']);back=safeHTML(v['英単語']);break;
+      case 'Listen-EWd-JWd':front='🔊 '+safeHTML(v['英単語']);back=safeHTML(v['日本語訳']);break;
+      case 'Part5':front=safeHTML(v['Question']);back=safeHTML(v['Explanation']);break;
+    }
+    return `<div class="p-3 bg-white dark:bg-gray-800 border shadow-sm rounded-lg text-left ${isWrong?'border-red-300 dark:border-red-800':'border-gray-200 dark:border-gray-700'}">
+      <div class="flex justify-between items-center mb-2 border-b border-gray-100 dark:border-gray-700 pb-1"><div class="flex space-x-1 items-center"><span class="text-[10px] font-bold ${isWrong?'text-red-500':'text-green-600'}">${isWrong?'要復習':'習得'}</span><span class="text-[8px] bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-1 rounded">${getLevelName(v.ID)}</span></div><div class="flex flex-col items-end"><span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${accColor}">正答率: ${r.correct_count}/${r.total_count}回 (${rate}%)</span><span class="text-[9px] text-gray-400 mt-0.5 mr-1">連続: ${r.consecutive_correct||0}回</span></div></div>
+      <p class="text-sm font-bold text-gray-800 dark:text-gray-100 leading-tight mb-1">${front}</p><p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">${back}</p></div>`;
+  }).join('');
+}
+function backToStartFromHistory(){switchScreen('history-screen','start-screen');}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSpeech();});
+window.addEventListener('pagehide',stopSpeech);
+
+buildOptionUI();
+updateStartScreen();
+Promise.all([loadCSV('data.csv'),loadCSV('part5.csv')]).then(([words,grammar])=>{
+  vocabData=words.filter(v=>v.ID&&(v['文中の英単語']||v['英単語']));
+  part5Data=grammar.filter(v=>v.ID&&v.Question);
+  if(!vocabData.length){$('load-message').textContent='data.csv を読み込めませんでした。GitHub Pages上で公開し、index.html と data.csv を同じ階層に置いてください。';show('load-message',true);}
+  updateStartScreen();
+});
+</script>
 </body>
 </html>
